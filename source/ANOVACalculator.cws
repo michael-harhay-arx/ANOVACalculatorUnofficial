@@ -30,7 +30,7 @@ Save Changes Before Compiling = "Always"
 Hide Windows = False
 Break At First Statement = False
 Sort Type = "File Name"
-Number of Opened Files = 8
+Number of Opened Files = 5
 Window Confinement Region Enabled = True
 MainColumnWidth = 337
 FileDateColumnWidth = 70
@@ -54,7 +54,7 @@ Window Top = 188
 Window Left = 90
 Window Height = 401
 Window Width = 686
-Window Z-Order = 8
+Window Z-Order = 5
 
 [File 0002]
 Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/MainPanel.h"
@@ -68,32 +68,31 @@ Window Left = 42
 [File 0003]
 Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/Callbacks.c"
 File Type = "CSource"
-Disk Date = 3834935947
+Disk Date = 3834937319
 In Projects = "1,"
-Source Window State = "1,145,145,145,118,118,118,0,0,0,0,0,0,0,0,0,116,0,145,118,401,686,1,0,"
+Source Window State = "1,87,87,87,4,4,4,0,0,0,0,0,0,0,0,0,59,0,87,4,401,686,1,0,"
 Window Top = 126
 Window Left = 58
-Window Z-Order = 2
+Window Z-Order = 1
 
 [File 0004]
 Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/ANOVACalculator.c"
 File Type = "CSource"
-Disk Date = 3834921432
+Disk Date = 3834937638
 In Projects = "1,"
-Source Window State = "1,51,51,51,4,4,4,0,0,0,0,0,0,0,0,0,24,0,51,4,401,686,1,0,"
+Source Window State = "1,52,54,54,40,0,0,0,3,0,0,0,0,0,0,0,31,0,52,40,401,686,1,0,"
 Window Top = 95
 Window Left = 42
-Window Z-Order = 1
+Window Z-Order = 2
 
 [File 0005]
 Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/Callbacks.h"
 File Type = "Include"
-Disk Date = 3834930471
+Disk Date = 3834937336
 In Projects = "1,"
-Source Window State = "1,19,19,19,21,21,21,0,0,0,0,0,0,0,0,0,0,0,19,21,401,686,1,0,"
+Source Window State = "1,20,20,20,23,23,23,0,0,0,0,0,0,0,0,0,0,0,20,23,401,686,1,0,"
 Window Top = 157
 Window Left = 74
-Window Z-Order = 5
 
 [File 0006]
 Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/CSVPanel.uir"
@@ -104,7 +103,7 @@ Window Top = 219
 Window Left = 106
 Window Height = 401
 Window Width = 686
-Window Z-Order = 6
+Window Z-Order = 4
 
 [File 0007]
 Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/CSVPanel.h"
@@ -121,45 +120,38 @@ Disk Date = 3834930522
 In Projects = "1,"
 
 [File 0009]
-Path = "/c/Arxtron/Libraries/ArxtronToolslib.h"
-File Type = "Include"
-Disk Date = 3829319895
-In Projects = ""
-Source Window State = "1,381,381,381,8,14,8,0,3,0,0,0,0,0,0,0,355,0,381,14,400,600,1,0,"
-Window Top = 31
-Window Z-Order = 7
-
-[File 0010]
-Path Line0001 = "/c/Users/Michael_Harhay/Documents/ANOVA/lib/Utilities_LIB/CSVParse_LIB/CSVParse_"
-Path Line0002 = "LIB.c"
-File Type = "CSource"
-Disk Date = 3834930407
-In Projects = ""
-Source Window State = "1,394,394,394,0,0,0,0,0,0,0,0,0,0,0,0,367,0,394,0,401,686,1,0,"
-Window Top = 95
-Window Left = 42
+Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/ANOVAPanel.uir"
+File Type = "User Interface Resource"
+Disk Date = 3834937280
+In Projects = "1,"
+Window Top = 219
+Window Left = 106
+Window Height = 401
+Window Width = 630
 Window Z-Order = 3
 
-[File 0011]
-Path = "/c/Program Files (x86)/National Instruments/CVI2019/include/userint.h"
+[File 0010]
+Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/ANOVAPanel.h"
 File Type = "Include"
-Disk Date = 3636556839
-In Projects = ""
-Source Window State = "1,2728,2728,2728,16,31,16,0,3,0,0,0,0,0,0,0,2710,0,2728,31,401,686,1,0,"
-Window Top = 126
-Window Left = 58
-Window Z-Order = 4
+Disk Date = 3834937280
+In Projects = "1,"
+Source Window State = "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"
+
+[File 0011]
+Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/ANOVACalculator.h"
+File Type = "Include"
+Disk Date = 3834937618
+In Projects = "1,"
+Source Window State = "1,33,33,33,25,25,25,0,0,0,0,0,0,0,0,0,0,0,33,25,401,686,1,0,"
+Window Top = 157
+Window Left = 74
 
 [Tab Order]
 Tab 0001 = "/c/Users/Michael_Harhay/Documents/ANOVA/source/ANOVACalculator.c"
 Tab 0002 = "/c/Users/Michael_Harhay/Documents/ANOVA/source/Callbacks.c"
 Tab 0003 = "/c/Users/Michael_Harhay/Documents/ANOVA/source/MainPanel.uir"
 Tab 0004 = "/c/Users/Michael_Harhay/Documents/ANOVA/source/CSVPanel.uir"
-Tab 0005 = "/c/Users/Michael_Harhay/Documents/ANOVA/source/Callbacks.h"
-Tab 0006 = "/c/Arxtron/Libraries/ArxtronToolslib.h"
-Tab 0007 Line0001 = "/c/Users/Michael_Harhay/Documents/ANOVA/lib/Utilities_LIB/CSVParse_LIB/CSVParse_"
-Tab 0007 Line0002 = "LIB.c"
-Tab 0008 = "/c/Program Files (x86)/National Instruments/CVI2019/include/userint.h"
+Tab 0005 = "/c/Users/Michael_Harhay/Documents/ANOVA/source/ANOVAPanel.uir"
 
 [Default Build Config 0001 Debug]
 Generate Browse Info = True

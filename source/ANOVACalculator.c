@@ -16,7 +16,7 @@
 #include <cvirte.h>		
 #include <userint.h>
 
-#include "Callbacks.h"
+#include "ANOVACalculator.h"
 
 //==============================================================================
 // Constants
@@ -38,7 +38,9 @@ static int panelHandle = 0;
 //==============================================================================
 // Global functions
 
-/// HIFN The main entry-point function.
+/***************************************************************************//*!
+* \brief Main entry point
+*******************************************************************************/
 int main (int argc, char *argv[])
 {
 	int error = 0;
@@ -55,5 +57,13 @@ Error:
 	/* clean up */
 	if (panelHandle > 0)
 		DiscardPanel (panelHandle);
+	return 0;
+}
+
+/***************************************************************************//*!
+* \brief Perform ANOVA calculations
+*******************************************************************************/
+int ANOVACalculations ()
+{
 	return 0;
 }

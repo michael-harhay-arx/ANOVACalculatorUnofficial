@@ -58,6 +58,7 @@ static int glbSysLogLevel = 0;
 // Global variables
 
 int glbCSVPanelHandle = 0;
+int glbANOVAPanelHandle = 0;
 
 //==============================================================================
 // Global functions
@@ -89,19 +90,6 @@ int CVICALLBACK MainPanelCB (int panel, int event, void *callbackData, int event
 }
 
 /***************************************************************************//*!
-* \brief Callback for closing CSV panel
-*******************************************************************************/
-int CVICALLBACK CSVPanelCB (int panel, int event, void *callbackData, int eventData1, int eventData2)
-{
-	if (event == EVENT_CLOSE)
-	{
-		DiscardPanel (glbCSVPanelHandle);
-	}
-	
-	return 0;
-}
-
-/***************************************************************************//*!
 * \brief Open button callback
 *******************************************************************************/
 int CVICALLBACK OpenButtonCB(int panel, int control, int event, void *callbackData, int eventData1, int eventData2)
@@ -115,21 +103,20 @@ int CVICALLBACK OpenButtonCB(int panel, int control, int event, void *callbackDa
 		char selected_filepath[512];
 		int selection_status = FileSelectPopup ("", "*.csv", "*.*", "Select a CSV file...", VAL_OK_BUTTON, 0, 1, 1, 0, selected_filepath);
 		
-		// Parse CSV, load into buffer
+		// Load CSV panel
+		glbCSVPanelHandle = LoadPanel (0, "CSVPanel.uir", CSVPANEL);
+		
+		// Parse selected CSV, load into buffer
 		int colCount = 0;
 		int rowCount = 0;
-		int buffSize = 64;
-		char headerBuffer[2048]; // TODO fix sizing
-		char dataBuffer[500000]; // TODO fix sizing
+		int buffSize = 32;
+		char headerBuffer[2048]; // Can account for 64 x 32-byte column headers
+		char dataBuffer[131072]; // Can account for 64 x 64 x 32-byte pieces of data
 		
 		tsErrChk (Initialize_CSVParse_LIB (selected_filepath, 1, NULL, 0, buffSize, &colCount, &rowCount, headerBuffer, errmsg), errmsg);
 		tsErrChk (CSVParse_GetDataByIndex (0, 0, rowCount - 1, colCount - 1, dataBuffer, errmsg), errmsg);
-		
-		// Load CSV panel
-		glbCSVPanelHandle = LoadPanel (0, "CSVPanel.uir", CSVPANEL);
-		// TODO add "loading" sign?
 
-		// Add data to CSV table
+		// Add CSV data to table
 		for (int row = 1; row <= rowCount + 1; row++)
 		{
 			int status = 0;
@@ -147,7 +134,7 @@ int CVICALLBACK OpenButtonCB(int panel, int control, int event, void *callbackDa
 				}
 			}
 		}
-		
+
 		DisplayPanel (glbCSVPanelHandle);
 	}
 	
@@ -162,7 +149,36 @@ int CVICALLBACK LoadButtonCB(int panel, int control, int event, void *callbackDa
 {
 	if (event == EVENT_LEFT_CLICK)
 	{
-		NULL;
+		// Load ANOVA panel
+		glbANOVAPanelHandle = LoadPanel (0, "ANOVAPanel.uir", ANOVAPANEL);
+		DisplayPanel (glbANOVAPanelHandle);
+		// TODO add "loading" sign?
+	}
+	
+	return 0;
+}
+
+/***************************************************************************//*!
+* \brief Callback for closing CSV panel
+*******************************************************************************/
+int CVICALLBACK CSVPanelCB (int panel, int event, void *callbackData, int eventData1, int eventData2)
+{
+	if (event == EVENT_CLOSE)
+	{
+		DiscardPanel (glbCSVPanelHandle);
+	}
+	
+	return 0;
+}
+
+/***************************************************************************//*!
+* \brief Callback for closing ANOVA panel
+*******************************************************************************/
+int CVICALLBACK ANOVAPanelCB (int panel, int event, void *callbackData, int eventData1, int eventData2)
+{
+	if (event == EVENT_CLOSE)
+	{
+		DiscardPanel (glbANOVAPanelHandle);
 	}
 	
 	return 0;

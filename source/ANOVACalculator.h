@@ -1,12 +1,12 @@
 /***************************************************************************//*!
-* \file Callbacks.h
+* \file ANOVACalculator.h
 * \author 
 * \copyright . All Rights Reserved.
-* \date 2025-07-09 11:44:39 AM
+* \date 2025-07-09 4:25:52 PM
 *******************************************************************************/
 
-#ifndef __Callbacks_H__
-#define __Callbacks_H__
+#ifndef __ANOVACalculator_H__
+#define __ANOVACalculator_H__
 
 #ifdef __cplusplus
     extern "C" {
@@ -16,9 +16,8 @@
 // Include files
 
 #include "cvidef.h"
-#include "MainPanel.h"
-#include "CSVPanel.h"
-#include "ANOVAPanel.h"
+		
+#include "Callbacks.h"
 
 //==============================================================================
 // Constants
@@ -32,10 +31,10 @@
 //==============================================================================
 // Global functions
 
-int Declare_Your_Functions_Here (int x);
+int ANOVACalculations ();
 
 #ifdef __cplusplus
     }
 #endif
 
-#endif  /* ndef __Callbacks_H__ */
+#endif  /* ndef __ANOVACalculator_H__ */
