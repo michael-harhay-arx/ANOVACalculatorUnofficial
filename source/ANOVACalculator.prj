@@ -9,7 +9,7 @@ IVI Standard Root Dir = "/C/Program Files (x86)/IVI Foundation/IVI"
 VXIplug&play Framework Dir = "/C/Program Files (x86)/IVI Foundation/VISA/winnt"
 IVI Standard Root 64-bit Dir = "/C/Program Files/IVI Foundation/IVI"
 VXIplug&play Framework 64-bit Dir = "/C/Program Files/IVI Foundation/VISA/win64"
-Number of Files = 7
+Number of Files = 8
 Target Type = "Executable"
 Flags = 16
 Copied From Locked InstrDrv Directory = False
@@ -19,7 +19,6 @@ Don't Display Deploy InstrDrv Dialog = False
 
 [Folders]
 Instrument Files Folder Not Added Yet = True
-Library Files Folder Not Added Yet = True
 Folder 0 = "Source Files"
 FolderEx 0 = "Source Files"
 Folder 1 = "Include Files"
@@ -28,6 +27,8 @@ Folder 2 = "User Interface Files"
 FolderEx 2 = "User Interface Files"
 Folder 3 = "User Interface Include Files"
 FolderEx 3 = "User Interface Include Files"
+Folder 4 = "Library Files"
+FolderEx 4 = "Library Files"
 
 [File 0001]
 File Type = "CSource"
@@ -114,6 +115,18 @@ Exclude = False
 Project Flags = 0
 Folder = "User Interface Include Files"
 Folder Id = 3
+
+[File 0008]
+File Type = "Library"
+Res Id = 8
+Path Is Rel = True
+Path Rel To = "Project"
+Path Rel Path = "../../../../../Arxtron/Libraries/CSVParse_LIB.lib"
+Path = "/c/Arxtron/Libraries/CSVParse_LIB.lib"
+Exclude = False
+Project Flags = 0
+Folder = "Library Files"
+Folder Id = 4
 
 [Custom Build Configs]
 Num Custom Build Configs = 0

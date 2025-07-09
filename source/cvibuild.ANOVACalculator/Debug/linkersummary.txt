@@ -2,6 +2,7 @@ ANOVACalculator.obj
 Callbacks.obj
 cvi.lib
 cvistart.lib
+CSVParse_LIB.lib
 kernel32.lib
 user32.lib
 EXE Symbol Module

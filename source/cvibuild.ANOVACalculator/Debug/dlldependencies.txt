@@ -1,5 +1,7 @@
 cvi.lib
 cvirte.dll
+CSVParse_LIB.lib
+CSVParse_LIB.dll
 kernel32.lib
 KERNEL32.dll
 user32.lib

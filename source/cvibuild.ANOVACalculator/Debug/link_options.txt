@@ -21,6 +21,7 @@
 -more:c:\Program Files (x86)\National Instruments\CVI2019\bin\msvc\advanlys.lib
 -more:C:\Program Files (x86)\Windows Kits\8.1\Lib\winv6.3\um\x86\advapi32.lib
 -more:C:\Program Files (x86)\Windows Kits\8.1\Lib\winv6.3\um\x86\bufferoverflowu.lib
+-more:c:\Arxtron\Libraries\CSVParse_LIB.lib
 -more:c:\Program Files (x86)\National Instruments\CVI2019\bin\msvc\cviauto.lib
 -more:c:\Program Files (x86)\National Instruments\CVI2019\bin\msvc\cvidotnet.lib
 -more:c:\Program Files (x86)\National Instruments\CVI2019\bin\msvc\cvinetstreams.lib

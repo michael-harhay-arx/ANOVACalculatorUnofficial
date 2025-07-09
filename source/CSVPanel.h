@@ -14,6 +14,7 @@
      /* Panels and Controls: */
 
 #define  CSVPANEL                         1       /* callback function: CSVPanelCB */
+#define  CSVPANEL_CSVTABLE                2       /* control type: table, callback function: (none) */
 
 
      /* Control Arrays: */

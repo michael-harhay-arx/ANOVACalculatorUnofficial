@@ -6,6 +6,8 @@ Depends "c:\\Users\\Michael_Harhay\\Documents\\ANOVA\\source\\cvibuild.ANOVACalc
 NoCare "C:\\Program Files (x86)\\Windows Kits\\8.1\\Lib\\winv6.3\\um\\x86\\advapi32.lib" ;
 Depends "c:\\Users\\Michael_Harhay\\Documents\\ANOVA\\source\\cvibuild.ANOVACalculator\\Debug\\ANOVACalculator.exe" : "C:\\Program Files (x86)\\Windows Kits\\8.1\\Lib\\winv6.3\\um\\x86\\bufferoverflowu.lib" ;
 NoCare "C:\\Program Files (x86)\\Windows Kits\\8.1\\Lib\\winv6.3\\um\\x86\\bufferoverflowu.lib" ;
+Depends "c:\\Users\\Michael_Harhay\\Documents\\ANOVA\\source\\cvibuild.ANOVACalculator\\Debug\\ANOVACalculator.exe" : "c:\\Arxtron\\Libraries\\CSVParse_LIB.lib" ;
+NoCare "c:\\Arxtron\\Libraries\\CSVParse_LIB.lib" ;
 Depends "c:\\Users\\Michael_Harhay\\Documents\\ANOVA\\source\\cvibuild.ANOVACalculator\\Debug\\ANOVACalculator.exe" : "c:\\Program Files (x86)\\National Instruments\\CVI2019\\bin\\msvc\\cviauto.lib" ;
 NoCare "c:\\Program Files (x86)\\National Instruments\\CVI2019\\bin\\msvc\\cviauto.lib" ;
 Depends "c:\\Users\\Michael_Harhay\\Documents\\ANOVA\\source\\cvibuild.ANOVACalculator\\Debug\\ANOVACalculator.exe" : "c:\\Program Files (x86)\\National Instruments\\CVI2019\\bin\\msvc\\cvidotnet.lib" ;
