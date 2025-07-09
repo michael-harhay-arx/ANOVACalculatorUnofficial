@@ -29,6 +29,7 @@
 
 //#include "Callbacks.h"
 
+#include "toolbox.h"
 #include <ansi_c.h>
 
 #include "Callbacks.h"
@@ -55,6 +56,8 @@ static int glbSysLogLevel = 0;
 //==============================================================================
 // Global variables
 
+int glbCSVPanelHandle;
+
 //==============================================================================
 // Global functions
 
@@ -72,7 +75,7 @@ int Define_Your_Functions_Here (int x)
 }
 
 /***************************************************************************//*!
-* \brief Callback for closing panel
+* \brief Callback for closing main panel
 *******************************************************************************/
 int CVICALLBACK MainPanelCB (int panel, int event, void *callbackData, int eventData1, int eventData2)
 {
@@ -85,13 +88,38 @@ int CVICALLBACK MainPanelCB (int panel, int event, void *callbackData, int event
 }
 
 /***************************************************************************//*!
+* \brief Callback for closing CSV panel
+*******************************************************************************/
+int CVICALLBACK CSVPanelCB (int panel, int event, void *callbackData, int eventData1, int eventData2)
+{
+	if (event == EVENT_CLOSE)
+	{
+		DiscardPanel (glbCSVPanelHandle);
+	}
+	
+	return 0;
+}
+
+/***************************************************************************//*!
 * \brief Open button callback
 *******************************************************************************/
 int CVICALLBACK OpenButtonCB(int panel, int control, int event, void *callbackData, int eventData1, int eventData2)
 {
 	if (event == EVENT_LEFT_CLICK)
 	{
-		printf("Open button pressed\n");
+		// Open file selection dialogue
+		char selected_filepath[512];
+		int selection_status = FileSelectPopup ("", "*.csv", "*.*", "Select a CSV file...", VAL_OK_BUTTON, 0, 1, 1, 0, selected_filepath);
+		
+		// Open file, real contents
+		FILE *csv_ptr = fopen(selected_filepath, "r");
+		char csv_buffer[100];
+		fgets(csv_buffer, 100, csv_ptr);
+		printf("%s", csv_buffer);
+		
+		// Load new panel, display CSV contents
+		glbCSVPanelHandle = LoadPanel (0, "CSVPanel.uir", CSVPANEL);
+		DisplayPanel (glbCSVPanelHandle);
 	}
 
 	return 0;
@@ -104,7 +132,7 @@ int CVICALLBACK LoadButtonCB(int panel, int control, int event, void *callbackDa
 {
 	if (event == EVENT_LEFT_CLICK)
 	{
-		printf("Load button pressed\n");
+		NULL;
 	}
 	
 	return 0;

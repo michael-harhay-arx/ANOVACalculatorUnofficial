@@ -1,6 +1,6 @@
 [Workspace Header]
 Version = 1900
-Pathname = "/c/Users/Michael_Harhay/Documents/ANOVA/Source/ANOVACalculator.cws"
+Pathname = "/c/Users/Michael_Harhay/Documents/ANOVA/source/ANOVACalculator.cws"
 CVI Dir = "/c/program files (x86)/national instruments/cvi2019"
 CVI Shared Dir = "/C/Program Files (x86)/National Instruments/Shared/CVI"
 CVI Pub Local Dir = "/C/ProgramData/National Instruments/CVI2019"
@@ -30,7 +30,7 @@ Save Changes Before Compiling = "Always"
 Hide Windows = False
 Break At First Statement = False
 Sort Type = "File Name"
-Number of Opened Files = 3
+Number of Opened Files = 4
 Window Confinement Region Enabled = True
 MainColumnWidth = 337
 FileDateColumnWidth = 70
@@ -46,58 +46,78 @@ Batch Build Release = False
 Batch Build Debug = False
 
 [File 0001]
-Path = "/c/Users/Michael_Harhay/Documents/ANOVA/Source/ANOVACalculator.c"
-File Type = "CSource"
-Disk Date = 3834921432
-In Projects = "1,"
-Source Window State = "1,47,47,47,4,4,4,0,0,0,0,0,0,0,0,0,21,0,47,4,401,686,1,0,"
-Window Top = 95
-Window Left = 42
-
-[File 0002]
-Path = "/c/Users/Michael_Harhay/Documents/ANOVA/Source/MainPanel.uir"
+Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/MainPanel.uir"
 File Type = "User Interface Resource"
-Disk Date = 3834921617
+Disk Date = 3834923348
 In Projects = "1,"
 Window Top = 188
 Window Left = 90
 Window Height = 401
 Window Width = 686
-Window Z-Order = 3
-
-[File 0003]
-Path = "/c/Users/Michael_Harhay/Documents/ANOVA/Source/MainPanel.h"
-File Type = "Include"
-Disk Date = 3834921617
-In Projects = "1,"
-Source Window State = "1,34,34,34,0,117,0,0,3,0,0,0,0,0,0,0,0,0,34,117,401,686,1,0,"
-Window Top = 33
-Window Left = 10
 Window Z-Order = 2
 
-[File 0004]
-Path = "/c/Users/Michael_Harhay/Documents/ANOVA/Source/Callbacks.c"
-File Type = "CSource"
-Disk Date = 3834921796
+[File 0002]
+Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/MainPanel.h"
+File Type = "Include"
+Disk Date = 3834922890
 In Projects = "1,"
-Source Window State = "1,83,83,83,13,13,13,0,0,0,0,0,0,0,0,0,61,0,83,13,401,686,1,0,"
+Source Window State = "1,12,12,12,0,0,0,0,0,0,0,0,0,0,0,0,0,0,12,0,401,630,1,0,"
+Window Top = 95
+Window Left = 42
+
+[File 0003]
+Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/Callbacks.c"
+File Type = "CSource"
+Disk Date = 3834924383
+In Projects = "1,"
+Source Window State = "1,117,117,117,40,40,40,0,0,0,0,0,0,0,0,0,89,0,117,40,401,686,1,0,"
 Window Top = 126
 Window Left = 58
 Window Z-Order = 1
 
-[File 0005]
-Path = "/c/Users/Michael_Harhay/Documents/ANOVA/Source/Callbacks.h"
-File Type = "Include"
-Disk Date = 3834921393
+[File 0004]
+Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/ANOVACalculator.c"
+File Type = "CSource"
+Disk Date = 3834921432
 In Projects = "1,"
-Source Window State = "1,18,18,18,22,22,22,0,0,0,0,0,0,0,0,0,0,0,18,22,401,686,1,0,"
+Source Window State = "1,7,7,7,2,2,2,0,0,0,0,0,0,0,0,0,7,0,7,2,401,686,1,0,"
+Window Top = 95
+Window Left = 42
+Window Z-Order = 3
+
+[File 0005]
+Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/Callbacks.h"
+File Type = "Include"
+Disk Date = 3834923037
+In Projects = "1,"
+Source Window State = "1,19,19,19,21,21,21,0,0,0,0,0,0,0,0,0,0,0,19,21,401,686,1,0,"
 Window Top = 157
 Window Left = 74
 
+[File 0006]
+Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/CSVPanel.uir"
+File Type = "User Interface Resource"
+Disk Date = 3834923499
+In Projects = "1,"
+Window Top = 219
+Window Left = 106
+Window Height = 401
+Window Width = 686
+Window Z-Order = 4
+
+[File 0007]
+Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/CSVPanel.h"
+File Type = "Include"
+Disk Date = 3834923499
+In Projects = "1,"
+Source Window State = "1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,400,600,1,0,"
+Window Top = 31
+
 [Tab Order]
-Tab 0001 = "/c/Users/Michael_Harhay/Documents/ANOVA/Source/Callbacks.c"
-Tab 0002 = "/c/Users/Michael_Harhay/Documents/ANOVA/Source/MainPanel.uir"
-Tab 0003 = "/c/Users/Michael_Harhay/Documents/ANOVA/Source/MainPanel.h"
+Tab 0001 = "/c/Users/Michael_Harhay/Documents/ANOVA/source/ANOVACalculator.c"
+Tab 0002 = "/c/Users/Michael_Harhay/Documents/ANOVA/source/Callbacks.c"
+Tab 0003 = "/c/Users/Michael_Harhay/Documents/ANOVA/source/MainPanel.uir"
+Tab 0004 = "/c/Users/Michael_Harhay/Documents/ANOVA/source/CSVPanel.uir"
 
 [Default Build Config 0001 Debug]
 Generate Browse Info = True

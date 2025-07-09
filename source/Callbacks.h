@@ -17,6 +17,7 @@
 
 #include "cvidef.h"
 #include "MainPanel.h"
+#include "CSVPanel.h"
 
 //==============================================================================
 // Constants

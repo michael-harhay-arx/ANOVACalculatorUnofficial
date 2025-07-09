@@ -1,21 +1,21 @@
 -nologo
--out:c:\Users\Michael_Harhay\Documents\ANOVA\Source\cvibuild.ANOVACalculator\Debug\ANOVACalculator.exe
+-out:c:\Users\Michael_Harhay\Documents\ANOVA\source\cvibuild.ANOVACalculator\Debug\ANOVACalculator.exe
 -arch:x86
 -timestamp
 -debug:2
 -loadextmod
--project:c:\Users\Michael_Harhay\Documents\ANOVA\Source\ANOVACalculator.prj
--res:c:\Users\Michael_Harhay\Documents\ANOVA\Source\cvibuild.ANOVACalculator\Debug\resources.res
+-project:c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.prj
+-res:c:\Users\Michael_Harhay\Documents\ANOVA\source\cvibuild.ANOVACalculator\Debug\resources.res
 -entry:_CVIWinMainStartupCodeForDebugging@0
 -base:0x400000
--linked:c:\Users\Michael_Harhay\Documents\ANOVA\Source\cvibuild.ANOVACalculator\Debug\linkersummary.txt
--dlldeps:c:\Users\Michael_Harhay\Documents\ANOVA\Source\cvibuild.ANOVACalculator\Debug\dlldependencies.txt
--licensing:c:\Users\Michael_Harhay\Documents\ANOVA\Source\cvibuild.ANOVACalculator\Debug\linkerlicensing.txt
--browsedeps:c:\Users\Michael_Harhay\Documents\ANOVA\Source\cvibuild.ANOVACalculator\Debug\moduledependencies.txt
+-linked:c:\Users\Michael_Harhay\Documents\ANOVA\source\cvibuild.ANOVACalculator\Debug\linkersummary.txt
+-dlldeps:c:\Users\Michael_Harhay\Documents\ANOVA\source\cvibuild.ANOVACalculator\Debug\dlldependencies.txt
+-licensing:c:\Users\Michael_Harhay\Documents\ANOVA\source\cvibuild.ANOVACalculator\Debug\linkerlicensing.txt
+-browsedeps:c:\Users\Michael_Harhay\Documents\ANOVA\source\cvibuild.ANOVACalculator\Debug\moduledependencies.txt
 -stackreserve:1048576
 -stackcommit:4096
--in:c:\Users\Michael_Harhay\Documents\ANOVA\Source\cvibuild.ANOVACalculator\Debug\ANOVACalculator.obj
--in:c:\Users\Michael_Harhay\Documents\ANOVA\Source\cvibuild.ANOVACalculator\Debug\Callbacks.obj
+-in:c:\Users\Michael_Harhay\Documents\ANOVA\source\cvibuild.ANOVACalculator\Debug\ANOVACalculator.obj
+-in:c:\Users\Michael_Harhay\Documents\ANOVA\source\cvibuild.ANOVACalculator\Debug\Callbacks.obj
 -more:c:\program files (x86)\national instruments\cvi2019\bin\msvc\cvistart.lib
 -more:c:\program files (x86)\national instruments\cvi2019\bin\msvc\cvi.lib
 -more:c:\Program Files (x86)\National Instruments\CVI2019\bin\msvc\advanlys.lib
