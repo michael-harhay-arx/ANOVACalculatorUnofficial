@@ -1,0 +1,13 @@
+Framework requirements:
+- Standalone window
+- Install allowed
+- Can load .csv, .db, .sav
+- Can manipulate data
+
+Stack:
+- C
+- CSV: ?
+- SAV: libreadstat
+- SQL: sqlite3 C API
+- Stats calculations: by hand?!
+- GUI: CVI

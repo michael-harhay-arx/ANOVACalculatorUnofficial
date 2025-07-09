@@ -1,0 +1,54 @@
+CCFLAGS = -g ;
+HDRS = 	"C:\\Users\\Public\\Documents\\National Instruments\\TestStand 2017 (32-bit)\\AdapterSupport\\CVI"
+	"C:\\Program Files (x86)\\National Instruments\\TestStand 2017\\API\\DLLInterfaces"
+	"C:\\Arxtron\\Libraries"
+	"C:\\Program Files (x86)\\National Instruments\\Shared\\CVI\\instr\\TestStand\\API"
+	"c:\\program files (x86)\\national instruments\\cvi2019\\toolslib\\activex\\word"
+	"c:\\program files (x86)\\national instruments\\cvi2019\\toolslib\\activex\\excel"
+	"c:\\program files (x86)\\national instruments\\cvi2019\\toolslib\\custctrl"
+	"c:\\program files (x86)\\national instruments\\cvi2019\\toolslib\\custctrl\\custsupp"
+	"c:\\program files (x86)\\national instruments\\cvi2019\\toolslib\\cvirtsup"
+	"c:\\program files (x86)\\national instruments\\cvi2019\\toolslib\\datasock"
+	"c:\\program files (x86)\\national instruments\\cvi2019\\toolslib\\daqUtil"
+	"c:\\program files (x86)\\national instruments\\cvi2019\\toolslib\\printing"
+	"c:\\program files (x86)\\national instruments\\cvi2019\\toolslib\\toolbox"
+	"c:\\program files (x86)\\national instruments\\cvi2019\\toolslib\\reportgen"
+	"c:\\program files (x86)\\national instruments\\cvi2019\\toolslib\\localui"
+	"c:\\program files (x86)\\national instruments\\cvi2019\\instr"
+	"C:\\Program Files (x86)\\National Instruments\\Shared\\CVI\\toolslib\\custctrl"
+	"C:\\Program Files (x86)\\National Instruments\\Shared\\CVI\\toolslib\\custctrl\\custsupp"
+	"C:\\Program Files (x86)\\National Instruments\\Shared\\CVI\\instr"
+	"C:\\ProgramData\\National Instruments\\CVI2019\\instr"
+	"c:\\program files (x86)\\national instruments\\cvi2019\\include"
+	"C:\\Program Files (x86)\\National Instruments\\Shared\\CVI\\include"
+	"C:\\ProgramData\\National Instruments\\CVI2019\\include"
+	"C:\\ProgramData\\National Instruments\\CVI\\include"
+	"c:\\program files (x86)\\national instruments\\cvi2019\\include\\ansi"
+	"c:\\program files (x86)\\national instruments\\cvi2019\\include\\clang\\3.3"
+	"C:\\Program Files (x86)\\IVI Foundation\\IVI\\Include"
+	"C:\\Program Files (x86)\\IVI Foundation\\VISA\\winnt\\include"
+	"C:\\Program Files (x86)\\National Instruments\\Shared\\MSDTRedistributables\\SDKHeaderFiles\\8.1"
+	"c:\\Program Files (x86)\\National Instruments\\CVI2019\\bin"
+	"c:\\Program Files (x86)\\National Instruments\\Shared\\CVI\\Bin"
+	;
+include Jamfile_instr ;
+LOCATE on "ANOVACalculator.c" = "c:\\Users\\Michael_Harhay\\Documents\\ANOVA\\Source" ;
+LOCATE on "Callbacks.c" = "c:\\Users\\Michael_Harhay\\Documents\\ANOVA\\Source" ;
+LOCATE on "Callbacks.h" = "c:\\Users\\Michael_Harhay\\Documents\\ANOVA\\Source" ;
+LOCATE on "MainPanel.h" = "c:\\Users\\Michael_Harhay\\Documents\\ANOVA\\Source" ;
+Object "c:\\Users\\Michael_Harhay\\Documents\\ANOVA\\Source\\cvibuild.ANOVACalculator\\Debug\\ANOVACalculator.obj" : "c:\\Users\\Michael_Harhay\\Documents\\ANOVA\\Source\\ANOVACalculator.c" ;
+FILENUM on "c:\\Users\\Michael_Harhay\\Documents\\ANOVA\\Source\\cvibuild.ANOVACalculator\\Debug\\ANOVACalculator.obj" = 1 ;
+DEFPROTS on "c:\\Users\\Michael_Harhay\\Documents\\ANOVA\\Source\\cvibuild.ANOVACalculator\\Debug\\ANOVACalculator.obj" = "c:\\Users\\Michael_Harhay\\Documents\\ANOVA\\Source\\cvibuild.ANOVACalculator\\Debug\\ANOVACalculator.obj.cvidefprots" ;
+OUTFILE on "c:\\Users\\Michael_Harhay\\Documents\\ANOVA\\Source\\cvibuild.ANOVACalculator\\Debug\\ANOVACalculator.obj" = "c:\\Users\\Michael_Harhay\\Documents\\ANOVA\\Source\\cvibuild.ANOVACalculator\\Debug\\ANOVACalculator.obj.out" ;
+PrjObjects += "c:\\Users\\Michael_Harhay\\Documents\\ANOVA\\Source\\cvibuild.ANOVACalculator\\Debug\\ANOVACalculator.obj" ;
+Object "c:\\Users\\Michael_Harhay\\Documents\\ANOVA\\Source\\cvibuild.ANOVACalculator\\Debug\\Callbacks.obj" : "c:\\Users\\Michael_Harhay\\Documents\\ANOVA\\Source\\Callbacks.c" ;
+FILENUM on "c:\\Users\\Michael_Harhay\\Documents\\ANOVA\\Source\\cvibuild.ANOVACalculator\\Debug\\Callbacks.obj" = 2 ;
+DEFPROTS on "c:\\Users\\Michael_Harhay\\Documents\\ANOVA\\Source\\cvibuild.ANOVACalculator\\Debug\\Callbacks.obj" = "c:\\Users\\Michael_Harhay\\Documents\\ANOVA\\Source\\cvibuild.ANOVACalculator\\Debug\\Callbacks.obj.cvidefprots" ;
+OUTFILE on "c:\\Users\\Michael_Harhay\\Documents\\ANOVA\\Source\\cvibuild.ANOVACalculator\\Debug\\Callbacks.obj" = "c:\\Users\\Michael_Harhay\\Documents\\ANOVA\\Source\\cvibuild.ANOVACalculator\\Debug\\Callbacks.obj.out" ;
+PrjObjects += "c:\\Users\\Michael_Harhay\\Documents\\ANOVA\\Source\\cvibuild.ANOVACalculator\\Debug\\Callbacks.obj" ;
+Object "c:\\Users\\Michael_Harhay\\Documents\\ANOVA\\Source\\cvibuild.ANOVACalculator\\Debug\\resources.res" : "c:\\Users\\Michael_Harhay\\Documents\\ANOVA\\Source\\cvibuild.ANOVACalculator\\Debug\\resources.in.rc" ;
+Depends "c:\\Users\\Michael_Harhay\\Documents\\ANOVA\\Source\\cvibuild.ANOVACalculator\\Debug\\resources.res" : "c:\\Users\\Michael_Harhay\\Documents\\ANOVA\\Source\\cvibuild.ANOVACalculator\\Debug\\manifest.xml" ;
+MainFromObjects "c:\\Users\\Michael_Harhay\\Documents\\ANOVA\\Source\\cvibuild.ANOVACalculator\\Debug\\ANOVACalculator.exe" : $(PrjObjects) $(InstrObjects) ;
+Depends "c:\\Users\\Michael_Harhay\\Documents\\ANOVA\\Source\\cvibuild.ANOVACalculator\\Debug\\ANOVACalculator.exe" : "c:\\Users\\Michael_Harhay\\Documents\\ANOVA\\Source\\cvibuild.ANOVACalculator\\Debug\\link_options.txt" ;
+Depends "c:\\Users\\Michael_Harhay\\Documents\\ANOVA\\Source\\cvibuild.ANOVACalculator\\Debug\\ANOVACalculator.exe" : "c:\\Users\\Michael_Harhay\\Documents\\ANOVA\\Source\\cvibuild.ANOVACalculator\\Debug\\resources.res" ;
+Depends all : "c:\\Users\\Michael_Harhay\\Documents\\ANOVA\\Source\\cvibuild.ANOVACalculator\\Debug\\ANOVACalculator.exe" ;
