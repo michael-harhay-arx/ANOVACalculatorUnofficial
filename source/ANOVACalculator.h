@@ -29,10 +29,10 @@
 typedef struct ANOVANode
 {
 	char key[32];
-	int num_values;
+	int numValues;
 	double *values;
 	
-	int num_children;
+	int numChildren;
 	ANOVANode **children;
 } ANOVANode;
 

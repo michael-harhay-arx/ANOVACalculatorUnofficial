@@ -92,8 +92,8 @@ int CVICALLBACK OpenButtonCB(int panel, int control, int event, void *callbackDa
 	if (event == EVENT_LEFT_CLICK)
 	{
 		// Open file selection dialogue
-		char selected_filepath[512];
-		FileSelectPopup ("", "*.csv", "*.*", "Select a CSV file...", VAL_OK_BUTTON, 0, 1, 1, 0, selected_filepath);
+		char selectedFilepath[512];
+		FileSelectPopup ("", "*.csv", "*.*", "Select a CSV file...", VAL_OK_BUTTON, 0, 1, 1, 0, selectedFilepath);
 		
 		// Load CSV panel
 		glbCSVPanelHandle = LoadPanel (0, "CSVPanel.uir", CSVPANEL);
@@ -105,7 +105,7 @@ int CVICALLBACK OpenButtonCB(int panel, int control, int event, void *callbackDa
 		char headerBuffer[2048]; // Can account for 64 x 32-byte column headers
 		char dataBuffer[131072]; // Can account for 64 x 64 x 32-byte pieces of data
 		
-		tsErrChk (Initialize_CSVParse_LIB (selected_filepath, 1, NULL, 0, buffSize, &colCount, &rowCount, headerBuffer, errmsg), errmsg);
+		tsErrChk (Initialize_CSVParse_LIB (selectedFilepath, 1, NULL, 0, buffSize, &colCount, &rowCount, headerBuffer, errmsg), errmsg);
 		tsErrChk (CSVParse_GetDataByIndex (0, 0, rowCount - 1, colCount - 1, dataBuffer, errmsg), errmsg);
 
 		// Populate main table
@@ -171,11 +171,11 @@ int CVICALLBACK CSVTableCB (int panel, int control, int event, void *callbackDat
 {
 	if (event == EVENT_SELECTION_CHANGE || event == EVENT_ACTIVE_CELL_CHANGE)
 	{
-		Rect selection_rect = {0};
-		GetTableSelection (panel, CSVPANEL_CSVTABLE, &selection_rect);
+		Rect selectionRect = {0};
+		GetTableSelection (panel, CSVPANEL_CSVTABLE, &selectionRect);
 		
 		// If no selection, print nothing
-		if (selection_rect.height == -1 && selection_rect.width == -1)
+		if (selectionRect.height == -1 && selectionRect.width == -1)
 		{
 			SetCtrlVal (panel, CSVPANEL_FACTORSELECT, "");
 			SetCtrlVal (panel, CSVPANEL_DATASELECT, "");
@@ -184,21 +184,21 @@ int CVICALLBACK CSVTableCB (int panel, int control, int event, void *callbackDat
 		}
 		
 		// Else print selected cell/range
-		char selection_str[32] = {0};
-		if (selection_rect.height == 0 && selection_rect.width == 0) // one cell selected, have to use GetActiveTableCell()
+		char selectionStr[32] = {0};
+		if (selectionRect.height == 0 && selectionRect.width == 0) // one cell selected, have to use GetActiveTableCell()
 		{
-			Point active_cell = {0};
-			GetActiveTableCell (panel, CSVPANEL_CSVTABLE, &active_cell);
-			sprintf (selection_str, "C%dR%d:C%dR%d", active_cell.x, active_cell.y, active_cell.x, active_cell.y);
+			Point activeCell = {0};
+			GetActiveTableCell (panel, CSVPANEL_CSVTABLE, &activeCell);
+			sprintf (selectionStr, "C%dR%d:C%dR%d", activeCell.x, activeCell.y, activeCell.x, activeCell.y);
 		}
 		else 
 		{
-			sprintf (selection_str, "C%dR%d:C%dR%d", selection_rect.left, selection_rect.top, selection_rect.left + selection_rect.width - 1, selection_rect.top + selection_rect.height - 1);
+			sprintf (selectionStr, "C%dR%d:C%dR%d", selectionRect.left, selectionRect.top, selectionRect.left + selectionRect.width - 1, selectionRect.top + selectionRect.height - 1);
 		}
 		
-		SetCtrlVal (panel, CSVPANEL_FACTORSELECT, selection_str);
-		SetCtrlVal (panel, CSVPANEL_DATASELECT, selection_str);
-		SetCtrlVal (panel, CSVPANEL_LIMITSELECT, selection_str);
+		SetCtrlVal (panel, CSVPANEL_FACTORSELECT, selectionStr);
+		SetCtrlVal (panel, CSVPANEL_DATASELECT, selectionStr);
+		SetCtrlVal (panel, CSVPANEL_LIMITSELECT, selectionStr);
 	}
 	
 	return 0;
@@ -211,42 +211,42 @@ int CVICALLBACK CSVSelectButtonCB(int panel, int control, int event, void *callb
 {
 	if (event == EVENT_LEFT_CLICK)
 	{
-		int selection_text_box = 0;
-		int list_box = 0;
+		int selectionTextBox = 0;
+		int listBox = 0;
 		char selection[32] = {0};
-		int list_size = 0;
+		int listSize = 0;
 		
 		// Set appropriate text box and list box
 		switch (control)
 		{
 			case CSVPANEL_FACTORSELECTBUTTON:
-                selection_text_box = CSVPANEL_FACTORSELECT;
-				list_box = CSVPANEL_FACTORLIST;
+                selectionTextBox = CSVPANEL_FACTORSELECT;
+				listBox = CSVPANEL_FACTORLIST;
                 break;
 
             case CSVPANEL_DATASELECTBUTTON:
-                selection_text_box = CSVPANEL_DATASELECT;
-				list_box = CSVPANEL_DATALIST;
+                selectionTextBox = CSVPANEL_DATASELECT;
+				listBox = CSVPANEL_DATALIST;
                 break;
 
             case CSVPANEL_LIMITSELECTBUTTON:
-                selection_text_box = CSVPANEL_LIMITSELECT;
-				list_box = CSVPANEL_LIMITLIST;
+                selectionTextBox = CSVPANEL_LIMITSELECT;
+				listBox = CSVPANEL_LIMITLIST;
                 break;
 		}
 		
 		// Get selection from text box
-		GetCtrlVal (panel, selection_text_box, selection);
-		GetNumListItems (panel, list_box, &list_size);
+		GetCtrlVal (panel, selectionTextBox, selection);
+		GetNumListItems (panel, listBox, &listSize);
 		
 		// Do not insert if duplicate item already exists in list
-		char item_label[32];
-		for (int i = 0; i < list_size; i++)
+		char itemLabel[32];
+		for (int i = 0; i < listSize; i++)
 		{
-			GetLabelFromIndex (panel, list_box, i, item_label);
-			if (strcmp (selection, item_label) == 0)
+			GetLabelFromIndex (panel, listBox, i, itemLabel);
+			if (strcmp (selection, itemLabel) == 0)
 			{
-				SetCtrlIndex (panel, list_box, i);
+				SetCtrlIndex (panel, listBox, i);
 				return 0;
 			}
 		}
@@ -254,8 +254,8 @@ int CVICALLBACK CSVSelectButtonCB(int panel, int control, int event, void *callb
 		// Insert selection into list
 		if (selection != "")
 		{
-			InsertListItem (panel, list_box, -1, selection, "");
-			SetCtrlIndex (panel, list_box, list_size);
+			InsertListItem (panel, listBox, -1, selection, "");
+			SetCtrlIndex (panel, listBox, listSize);
 		}
 	}
 	
@@ -269,30 +269,30 @@ int CVICALLBACK CSVDeleteButtonCB(int panel, int control, int event, void *callb
 {
 	if (event == EVENT_LEFT_CLICK)
 	{
-		int list_box = 0;
-		int selection_index = 0;
+		int listBox = 0;
+		int selectionIndex = 0;
 		
 		// Set appropriate list box
 		switch (control)
 		{
 			case CSVPANEL_FACTORDELETEBUTTON:
-				list_box = CSVPANEL_FACTORLIST;
+				listBox = CSVPANEL_FACTORLIST;
                 break;
 
             case CSVPANEL_DATADELETEBUTTON:
-				list_box = CSVPANEL_DATALIST;
+				listBox = CSVPANEL_DATALIST;
                 break;
 
             case CSVPANEL_LIMITDELETEBUTTON:
-				list_box = CSVPANEL_LIMITLIST;
+				listBox = CSVPANEL_LIMITLIST;
                 break;
 		}
 		
 		// Add selection to list
-		GetCtrlIndex (panel, list_box, &selection_index);
-		if (selection_index != -1)
+		GetCtrlIndex (panel, listBox, &selectionIndex);
+		if (selectionIndex != -1)
 		{
-			DeleteListItem (panel, list_box, selection_index, 1);
+			DeleteListItem (panel, listBox, selectionIndex, 1);
 		}
 	}
 	
@@ -309,21 +309,21 @@ int CVICALLBACK CSVListCB(int panel, int control, int event, void *callbackData,
 	if (event == EVENT_VAL_CHANGED || event == EVENT_GOT_FOCUS)
 	{
 		// Get active list index
-		int active_list_index = 0;
-		char active_list_label[32] = {0};
-		GetCtrlIndex (panel, control, &active_list_index);
-		GetLabelFromIndex (panel, control, active_list_index, active_list_label);
+		int activeListIndex = 0;
+		char activeListLabel[32] = {0};
+		GetCtrlIndex (panel, control, &activeListIndex);
+		GetLabelFromIndex (panel, control, activeListIndex, activeListLabel);
 		
 		// Highlight corresponding selection in table
-		Rect active_cell_rect = {0};
+		Rect activeCellRect = {0};
 		int right = 0;
 		int bottom = 0;
 		
-		sscanf (active_list_label, "C%dR%d:C%dR%d", &active_cell_rect.left, &active_cell_rect.top, &right, &bottom);
-		active_cell_rect.width = right - active_cell_rect.left + 1;
-		active_cell_rect.height = bottom - active_cell_rect.top + 1;
+		sscanf (activeListLabel, "C%dR%d:C%dR%d", &activeCellRect.left, &activeCellRect.top, &right, &bottom);
+		activeCellRect.width = right - activeCellRect.left + 1;
+		activeCellRect.height = bottom - activeCellRect.top + 1;
 		
-		SetTableSelection (panel, CSVPANEL_CSVTABLE, active_cell_rect);
+		SetTableSelection (panel, CSVPANEL_CSVTABLE, activeCellRect);
 	}
 	
 	return 0;
@@ -344,6 +344,12 @@ int CVICALLBACK CSVCalcButtonCB(int panel, int control, int event, void *callbac
 
 		// TODO add "loading" sign?
 		
+		// Get factors/data/limits from UI
+		char factorSelection[32][32] = {0}; // TODO: adjust sizing of string arrays?
+		char dataSelection[32][32] = {0};
+		char limitSelection[32][32] = {0};
+		GetDataFromListBoxes (panel, factorSelection, dataSelection, limitSelection);
+
 		// Parse selected factors/data/limits
 		tsErrChk (ParseCSVSelection (), errmsg);
 		
@@ -360,6 +366,54 @@ Error:
 	printf("Error message: %s", errmsg);
 	return error;
 }
+
+/***************************************************************************//*!
+* \brief Helper function that gets 
+*******************************************************************************/
+void GetDataFromListBoxes (int panel, char **FactorSelection, char **DataSelection, char **LimitSelection)
+{
+	// Get length of each list box
+	int factorListLen = 0;
+	int dataListLen = 0;
+	int limitListLen = 0;
+	
+	GetNumListItems (panel, CSVPANEL_FACTORLIST, &factorListLen);
+	GetNumListItems (panel, CSVPANEL_DATALIST, &dataListLen);
+	GetNumListItems (panel, CSVPANEL_LIMITLIST, &limitListLen);
+	
+	// Loop through each list box's indices, add to appropriate string array
+	for (int i = 0; i < 3; i++)
+	{
+		int listBox = 0;
+		int listLen = 0;
+		char **outputArr = NULL;
+		
+		switch (i)
+		{
+			case 0:
+				listBox = CSVPANEL_FACTORLIST;
+				listLen = factorListLen;
+				outputArr = FactorSelection;
+				break;
+			case 1:
+				listBox = CSVPANEL_DATALIST;
+				listLen = dataListLen;
+				outputArr = DataSelection;
+				break;
+			case 2:
+				listBox = CSVPANEL_LIMITLIST;
+				listLen = limitListLen;
+				outputArr = LimitSelection;
+				break;
+		}
+		
+		for (int listIndex = 0; listIndex < listLen; listIndex++)
+		{
+			GetLabelFromIndex (panel, listBox, listIndex, outputArr[listIndex]); // TODO: haven't test this yet, likely need to fix how outputArr is being set (maybe use triple char ptr instead?)
+		}
+	}
+}
+
 
 /***************************************************************************//*!
 * \brief Callback for closing ANOVA panel

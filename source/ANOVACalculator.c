@@ -89,9 +89,9 @@ ANOVANode *CreateANOVANode (IN char Key[32])
 {
 	ANOVANode *node = malloc (sizeof (ANOVANode));
 	strcpy (node->key, Key);
-	node->num_values = 0;
+	node->numValues = 0;
 	node->values = NULL;
-	node->num_children = 0;
+	node->numChildren = 0;
 	node->children = NULL;
 	
 	return node;
@@ -105,9 +105,9 @@ ANOVANode *CreateANOVANode (IN char Key[32])
 *******************************************************************************/
 void AddNodeValue (ANOVANode *Node, IN double Value)
 {
-	Node->num_values++;
-	Node->values = realloc (Node->values, sizeof (double) * (Node->num_values));
-	Node->values[Node->num_values - 1] = Value;
+	Node->numValues++;
+	Node->values = realloc (Node->values, sizeof (double) * (Node->numValues));
+	Node->values[Node->numValues - 1] = Value;
 }
 
 /***************************************************************************//*!
@@ -118,7 +118,7 @@ void AddNodeValue (ANOVANode *Node, IN double Value)
 *******************************************************************************/
 void AddChildNode (ANOVANode *ParentNode, ANOVANode *ChildNode)
 {
-	ParentNode->num_children++;
-	ParentNode->children = realloc (ParentNode->children, sizeof (ANOVANode *) * (ParentNode->num_children));
-	ParentNode->children[ParentNode->num_children - 1] = ChildNode;
+	ParentNode->numChildren++;
+	ParentNode->children = realloc (ParentNode->children, sizeof (ANOVANode *) * (ParentNode->numChildren));
+	ParentNode->children[ParentNode->numChildren - 1] = ChildNode;
 }
