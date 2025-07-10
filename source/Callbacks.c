@@ -69,14 +69,6 @@ int glbANOVAPanelHandle = 0;
 /// REGION START Code Body
 //! \endcond
 /***************************************************************************//*!
-* \brief Example callback
-*******************************************************************************/
-int Define_Your_Functions_Here (int x)
-{
-	return x;
-}
-
-/***************************************************************************//*!
 * \brief Callback for closing main panel
 *******************************************************************************/
 int CVICALLBACK MainPanelCB (int panel, int event, void *callbackData, int eventData1, int eventData2)
@@ -101,8 +93,7 @@ int CVICALLBACK OpenButtonCB(int panel, int control, int event, void *callbackDa
 	{
 		// Open file selection dialogue
 		char selected_filepath[512];
-		int status = 0;
-		status = FileSelectPopup ("", "*.csv", "*.*", "Select a CSV file...", VAL_OK_BUTTON, 0, 1, 1, 0, selected_filepath);
+		FileSelectPopup ("", "*.csv", "*.*", "Select a CSV file...", VAL_OK_BUTTON, 0, 1, 1, 0, selected_filepath);
 		
 		// Load CSV panel
 		glbCSVPanelHandle = LoadPanel (0, "CSVPanel.uir", CSVPANEL);
@@ -120,13 +111,13 @@ int CVICALLBACK OpenButtonCB(int panel, int control, int event, void *callbackDa
 		// Populate main table
 		for (int row = 1; row <= rowCount + 1; row++)
 		{
-			status = InsertTableRows (glbCSVPanelHandle, CSVPANEL_CSVTABLE, -1, 1, VAL_CELL_STRING);
+			InsertTableRows (glbCSVPanelHandle, CSVPANEL_CSVTABLE, -1, 1, VAL_CELL_STRING);
 
 			for (int col = 1; col <= colCount; col++)
 			{
 				if (row == 1)
 				{
-					status = InsertTableColumns (glbCSVPanelHandle, CSVPANEL_CSVTABLE, -1, 1, VAL_CELL_STRING);
+					InsertTableColumns (glbCSVPanelHandle, CSVPANEL_CSVTABLE, -1, 1, VAL_CELL_STRING);
 					SetTableCellVal (glbCSVPanelHandle, CSVPANEL_CSVTABLE, MakePoint (col, row), headerBuffer + (col - 1) * buffSize);
 				}
 				else
@@ -186,6 +177,8 @@ int CVICALLBACK CSVTableCB (int panel, int control, int event, void *callbackDat
 		if (selection_rect.height == -1 && selection_rect.width == -1)
 		{
 			SetCtrlVal (glbCSVPanelHandle, CSVPANEL_FACTORSELECT, "");
+			SetCtrlVal (glbCSVPanelHandle, CSVPANEL_DATASELECT, "");
+			SetCtrlVal (glbCSVPanelHandle, CSVPANEL_LIMITSELECT, "");
 			return 0;
 		}
 		
@@ -201,43 +194,67 @@ int CVICALLBACK CSVTableCB (int panel, int control, int event, void *callbackDat
 		{
 			sprintf (selection_str, "C%dR%d:C%dR%d", selection_rect.left, selection_rect.top, selection_rect.left + selection_rect.width - 1, selection_rect.top + selection_rect.height - 1);
 		}
+		
 		SetCtrlVal (glbCSVPanelHandle, CSVPANEL_FACTORSELECT, selection_str);
+		SetCtrlVal (glbCSVPanelHandle, CSVPANEL_DATASELECT, selection_str);
+		SetCtrlVal (glbCSVPanelHandle, CSVPANEL_LIMITSELECT, selection_str);
 	}
 	
 	return 0;
 }
 
 /***************************************************************************//*!
-* \brief Callback for factor select button
+* \brief Callback for factor/data/limit select button
 *******************************************************************************/
-int CVICALLBACK FactorSelectButtonCB(int panel, int control, int event, void *callbackData, int eventData1, int eventData2)
+int CVICALLBACK CSVSelectButtonCB(int panel, int control, int event, void *callbackData, int eventData1, int eventData2)
 {
 	if (event == EVENT_LEFT_CLICK)
 	{
-		char factor_range[32] = {0};
+		int selection_text_box = 0;
+		int list_box = 0;
+		char selection[32] = {0};
 		int list_size = 0;
 		
-		// Get selection
-		GetCtrlVal (glbCSVPanelHandle, CSVPANEL_FACTORSELECT, factor_range);
-		GetNumListItems (glbCSVPanelHandle, CSVPANEL_FACTORLIST, &list_size);
+		// Set appropriate text box and and list box
+		switch (control)
+		{
+			case CSVPANEL_FACTORSELECTBUTTON:
+                selection_text_box = CSVPANEL_FACTORSELECT;
+				list_box = CSVPANEL_FACTORLIST;
+                break;
+
+            case CSVPANEL_DATASELECTBUTTON:
+                selection_text_box = CSVPANEL_DATASELECT;
+				list_box = CSVPANEL_DATALIST;
+                break;
+
+            case CSVPANEL_LIMITSELECTBUTTON:
+                selection_text_box = CSVPANEL_LIMITSELECT;
+				list_box = CSVPANEL_LIMITLIST;
+                break;
+		}
+		
+		// Get selection from text box
+		GetCtrlVal (glbCSVPanelHandle, selection_text_box, selection);
+		GetNumListItems (glbCSVPanelHandle, list_box, &list_size);
 		
 		// Do not insert if duplicate item already exists in list
 		char item_label[32];
 		for (int i = 0; i < list_size; i++)
 		{
-			GetLabelFromIndex (glbCSVPanelHandle, CSVPANEL_FACTORLIST, i, item_label);
-			if (strcmp (factor_range, item_label) == 0)
+			GetLabelFromIndex (glbCSVPanelHandle, list_box, i, item_label);
+			if (strcmp (selection, item_label) == 0)
 			{
-				SetCtrlIndex (glbCSVPanelHandle, CSVPANEL_FACTORLIST, i);
+				SetCtrlIndex (glbCSVPanelHandle, list_box, i);
 				return 0;
 			}
 		}
 		
 		// Insert selection into list
-		if (factor_range != "")
+		if (selection != "")
 		{
-			InsertListItem (glbCSVPanelHandle, CSVPANEL_FACTORLIST, -1, factor_range, "");
-			SetCtrlIndex (glbCSVPanelHandle, CSVPANEL_FACTORLIST, list_size);
+			InsertListItem (glbCSVPanelHandle, list_box, -1, selection, "");
+			SetCtrlIndex (glbCSVPanelHandle, list_box, list_size);
 		}
 	}
 	
@@ -245,20 +262,36 @@ int CVICALLBACK FactorSelectButtonCB(int panel, int control, int event, void *ca
 }
 
 /***************************************************************************//*!
-* \brief Callback for factor delete button
+* \brief Callback for factor/data/limit delete button
 *******************************************************************************/
-int CVICALLBACK FactorDeleteButtonCB(int panel, int control, int event, void *callbackData, int eventData1, int eventData2)
+int CVICALLBACK CSVDeleteButtonCB(int panel, int control, int event, void *callbackData, int eventData1, int eventData2)
 {
 	if (event == EVENT_LEFT_CLICK)
 	{
-		int status = 0; 
+		int list_box = 0;
 		int selection_index = 0;
 		
+		// Set appropriate text box and and list box
+		switch (control)
+		{
+			case CSVPANEL_FACTORDELETEBUTTON:
+				list_box = CSVPANEL_FACTORLIST;
+                break;
+
+            case CSVPANEL_DATADELETEBUTTON:
+				list_box = CSVPANEL_DATALIST;
+                break;
+
+            case CSVPANEL_LIMITDELETEBUTTON:
+				list_box = CSVPANEL_LIMITLIST;
+                break;
+		}
+		
 		// Add selection to list
-		GetCtrlIndex (glbCSVPanelHandle, CSVPANEL_FACTORLIST, &selection_index);
+		GetCtrlIndex (glbCSVPanelHandle, list_box, &selection_index);
 		if (selection_index != -1)
 		{
-			status = DeleteListItem (glbCSVPanelHandle, CSVPANEL_FACTORLIST, selection_index, 1);
+			DeleteListItem (glbCSVPanelHandle, list_box, selection_index, 1);
 		}
 	}
 	
