@@ -171,14 +171,14 @@ int CVICALLBACK CSVTableCB (int panel, int control, int event, void *callbackDat
 	if (event == EVENT_SELECTION_CHANGE || event == EVENT_ACTIVE_CELL_CHANGE)
 	{
 		Rect selection_rect = {0};
-		GetTableSelection (glbCSVPanelHandle, CSVPANEL_CSVTABLE, &selection_rect);
+		GetTableSelection (panel, CSVPANEL_CSVTABLE, &selection_rect);
 		
 		// If no selection, print nothing
 		if (selection_rect.height == -1 && selection_rect.width == -1)
 		{
-			SetCtrlVal (glbCSVPanelHandle, CSVPANEL_FACTORSELECT, "");
-			SetCtrlVal (glbCSVPanelHandle, CSVPANEL_DATASELECT, "");
-			SetCtrlVal (glbCSVPanelHandle, CSVPANEL_LIMITSELECT, "");
+			SetCtrlVal (panel, CSVPANEL_FACTORSELECT, "");
+			SetCtrlVal (panel, CSVPANEL_DATASELECT, "");
+			SetCtrlVal (panel, CSVPANEL_LIMITSELECT, "");
 			return 0;
 		}
 		
@@ -187,7 +187,7 @@ int CVICALLBACK CSVTableCB (int panel, int control, int event, void *callbackDat
 		if (selection_rect.height == 0 && selection_rect.width == 0) // one cell selected, have to use GetActiveTableCell()
 		{
 			Point active_cell = {0};
-			GetActiveTableCell (glbCSVPanelHandle, CSVPANEL_CSVTABLE, &active_cell);
+			GetActiveTableCell (panel, CSVPANEL_CSVTABLE, &active_cell);
 			sprintf (selection_str, "C%dR%d:C%dR%d", active_cell.x, active_cell.y, active_cell.x, active_cell.y);
 		}
 		else 
@@ -195,9 +195,9 @@ int CVICALLBACK CSVTableCB (int panel, int control, int event, void *callbackDat
 			sprintf (selection_str, "C%dR%d:C%dR%d", selection_rect.left, selection_rect.top, selection_rect.left + selection_rect.width - 1, selection_rect.top + selection_rect.height - 1);
 		}
 		
-		SetCtrlVal (glbCSVPanelHandle, CSVPANEL_FACTORSELECT, selection_str);
-		SetCtrlVal (glbCSVPanelHandle, CSVPANEL_DATASELECT, selection_str);
-		SetCtrlVal (glbCSVPanelHandle, CSVPANEL_LIMITSELECT, selection_str);
+		SetCtrlVal (panel, CSVPANEL_FACTORSELECT, selection_str);
+		SetCtrlVal (panel, CSVPANEL_DATASELECT, selection_str);
+		SetCtrlVal (panel, CSVPANEL_LIMITSELECT, selection_str);
 	}
 	
 	return 0;
@@ -215,7 +215,7 @@ int CVICALLBACK CSVSelectButtonCB(int panel, int control, int event, void *callb
 		char selection[32] = {0};
 		int list_size = 0;
 		
-		// Set appropriate text box and and list box
+		// Set appropriate text box and list box
 		switch (control)
 		{
 			case CSVPANEL_FACTORSELECTBUTTON:
@@ -235,17 +235,17 @@ int CVICALLBACK CSVSelectButtonCB(int panel, int control, int event, void *callb
 		}
 		
 		// Get selection from text box
-		GetCtrlVal (glbCSVPanelHandle, selection_text_box, selection);
-		GetNumListItems (glbCSVPanelHandle, list_box, &list_size);
+		GetCtrlVal (panel, selection_text_box, selection);
+		GetNumListItems (panel, list_box, &list_size);
 		
 		// Do not insert if duplicate item already exists in list
 		char item_label[32];
 		for (int i = 0; i < list_size; i++)
 		{
-			GetLabelFromIndex (glbCSVPanelHandle, list_box, i, item_label);
+			GetLabelFromIndex (panel, list_box, i, item_label);
 			if (strcmp (selection, item_label) == 0)
 			{
-				SetCtrlIndex (glbCSVPanelHandle, list_box, i);
+				SetCtrlIndex (panel, list_box, i);
 				return 0;
 			}
 		}
@@ -253,8 +253,8 @@ int CVICALLBACK CSVSelectButtonCB(int panel, int control, int event, void *callb
 		// Insert selection into list
 		if (selection != "")
 		{
-			InsertListItem (glbCSVPanelHandle, list_box, -1, selection, "");
-			SetCtrlIndex (glbCSVPanelHandle, list_box, list_size);
+			InsertListItem (panel, list_box, -1, selection, "");
+			SetCtrlIndex (panel, list_box, list_size);
 		}
 	}
 	
@@ -271,7 +271,7 @@ int CVICALLBACK CSVDeleteButtonCB(int panel, int control, int event, void *callb
 		int list_box = 0;
 		int selection_index = 0;
 		
-		// Set appropriate text box and and list box
+		// Set appropriate list box
 		switch (control)
 		{
 			case CSVPANEL_FACTORDELETEBUTTON:
@@ -288,11 +288,41 @@ int CVICALLBACK CSVDeleteButtonCB(int panel, int control, int event, void *callb
 		}
 		
 		// Add selection to list
-		GetCtrlIndex (glbCSVPanelHandle, list_box, &selection_index);
+		GetCtrlIndex (panel, list_box, &selection_index);
 		if (selection_index != -1)
 		{
-			DeleteListItem (glbCSVPanelHandle, list_box, selection_index, 1);
+			DeleteListItem (panel, list_box, selection_index, 1);
 		}
+	}
+	
+	return 0;
+}
+
+
+
+/***************************************************************************//*!
+* \brief Callback for factor/data/limit list boxes
+*******************************************************************************/
+int CVICALLBACK CSVListCB(int panel, int control, int event, void *callbackData, int eventData1, int eventData2)
+{
+	if (event == EVENT_VAL_CHANGED || event == EVENT_GOT_FOCUS)
+	{
+		// Get active list index
+		int active_list_index = 0;
+		char active_list_label[32] = {0};
+		GetCtrlIndex (panel, control, &active_list_index);
+		GetLabelFromIndex (panel, control, active_list_index, active_list_label);
+		
+		// Highlight corresponding selection in table
+		Rect active_cell_rect = {0};
+		int right = 0;
+		int bottom = 0;
+		
+		sscanf (active_list_label, "C%dR%d:C%dR%d", &active_cell_rect.left, &active_cell_rect.top, &right, &bottom);
+		active_cell_rect.width = right - active_cell_rect.left + 1;
+		active_cell_rect.height = bottom - active_cell_rect.top + 1;
+		
+		SetTableSelection (panel, CSVPANEL_CSVTABLE, active_cell_rect);
 	}
 	
 	return 0;
