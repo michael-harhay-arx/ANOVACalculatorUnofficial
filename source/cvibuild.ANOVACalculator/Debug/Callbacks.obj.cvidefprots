@@ -16,15 +16,30 @@ SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\Callbacks.c:95:1"
 [LoadButtonCB]
 Class="Function"
 Prototype="int LoadButtonCB(int panel, int control, int event, void *callbackData, int eventData1, int eventData2);"
-SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\Callbacks.c:148:1"
+SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\Callbacks.c:149:1"
 
 [CSVPanelCB]
 Class="Function"
 Prototype="int CSVPanelCB(int panel, int event, void *callbackData, int eventData1, int eventData2);"
-SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\Callbacks.c:164:1"
+SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\Callbacks.c:165:1"
+
+[CSVTableCB]
+Class="Function"
+Prototype="int CSVTableCB(int panel, int control, int event, void *callbackData, int eventData1, int eventData2);"
+SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\Callbacks.c:178:1"
+
+[FactorSelectButtonCB]
+Class="Function"
+Prototype="int FactorSelectButtonCB(int panel, int control, int event, void *callbackData, int eventData1, int eventData2);"
+SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\Callbacks.c:204:1"
+
+[FactorDeleteButtonCB]
+Class="Function"
+Prototype="int FactorDeleteButtonCB(int panel, int control, int event, void *callbackData, int eventData1, int eventData2);"
+SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\Callbacks.c:229:1"
 
 [ANOVAPanelCB]
 Class="Function"
 Prototype="int ANOVAPanelCB(int panel, int event, void *callbackData, int eventData1, int eventData2);"
-SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\Callbacks.c:177:1"
+SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\Callbacks.c:251:1"
 

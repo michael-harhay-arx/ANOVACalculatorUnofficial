@@ -16,6 +16,8 @@
 #define  MAINPANEL                        1       /* callback function: MainPanelCB */
 #define  MAINPANEL_LOADBUTTON             2       /* control type: command, callback function: LoadButtonCB */
 #define  MAINPANEL_OPENBUTTON             3       /* control type: command, callback function: OpenButtonCB */
+#define  MAINPANEL_PICTURE                4       /* control type: picture, callback function: (none) */
+#define  MAINPANEL_ANOVACALCULATOR        5       /* control type: textMsg, callback function: (none) */
 
 
      /* Control Arrays: */
