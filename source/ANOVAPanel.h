@@ -14,6 +14,7 @@
      /* Panels and Controls: */
 
 #define  ANOVAPANEL                       1       /* callback function: ANOVAPanelCB */
+#define  ANOVAPANEL_ANOVATABLE            2       /* control type: table, callback function: (none) */
 
 
      /* Control Arrays: */

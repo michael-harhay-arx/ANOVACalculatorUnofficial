@@ -25,13 +25,31 @@
 //==============================================================================
 // Types
 
+// Node in ANOVA tree
+typedef struct ANOVANode
+{
+	char key[32];
+	int num_values;
+	double *values;
+	
+	int num_children;
+	ANOVANode **children;
+} ANOVANode;
+
 //==============================================================================
 // External variables
 
 //==============================================================================
 // Global functions
 
-int ANOVACalculations ();
+// Calculation process
+int ParseCSVSelection ();
+int ComputeANOVA ();
+
+// ANOVANode helpers
+ANOVANode *CreateANOVANode (IN char Key[32])
+void AddNodeValue (ANOVANode *Node, IN double Value);
+void AddChildNode (ANOVANode *ParentNode, ANOVANode *ChildNode);
 
 #ifdef __cplusplus
     }

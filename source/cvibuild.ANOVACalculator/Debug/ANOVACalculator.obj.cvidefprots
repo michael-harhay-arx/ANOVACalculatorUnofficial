@@ -3,8 +3,13 @@ Class="Function"
 Prototype="int main(int argc, char *argv[]);"
 SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:44:1"
 
+[ParseCSVSelection]
+Class="Function"
+Prototype="int ParseCSVSelection();"
+SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:66:1"
+
 [ANOVACalculations]
 Class="Function"
 Prototype="int ANOVACalculations();"
-SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:66:1"
+SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:75:1"
 

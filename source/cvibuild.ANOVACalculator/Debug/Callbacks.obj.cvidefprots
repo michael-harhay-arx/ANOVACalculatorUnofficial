@@ -38,8 +38,13 @@ Class="Function"
 Prototype="int CSVListCB(int panel, int control, int event, void *callbackData, int eventData1, int eventData2);"
 SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\Callbacks.c:306:1"
 
+[CSVCalcButtonCB]
+Class="Function"
+Prototype="int CSVCalcButtonCB(int panel, int control, int event, void *callbackData, int eventData1, int eventData2);"
+SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\Callbacks.c:334:1"
+
 [ANOVAPanelCB]
 Class="Function"
 Prototype="int ANOVAPanelCB(int panel, int event, void *callbackData, int eventData1, int eventData2);"
-SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\Callbacks.c:334:1"
+SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\Callbacks.c:363:1"
 

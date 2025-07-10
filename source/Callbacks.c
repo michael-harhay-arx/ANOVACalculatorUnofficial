@@ -131,6 +131,7 @@ int CVICALLBACK OpenButtonCB(int panel, int control, int event, void *callbackDa
 	}
 	
 Error:
+	printf("Error message: %s", errmsg);
 	return error;
 }
 
@@ -326,6 +327,38 @@ int CVICALLBACK CSVListCB(int panel, int control, int event, void *callbackData,
 	}
 	
 	return 0;
+}
+
+/***************************************************************************//*!
+* \brief Callback for ANOVA calculation button
+*******************************************************************************/
+int CVICALLBACK CSVCalcButtonCB(int panel, int control, int event, void *callbackData, int eventData1, int eventData2)
+{
+	char errmsg[ERRLEN] = {0};
+	fnInit;
+	
+	if (event == EVENT_LEFT_CLICK)
+	{
+		// Load ANOVA panel
+		glbANOVAPanelHandle = LoadPanel (0, "ANOVAPanel.uir", ANOVAPANEL);
+
+		// TODO add "loading" sign?
+		
+		// Parse selected factors/data/limits
+		tsErrChk (ParseCSVSelection (), errmsg);
+		
+		// Perform calculations
+		tsErrChk (ComputeANOVA (), errmsg);
+		
+		// Load calculations into ANOVA table
+		
+		
+		DisplayPanel (glbANOVAPanelHandle);
+	}
+
+Error:
+	printf("Error message: %s", errmsg);
+	return error;
 }
 
 /***************************************************************************//*!

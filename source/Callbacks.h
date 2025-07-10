@@ -19,6 +19,7 @@
 #include "MainPanel.h"
 #include "CSVPanel.h"
 #include "ANOVAPanel.h"
+#include "ANOVACalculator.h"
 
 //==============================================================================
 // Constants
