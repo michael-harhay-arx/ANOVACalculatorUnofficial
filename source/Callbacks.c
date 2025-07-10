@@ -177,22 +177,31 @@ int CVICALLBACK CSVPanelCB (int panel, int event, void *callbackData, int eventD
 *******************************************************************************/
 int CVICALLBACK CSVTableCB (int panel, int control, int event, void *callbackData, int eventData1, int eventData2)
 {
-	if (event == EVENT_LEFT_CLICK_UP)
+	if (event == EVENT_SELECTION_CHANGE || event == EVENT_ACTIVE_CELL_CHANGE)
 	{
 		Rect selection_rect = {0};
-		int status = 0;
-		status = GetTableSelection (glbCSVPanelHandle, CSVPANEL_CSVTABLE, &selection_rect);
+		GetTableSelection (glbCSVPanelHandle, CSVPANEL_CSVTABLE, &selection_rect);
 		
-		// Display selection
+		// If no selection, print nothing
 		if (selection_rect.height == -1 && selection_rect.width == -1)
 		{
 			SetCtrlVal (glbCSVPanelHandle, CSVPANEL_FACTORSELECT, "");
+			return 0;
 		}
-		else {
-			char selection_str[32] = {0};
-			status = sprintf (selection_str, "C%dR%d:C%dR%d", selection_rect.left, selection_rect.top, selection_rect.left + selection_rect.width - 1, selection_rect.top + selection_rect.height - 1);
-			SetCtrlVal (glbCSVPanelHandle, CSVPANEL_FACTORSELECT, selection_str);
+		
+		// Else print selected cell/range
+		char selection_str[32] = {0};
+		if (selection_rect.height == 0 && selection_rect.width == 0) // one cell selected, have to use GetActiveTableCell()
+		{
+			Point active_cell = {0};
+			GetActiveTableCell (glbCSVPanelHandle, CSVPANEL_CSVTABLE, &active_cell);
+			sprintf (selection_str, "C%dR%d:C%dR%d", active_cell.x, active_cell.y, active_cell.x, active_cell.y);
 		}
+		else 
+		{
+			sprintf (selection_str, "C%dR%d:C%dR%d", selection_rect.left, selection_rect.top, selection_rect.left + selection_rect.width - 1, selection_rect.top + selection_rect.height - 1);
+		}
+		SetCtrlVal (glbCSVPanelHandle, CSVPANEL_FACTORSELECT, selection_str);
 	}
 	
 	return 0;
@@ -205,18 +214,30 @@ int CVICALLBACK FactorSelectButtonCB(int panel, int control, int event, void *ca
 {
 	if (event == EVENT_LEFT_CLICK)
 	{
-		int status = 0;
 		char factor_range[32] = {0};
 		int list_size = 0;
 		
-		// Add selection to list
+		// Get selection
 		GetCtrlVal (glbCSVPanelHandle, CSVPANEL_FACTORSELECT, factor_range);
+		GetNumListItems (glbCSVPanelHandle, CSVPANEL_FACTORLIST, &list_size);
+		
+		// Do not insert if duplicate item already exists in list
+		char item_label[32];
+		for (int i = 0; i < list_size; i++)
+		{
+			GetLabelFromIndex (glbCSVPanelHandle, CSVPANEL_FACTORLIST, i, item_label);
+			if (strcmp (factor_range, item_label) == 0)
+			{
+				SetCtrlIndex (glbCSVPanelHandle, CSVPANEL_FACTORLIST, i);
+				return 0;
+			}
+		}
+		
+		// Insert selection into list
 		if (factor_range != "")
 		{
-			GetNumListItems (glbCSVPanelHandle, CSVPANEL_FACTORLIST, &list_size);
-			char list_size_str[16] = {0};
-			sprintf (list_size_str, "%d", list_size);
-			status = InsertListItem (glbCSVPanelHandle, CSVPANEL_FACTORLIST, -1, factor_range, "");
+			InsertListItem (glbCSVPanelHandle, CSVPANEL_FACTORLIST, -1, factor_range, "");
+			SetCtrlIndex (glbCSVPanelHandle, CSVPANEL_FACTORLIST, list_size);
 		}
 	}
 	

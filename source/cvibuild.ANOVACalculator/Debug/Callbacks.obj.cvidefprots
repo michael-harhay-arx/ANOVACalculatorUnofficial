@@ -31,15 +31,15 @@ SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\Callbacks.c:178:1
 [FactorSelectButtonCB]
 Class="Function"
 Prototype="int FactorSelectButtonCB(int panel, int control, int event, void *callbackData, int eventData1, int eventData2);"
-SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\Callbacks.c:204:1"
+SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\Callbacks.c:213:1"
 
 [FactorDeleteButtonCB]
 Class="Function"
 Prototype="int FactorDeleteButtonCB(int panel, int control, int event, void *callbackData, int eventData1, int eventData2);"
-SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\Callbacks.c:229:1"
+SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\Callbacks.c:250:1"
 
 [ANOVAPanelCB]
 Class="Function"
 Prototype="int ANOVAPanelCB(int panel, int event, void *callbackData, int eventData1, int eventData2);"
-SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\Callbacks.c:251:1"
+SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\Callbacks.c:271:1"
 
