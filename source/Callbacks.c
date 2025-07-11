@@ -57,8 +57,12 @@ static int glbSysLogLevel = 0;
 //==============================================================================
 // Global variables
 
+// GUI variables
 int glbCSVPanelHandle = 0;
 int glbANOVAPanelHandle = 0;
+
+// CSV file variables
+int glbRowCount = 0;
 
 //==============================================================================
 // Global functions
@@ -100,16 +104,15 @@ int CVICALLBACK OpenButtonCB(int panel, int control, int event, void *callbackDa
 		
 		// Parse selected CSV, load into buffer
 		int colCount = 0;
-		int rowCount = 0;
 		int buffSize = 32;
 		char headerBuffer[2048]; // Can account for 64 x 32-byte column headers
 		char dataBuffer[131072]; // Can account for 64 x 64 x 32-byte pieces of data
 		
-		tsErrChk (Initialize_CSVParse_LIB (selectedFilepath, 1, NULL, 0, buffSize, &colCount, &rowCount, headerBuffer, errmsg), errmsg);
-		tsErrChk (CSVParse_GetDataByIndex (0, 0, rowCount - 1, colCount - 1, dataBuffer, errmsg), errmsg);
+		tsErrChk (Initialize_CSVParse_LIB (selectedFilepath, 1, NULL, 0, buffSize, &colCount, &glbRowCount, headerBuffer, errmsg), errmsg);
+		tsErrChk (CSVParse_GetDataByIndex (0, 0, glbRowCount - 1, colCount - 1, dataBuffer, errmsg), errmsg);
 
 		// Populate main table
-		for (int row = 1; row <= rowCount + 1; row++)
+		for (int row = 1; row <= glbRowCount + 1; row++)
 		{
 			InsertTableRows (glbCSVPanelHandle, CSVPANEL_CSVTABLE, -1, 1, VAL_CELL_STRING);
 
@@ -131,7 +134,6 @@ int CVICALLBACK OpenButtonCB(int panel, int control, int event, void *callbackDa
 	}
 	
 Error:
-	printf("Error message: %s", errmsg);
 	return error;
 }
 
@@ -299,8 +301,6 @@ int CVICALLBACK CSVDeleteButtonCB(int panel, int control, int event, void *callb
 	return 0;
 }
 
-
-
 /***************************************************************************//*!
 * \brief Callback for factor/data/limit list boxes
 *******************************************************************************/
@@ -336,6 +336,7 @@ int CVICALLBACK CSVCalcButtonCB(int panel, int control, int event, void *callbac
 {
 	char errmsg[ERRLEN] = {0};
 	fnInit;
+	error = 0;
 	
 	if (event == EVENT_LEFT_CLICK)
 	{
@@ -345,9 +346,16 @@ int CVICALLBACK CSVCalcButtonCB(int panel, int control, int event, void *callbac
 		// TODO add "loading" sign?
 		
 		// Get factors/data/limits from UI
-		char factorSelection[32][32] = {0}; // TODO: adjust sizing of string arrays?
-		char dataSelection[32][32] = {0};
-		char limitSelection[32][32] = {0};
+		char *factorSelection[glbRowCount];
+		char *dataSelection[glbRowCount];
+		char *limitSelection[glbRowCount];
+		
+		for (int i = 0; i < glbRowCount; ++i) {
+		    factorSelection[i] = malloc(32);
+		    dataSelection[i] = malloc(32);
+		    limitSelection[i] = malloc(32);
+		}
+		
 		GetDataFromListBoxes (panel, factorSelection, dataSelection, limitSelection);
 
 		// Parse selected factors/data/limits
@@ -363,7 +371,6 @@ int CVICALLBACK CSVCalcButtonCB(int panel, int control, int event, void *callbac
 	}
 
 Error:
-	printf("Error message: %s", errmsg);
 	return error;
 }
 
@@ -409,7 +416,7 @@ void GetDataFromListBoxes (int panel, char **FactorSelection, char **DataSelecti
 		
 		for (int listIndex = 0; listIndex < listLen; listIndex++)
 		{
-			GetLabelFromIndex (panel, listBox, listIndex, outputArr[listIndex]); // TODO: haven't test this yet, likely need to fix how outputArr is being set (maybe use triple char ptr instead?)
+			GetLabelFromIndex (panel, listBox, listIndex, outputArr[listIndex]);
 		}
 	}
 }

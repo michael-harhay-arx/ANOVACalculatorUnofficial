@@ -33,7 +33,7 @@
 //==============================================================================
 // Global functions
 
-int Declare_Your_Functions_Here (int x);
+void GetDataFromListBoxes (int panel, char **FactorSelection, char **DataSelection, char **LimitSelection);
 
 #ifdef __cplusplus
     }

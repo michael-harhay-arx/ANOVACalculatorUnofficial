@@ -18,6 +18,7 @@
 #include "cvidef.h"
 		
 #include "Callbacks.h"
+#include "ArxtronToolslib.h"
 
 //==============================================================================
 // Constants
@@ -33,7 +34,7 @@ typedef struct ANOVANode
 	double *values;
 	
 	int numChildren;
-	ANOVANode **children;
+	struct ANOVANode **children;
 } ANOVANode;
 
 //==============================================================================
@@ -47,7 +48,7 @@ int ParseCSVSelection ();
 int ComputeANOVA ();
 
 // ANOVANode helpers
-ANOVANode *CreateANOVANode (IN char Key[32])
+ANOVANode *CreateANOVANode (IN char Key[32]);
 void AddNodeValue (ANOVANode *Node, IN double Value);
 void AddChildNode (ANOVANode *ParentNode, ANOVANode *ChildNode);
 

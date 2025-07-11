@@ -6,10 +6,25 @@ SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c
 [ParseCSVSelection]
 Class="Function"
 Prototype="int ParseCSVSelection();"
-SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:66:1"
+SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:68:1"
 
-[ANOVACalculations]
+[ComputeANOVA]
 Class="Function"
-Prototype="int ANOVACalculations();"
-SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:75:1"
+Prototype="int ComputeANOVA();"
+SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:77:1"
+
+[CreateANOVANode]
+Class="Function"
+Prototype="struct ANOVANode *CreateANOVANode(const char Key[32]);"
+SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:88:1"
+
+[AddNodeValue]
+Class="Function"
+Prototype="void AddNodeValue(struct ANOVANode *Node, const double Value);"
+SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:106:1"
+
+[AddChildNode]
+Class="Function"
+Prototype="void AddChildNode(struct ANOVANode *ParentNode, struct ANOVANode *ChildNode);"
+SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:119:1"
 
