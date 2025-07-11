@@ -37,6 +37,15 @@ typedef struct ANOVANode
 	struct ANOVANode **children;
 } ANOVANode;
 
+// Factor element grouping struct
+/*
+typedef struct FactorElement
+{
+	char factorElement[32];
+	double dataValues[];
+} FactorMapping;
+*/
+
 //==============================================================================
 // External variables
 
