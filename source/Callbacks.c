@@ -346,28 +346,40 @@ int CVICALLBACK CSVCalcButtonCB(int panel, int control, int event, void *callbac
 		// TODO add "loading" sign?
 		
 		// Get factors/data/limits from UI
-		char *factorSelection[glbRowCount];
-		char *dataSelection[glbRowCount];
-		char *limitSelection[glbRowCount];
-		
-		for (int i = 0; i < glbRowCount; ++i) {
-		    factorSelection[i] = malloc(32);
-		    dataSelection[i] = malloc(32);
-		    limitSelection[i] = malloc(32);
-		}
-		
-		GetDataFromListBoxes (panel, factorSelection, dataSelection, limitSelection);
+		// TODO FIX DATA LOADING INTO PARSE FUNCTION
+		//GetDataFromListBoxes (panel, factorRange, dataRange, limitRange);
 
 		// Parse selected factors/data/limits
-		tsErrChk (ParseCSVSelection (), errmsg);
+		
+		// MANUAL INPUT FOR NOW
+		ANOVANode *treeRoot = CreateANOVANode ("Root");
+		char factorRange[][32] = {
+		    "C1R9:C1R39",
+		    "C7R9:C7R39",
+			"0"
+		};
+
+		char dataRange[][32] = {
+		    "C11R9:C11R39",
+		    "C12R9:C12R39",
+			"0"
+		};
+
+		char limitRange[][32] = {
+		    "C11R6:C11R7",
+		    "C12R6:C12R7",
+			"0"
+		};
+
+		ParseCSVSelection (panel, factorRange, dataRange, limitRange, treeRoot); // TODO add support for multi-col data selections... but can assume factors are one col
 		
 		// Perform calculations
-		tsErrChk (ComputeANOVA (), errmsg);
+		//tsErrChk (ComputeANOVA (treeRoot), errmsg);
 		
 		// Load calculations into ANOVA table
 		
 		
-		DisplayPanel (glbANOVAPanelHandle);
+		//DisplayPanel (glbANOVAPanelHandle);
 	}
 
 Error:
@@ -377,7 +389,8 @@ Error:
 /***************************************************************************//*!
 * \brief Helper function that gets 
 *******************************************************************************/
-void GetDataFromListBoxes (int panel, char **FactorSelection, char **DataSelection, char **LimitSelection)
+/*
+void GetDataFromListBoxes (IN int panel, char **FactorSelection, char **DataSelection, char **LimitSelection)
 {
 	// Get length of each list box
 	int factorListLen = 0;
@@ -387,6 +400,11 @@ void GetDataFromListBoxes (int panel, char **FactorSelection, char **DataSelecti
 	GetNumListItems (panel, CSVPANEL_FACTORLIST, &factorListLen);
 	GetNumListItems (panel, CSVPANEL_DATALIST, &dataListLen);
 	GetNumListItems (panel, CSVPANEL_LIMITLIST, &limitListLen);
+	
+	// Initialize string arrays
+	char factorRange[factorListLen][32];
+	char dataRange[dataListLen][32];;
+	char limitRange[limitListLen][32];
 	
 	// Loop through each list box's indices, add to appropriate string array
 	for (int i = 0; i < 3; i++)
@@ -420,7 +438,7 @@ void GetDataFromListBoxes (int panel, char **FactorSelection, char **DataSelecti
 		}
 	}
 }
-
+*/
 
 /***************************************************************************//*!
 * \brief Callback for closing ANOVA panel

@@ -43,13 +43,8 @@ Class="Function"
 Prototype="int CSVCalcButtonCB(int panel, int control, int event, void *callbackData, int eventData1, int eventData2);"
 SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\Callbacks.c:335:1"
 
-[GetDataFromListBoxes]
-Class="Function"
-Prototype="void GetDataFromListBoxes(int panel, char **FactorSelection, char **DataSelection, char **LimitSelection);"
-SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\Callbacks.c:380:1"
-
 [ANOVAPanelCB]
 Class="Function"
 Prototype="int ANOVAPanelCB(int panel, int event, void *callbackData, int eventData1, int eventData2);"
-SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\Callbacks.c:429:1"
+SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\Callbacks.c:446:1"
 

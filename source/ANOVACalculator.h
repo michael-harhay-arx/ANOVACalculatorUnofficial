@@ -44,8 +44,9 @@ typedef struct ANOVANode
 // Global functions
 
 // Calculation process
-int ParseCSVSelection ();
-int ComputeANOVA ();
+void ParseCSVSelection (IN int Panel, char FactorRange[][32], char DataRange[][32], char LimitRange[][32], ANOVANode *TreeRoot);
+void BuildANOVATree (IN int Panel, IN char FactorRange[][32], ANOVANode *CurrentRoot, int Level);
+int ComputeANOVA (ANOVANode *TreeRoot);
 
 // ANOVANode helpers
 ANOVANode *CreateANOVANode (IN char Key[32]);

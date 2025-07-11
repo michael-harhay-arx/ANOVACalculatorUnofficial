@@ -20,6 +20,7 @@
 #include "CSVPanel.h"
 #include "ANOVAPanel.h"
 #include "ANOVACalculator.h"
+#include "ArxtronToolslib.h"
 
 //==============================================================================
 // Constants
@@ -33,7 +34,7 @@
 //==============================================================================
 // Global functions
 
-void GetDataFromListBoxes (int panel, char **FactorSelection, char **DataSelection, char **LimitSelection);
+void GetDataFromListBoxes (IN int panel, char **FactorSelection, char **DataSelection, char **LimitSelection);
 
 #ifdef __cplusplus
     }

@@ -35,6 +35,9 @@ static int panelHandle = 0;
 //==============================================================================
 // Global variables
 
+int glbNumFactors = 0;
+int glbNumDataCols = 0;
+
 //==============================================================================
 // Global functions
 
@@ -63,18 +66,82 @@ Error:
 /***************************************************************************//*!
 * \brief Parse through CSV table selections and prepare data for calculations
 *
-* \param [in] xx			asdfasdfasdf
+* \param [in] Panel					The current panel
+* \param [in] FactorRange			The factor range, in format CxRx:CxRx. Factor ranges can be assumed to only be single columns
+* \param [in] DataRange				The data range, in format CxRx:CxRx.
+* \param [in] LimitRange			The limit range, in format CxRx:CxRx
+* \param [out] TreeRoot				Root of tree containing all data nodes, ready for ANOVA
 *******************************************************************************/
-int ParseCSVSelection ()
+void ParseCSVSelection (IN int Panel, char FactorRange[][32], char DataRange[][32], char LimitRange[][32], ANOVANode *TreeRoot)
 {
+	// Get number of factors and data columns
+	while (strcmp (FactorRange[glbNumFactors], "0") != 0)
+	{
+		glbNumFactors++;
+	}
+	while (strcmp (DataRange[glbNumDataCols], "0") != 0)
+	{
+		glbNumDataCols++;
+	}
 	
-	return 0;
+	// Build ANOVA tree
+	BuildANOVATree (Panel, FactorRange, TreeRoot, 0);
+					  
+	
+}
+
+/***************************************************************************//*!
+* \brief Recursively builds a tree from ANOVANodes
+*
+* \param [in] Panel				The current panel
+* \param [in] CurrentRoot		The current root at the level the tree being worked on
+* \param [in] Level				The current level of the tree (# levels = # factors)
+*******************************************************************************/
+void BuildANOVATree (IN int Panel, IN char FactorRange[][32], ANOVANode *CurrentRoot, int Level)
+{
+	// Base case
+	if (Level >= glbNumFactors)
+	{
+		return;
+	}
+	
+	// Load factor col data
+	int start_row = 0;
+	int start_col = 0;
+	int end_row = 0;
+	int end_col = 0;
+	sscanf (FactorRange[Level], "C%dR%d:C%dR%d", &start_col, &start_row, &end_col, &end_row);
+	
+	// Add new nodes at current level (for current factor)
+	for (int factorElement = start_row + 1; factorElement < end_row + 1; factorElement++)
+	{
+		char nodeKey[32] = {0};
+		Point currentPoint = 
+		{
+			.x = start_col,
+			.y = factorElement
+		};
+		
+		GetTableCellVal (Panel, CSVPANEL_CSVTABLE, currentPoint, nodeKey);
+		
+		// Debug
+        for (int i = 0; i < Level; i++) {
+            printf("  ");
+        }
+        printf("Level %d - Adding node: %s\n", Level, nodeKey);
+		
+		ANOVANode *newNode = CreateANOVANode (nodeKey);
+		AddChildNode (CurrentRoot, newNode);
+		
+		// Recursive call to populate node children
+		BuildANOVATree (Panel, FactorRange, newNode, Level + 1);
+	}
 }
 
 /***************************************************************************//*!
 * \brief Perform ANOVA calculations
 *******************************************************************************/
-int ComputeANOVA ()
+int ComputeANOVA (ANOVANode *TreeRoot)
 {
 	return 0;
 }
