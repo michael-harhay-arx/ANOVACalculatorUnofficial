@@ -38,8 +38,6 @@ static int panelHandle = 0;
 int glbNumFactors = 0;
 int glbNumDataCols = 0;
 
-
-
 //==============================================================================
 // Global functions
 
@@ -101,8 +99,6 @@ void ParseCSVSelection (IN int Panel, char FactorRange[][32], char DataRange[][3
 		sscanf (FactorRange[i], "C%dR%d:C%dR%d", colNumbers + i, &start_row, &end_col, &end_row);
 	}
 	
-	
-	/*
 	// Get list of unique factor elements
 	int numRows = end_row - start_row + 1;
 	char *existing = calloc (glbNumFactors * numRows * 32, 1);
@@ -122,11 +118,13 @@ void ParseCSVSelection (IN int Panel, char FactorRange[][32], char DataRange[][3
 		}
 	}
 	
+	/*
 	int product = 1;
 	for (int j = 0; j < glbNumFactors; ++j)
 	{
 		product *= glbUniqueFactorCount[j];
 	}
+	*/
 	
 	// Get SS values 
 	char names[buckets][pow (2, glbNumFactors)][64];
@@ -150,8 +148,7 @@ void ParseCSVSelection (IN int Panel, char FactorRange[][32], char DataRange[][3
 			++sumCount[j][m];
 		}
 	}
-	*/
-	
+
 	
 	/*
 	// Iterate through factors
