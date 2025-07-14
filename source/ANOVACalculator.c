@@ -69,134 +69,148 @@ Error:
 * \param [in] LimitRange			The limit range, in format CxRx:CxRx
 * \param [out] TreeRoot				Root of tree containing all data nodes, ready for ANOVA
 *******************************************************************************/
-void ParseCSVSelection (IN int Panel, char FactorRange[][32], char DataRange[][32], char LimitRange[][32], ANOVANode *TreeRoot)
+void GetSSDataset (IN int Panel, char FactorRange[][DATALENGTH], char DataRange[][DATALENGTH], char LimitRange[][DATALENGTH], ANOVANode *TreeRoot)
 {
-//	// Get number of factors and data columns
-//	while (strcmp (FactorRange[glbNumFactorCols], "0") != 0)
-//	{
-//		glbNumFactorCols++;
-//	}
-//	while (strcmp (DataRange[glbNumDataCols], "0") != 0)
-//	{
-//		glbNumDataCols++;
-//	}
-//	
-//	// Group duplicate factor elements into list
-//	//int numUniqueFactorElements = 0;
-//	//FactorElement factorElementList[1] = {0};
-//	
-//	// Parse ranges
-//	int colNumbers[100] = {0};
-//	int start_row = 0;
-//	int end_row = 0;
-//	int end_col = 0;	
-//	
-//	for (int i = 0; i < glbNumFactorCols; ++i)
-//	{
-//		sscanf (FactorRange[i], "C%dR%d:C%dR%d", colNumbers + i, &start_row, &end_col, &end_row);
-//	}
-//	
-//	// Get list of unique factor elements
-//	int numRows = end_row - start_row + 1;
-//	char *existing = calloc (glbNumFactorCols * numRows * 32, 1);
-//	char glbUniqueFactors[glbNumFactorCols][numRows][32] = {0};
-//	int glbUniqueFactorCount[glbNumFactorCols] = {0};
-//	
-//	for (int i = 0; i < numRows; ++i)
-//	{
-//		for (int j = 0; j < glbNumFactorCols; ++j)
-//		{
-//			if (strstr (existing + j * numRows * 32, glbCSVData[i][colNumbers[j]]))
-//			{
-//				continue;
-//			}
-//			strcat (existing + j * numRows * 32, glbCSVData[i][colNumbers[j]]);
-//			strcpy (glbUniqueFactors[glbUniqueFactorCount[j]++], glbCSVData[i][colNumbers[j]]);
-//		}
-//	}
-//	
-//	/*
-//	int product = 1;
-//	for (int j = 0; j < glbNumFactorCols; ++j)
-//	{
-//		product *= glbUniqueFactorCount[j];
-//	}
-//	*/
-//	
-//	// Get SS values 
-//	char names[buckets][pow (2, glbNumFactorCols)][64];
-//	double sums[buckets][pow (2, glbNumFactorCols)] = {0};
-//	int sumCount[buckets][pow (2, glbNumFactorCols)] = {0};
-//	int buckets = 7;
-//	
-//	for (int i = 0; i < numRows; ++i)
-//	{
-//		for (int j = 0; j < buckets; ++j)
-//		{
-//			int m = 0;
-//			for (int k = 0; k < glbNumFactorCols; ++k)
-//			{
-//				for (m; m < glbUniqueFactorCount[k]; ++m)
-//				{
-//					if (0 == strcmp (data[i][k], glbUniqueFactors[k][m])) break;
-//				}
-//			}
-//			sums[j][m] += val;
-//			++sumCount[j][m];
-//		}
-//	}
+	// Parse ranges
+	int factorColNumbers[glbNumFactorCols];
+	int dataColNumbers[glbNumDataCols];
+	memset (factorColNumbers, 0, sizeof (factorColNumbers));
+	memset (dataColNumbers, 0, sizeof (dataColNumbers));
+	
+	int startRow = 0;
+	int endCol = 0;	
+	int endRow = 0;
+	int colHeight = 0;
+	
+	for (int i = 0; i < glbNumFactorCols; ++i)
+	{
+		sscanf (FactorRange[i], "C%dR%d:C%dR%d", factorColNumbers + i, &startRow, &endCol, &endRow);
+	}
+	
+	colHeight = endRow - startRow + 1;
+	
+	for (int i = 0; i < glbNumDataCols; i++)
+	{
+		sscanf (DataRange[i], "C%d", dataColNumbers + i);
+	}
+	
+	// Build list of RowStructs
+	RowStruct dataset[glbNumRows + 1];
+	memset (dataset, 0, sizeof (dataset));
+	
+	RowStruct currentRow = {0};
+	for (int row = 0; row < colHeight; row++)
+	{
+		for (int col = 0; col < glbNumFactorCols; col++)
+		{
+			strcpy (currentRow.factors[col], glbCSVData[startRow + row - 1][factorColNumbers[col]]);
+		}
+		
+		for (int col = 0; col < glbNumDataCols; col++)
+		{
+			strcpy (currentRow.data[col], glbCSVData[startRow + row - 1][dataColNumbers[col]]);
+		}
+		
+		dataset[row] = currentRow;
+	}
+	
+	// Get grand means
+	double grandMeans[glbNumFactorCols + glbNumDataCols];
+	memset (grandMeans, 0, sizeof (grandMeans));
+	ComputeGrandMeans (dataset, grandMeans);
+	
+	
+	
+	//// Get list of unique factor elements
+	//int numRows = end_row - start_row + 1;
+	//char *existing = calloc (glbNumFactorCols * numRows * 32, 1);
+	//char glbUniqueFactors[glbNumFactorCols][numRows][32] = {0};
+	//int glbUniqueFactorCount[glbNumFactorCols] = {0};
+	//
+	//for (int i = 0; i < numRows; ++i)
+	//{
+	//	for (int j = 0; j < glbNumFactorCols; ++j)
+	//	{
+	//		if (strstr (existing + j * numRows * 32, glbCSVData[i][colNumbers[j]]))
+	//		{
+	//			continue;
+	//		}
+	//		strcat (existing + j * numRows * 32, glbCSVData[i][colNumbers[j]]);
+	//		strcpy (glbUniqueFactors[glbUniqueFactorCount[j]++], glbCSVData[i][colNumbers[j]]);
+	//	}
+	//}
+	
+	// Group duplicate factor elements into list
+	//int numUniqueFactorElements = 0;
+	//FactorElement factorElementList[1] = {0};
+	
+	/*
+	int product = 1;
+	for (int j = 0; j < glbNumFactorCols; ++j)
+	{
+		product *= glbUniqueFactorCount[j];
+	}
+	*/
+	
+	//// Get SS values 
+	//char names[buckets][pow (2, glbNumFactorCols)][64];
+	//double sums[buckets][pow (2, glbNumFactorCols)] = {0};
+	//int sumCount[buckets][pow (2, glbNumFactorCols)] = {0};
+	//int buckets = 7;
+	//
+	//for (int i = 0; i < numRows; ++i)
+	//{
+	//	for (int j = 0; j < buckets; ++j)
+	//	{
+	//		int m = 0;
+	//		for (int k = 0; k < glbNumFactorCols; ++k)
+	//		{
+	//			for (m; m < glbUniqueFactorCount[k]; ++m)
+	//			{
+	//				if (0 == strcmp (data[i][k], glbUniqueFactors[k][m])) break;
+	//			}
+	//		}
+	//		sums[j][m] += val;
+	//		++sumCount[j][m];
+	//	}
+	//}
+			
+	// Build ANOVA tree
+	BuildANOVATree (Panel, FactorRange, TreeRoot, 0);
+}
 
-//	
-//	/*
-//	// Iterate through factors
-//	for (int i = 0; i < glbNumFactorCols; i++)
-//	{
-//		
-//		
-//		
-//		
-//		// Load factor col data
-//		
-//		// Iterate through factor elements
-//		for (int factorElement = start_row; factorElement <= end_row; factorElement++)
-//		{
-//			// Get factor element key
-//			char factorElementKey[32] = {0};
-//			Point currentPoint = 
-//			{
-//				.x = start_col,
-//				.y = factorElement
-//			};
-//			GetTableCellVal (Panel, CSVPANEL_CSVTABLE, currentPoint, factorElementKey);
-//			
-//			// If factor element already in list, just add data, otherwise add key and data
-//			int match = 0;
-//			for (int k = 0; k < numUniqueFactorElements; k++)
-//			{
-//				if (strcmp (factorElementKey, factorElementList[k]) == 0)
-//				{
-//					match = 1;
-//				}
-//				
-//				// Add data
-//				if (match)
-//				{
-//					
-//				}
-//				
-//				else
-//				{
-//					numUniqueFactorElements++;
-//					
-//					// Add key and data, then realloc more space
-//				}
-//			}
-//		}
-//	}
-//	*/
-//			
-//	// Build ANOVA tree
-//	BuildANOVATree (Panel, FactorRange, TreeRoot, 0);
+/***************************************************************************//*!
+* \brief Calculate grand mean for each column
+*
+* \param [in] Dataset				A dataset of RowStructs
+* \param [in] GrandMeans			A list of the grand means for each column
+*******************************************************************************/
+void ComputeGrandMeans (RowStruct Dataset[], double GrandMeans[])
+{
+	int numCols = glbNumFactorCols + glbNumDataCols;
+	
+	// Sum data from each column
+    for (int row = 0; row < glbNumRows; row++) 
+	{
+        for (int col = 0; col < numCols; col++) 
+		{
+            GrandMeans[col] += (double) atoi (Dataset[row].data[col]);
+        }
+    }
+	
+	// Calculate grand means
+    for (int col = 0; col < numCols; col++) 
+	{
+        GrandMeans[col] /= glbNumRows;
+    }
+}
+
+/***************************************************************************//*!
+* \brief Perform ANOVA calculations
+*******************************************************************************/
+int ComputeANOVA (ANOVANode *TreeRoot)
+{
+	return 0;
 }
 
 /***************************************************************************//*!
@@ -206,7 +220,7 @@ void ParseCSVSelection (IN int Panel, char FactorRange[][32], char DataRange[][3
 * \param [in] CurrentRoot		The current root at the level the tree being worked on
 * \param [in] Level				The current level of the tree (# levels = # factors)
 *******************************************************************************/
-void BuildANOVATree (IN int Panel, IN char FactorRange[][32], ANOVANode *CurrentRoot, int Level)
+void BuildANOVATree (IN int Panel, IN char FactorRange[][DATALENGTH], ANOVANode *CurrentRoot, int Level)
 {
 	// Base case
 	if (Level >= glbNumFactorCols)
@@ -224,7 +238,7 @@ void BuildANOVATree (IN int Panel, IN char FactorRange[][32], ANOVANode *Current
 	// Add new nodes at current level (for current factor)
 	for (int factorElement = start_row + 1; factorElement <= end_row; factorElement++)
 	{
-		char nodeKey[32] = {0};
+		char nodeKey[DATALENGTH] = {0};
 		Point currentPoint = 
 		{
 			.x = start_col,
@@ -248,20 +262,12 @@ void BuildANOVATree (IN int Panel, IN char FactorRange[][32], ANOVANode *Current
 }
 
 /***************************************************************************//*!
-* \brief Perform ANOVA calculations
-*******************************************************************************/
-int ComputeANOVA (ANOVANode *TreeRoot)
-{
-	return 0;
-}
-
-/***************************************************************************//*!
 * \brief Create new ANOVANode
 *
 * \param [in] Key				A specific element from a factor (e.g., Factor "SN"
 *								contains the labels 1001, 1002, 1003... etc.)
 *******************************************************************************/
-ANOVANode *CreateANOVANode (IN char Key[32])
+ANOVANode *CreateANOVANode (IN char Key[DATALENGTH])
 {
 	ANOVANode *node = malloc (sizeof (ANOVANode));
 	strcpy (node->key, Key);

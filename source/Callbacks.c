@@ -107,9 +107,9 @@ int CVICALLBACK OpenButtonCB(int panel, int control, int event, void *callbackDa
 		
 		// Parse selected CSV, load into buffer
 		int colCount = 0;
-		int buffSize = 32;
-		char headerBuffer[2048]; // Can account for 64 x 32-byte column headers
-		char dataBuffer[131072]; // Can account for 64 x 64 x 32-byte pieces of data
+		int buffSize = DATALENGTH;
+		char headerBuffer[64 * DATALENGTH]; // Can account for 64 x 32-byte column headers
+		char dataBuffer[64 * 64 * DATALENGTH]; // Can account for 64 x 64 x 32-byte pieces of data
 		
 		tsErrChk (Initialize_CSVParse_LIB (selectedFilepath, 1, NULL, 0, buffSize, &colCount, &glbNumRows, headerBuffer, errmsg), errmsg);
 		tsErrChk (CSVParse_GetDataByIndex (0, 0, glbNumRows - 1, colCount - 1, dataBuffer, errmsg), errmsg);
@@ -195,7 +195,7 @@ int CVICALLBACK CSVTableCB (int panel, int control, int event, void *callbackDat
 		}
 		
 		// Else print selected cell/range
-		char selectionStr[32] = {0};
+		char selectionStr[DATALENGTH] = {0};
 		if (selectionRect.height == 0 && selectionRect.width == 0) // one cell selected, have to use GetActiveTableCell()
 		{
 			Point activeCell = {0};
@@ -224,7 +224,7 @@ int CVICALLBACK CSVSelectButtonCB(int panel, int control, int event, void *callb
 	{
 		int selectionTextBox = 0;
 		int listBox = 0;
-		char selection[32] = {0};
+		char selection[DATALENGTH] = {0};
 		int listSize = 0;
 		
 		// Set appropriate text box and list box
@@ -251,7 +251,7 @@ int CVICALLBACK CSVSelectButtonCB(int panel, int control, int event, void *callb
 		GetNumListItems (panel, listBox, &listSize);
 		
 		// Do not insert if duplicate item already exists in list
-		char itemLabel[32];
+		char itemLabel[DATALENGTH];
 		for (int i = 0; i < listSize; i++)
 		{
 			GetLabelFromIndex (panel, listBox, i, itemLabel);
@@ -319,7 +319,7 @@ int CVICALLBACK CSVListCB(int panel, int control, int event, void *callbackData,
 	{
 		// Get active list index
 		int activeListIndex = 0;
-		char activeListLabel[32] = {0};
+		char activeListLabel[DATALENGTH] = {0};
 		GetCtrlIndex (panel, control, &activeListIndex);
 		GetLabelFromIndex (panel, control, activeListIndex, activeListLabel);
 		
@@ -363,16 +363,24 @@ int CVICALLBACK CSVCalcButtonCB(int panel, int control, int event, void *callbac
 		char factorRange[glbNumFactorCols][DATALENGTH];
 		char dataRange[glbNumDataCols][DATALENGTH];
 		char limitRange[glbNumDataCols][DATALENGTH];
-		
-		memset(factorRange, 0, sizeof(factorRange));     
-		memset(dataRange, 0, sizeof(dataRange));     
-		memset(limitRange, 0, sizeof(limitRange));     
+
+		memset (factorRange, 0, sizeof(factorRange));     
+		memset (dataRange, 0, sizeof(dataRange));     
+		memset (limitRange, 0, sizeof(limitRange));     
 		
 		GetDataFromListBoxes (panel, factorRange, dataRange, limitRange);
 
-		// Parse selected factors/data/limits'
+		// Parse selected factors/data/limits
 		ANOVANode *treeRoot = CreateANOVANode ("Root");
-		ParseCSVSelection (panel, factorRange, dataRange, limitRange, treeRoot); // TODO add support for multi-col data selections... but can assume factors are one col
+		GetSSDataset (panel, factorRange, dataRange, limitRange, treeRoot); // TODO add support for multi-col data selections... but can assume factors are one col
+		
+		// Perform calculations
+		//tsErrChk (ComputeANOVA (treeRoot), errmsg);
+		
+		// Load calculations into ANOVA table
+		
+		//DisplayPanel (glbANOVAPanelHandle);
+		
 		
 		/*
 		// MANUAL INPUT FOR NOW
@@ -393,15 +401,8 @@ int CVICALLBACK CSVCalcButtonCB(int panel, int control, int event, void *callbac
 		    "C11R6:C11R7",
 		    "C12R6:C12R7",
 			"0"
-		};*/
-
-		
-		// Perform calculations
-		//tsErrChk (ComputeANOVA (treeRoot), errmsg);
-		
-		// Load calculations into ANOVA table
-		
-		//DisplayPanel (glbANOVAPanelHandle);
+		};
+		*/
 	}
 
 Error:
@@ -441,7 +442,13 @@ void GetDataFromListBoxes (IN int panel, char FactorSelection[][DATALENGTH], cha
 		
 		for (int listIndex = 0; listIndex < listLen; listIndex++)
 		{
-			GetLabelFromIndex (panel, listBox, listIndex, outputArr[listIndex]);
+			int numListItems = 0;
+			GetNumListItems (panel, listBox, &numListItems);
+			
+			if (numListItems > 0)
+			{
+				GetLabelFromIndex (panel, listBox, listIndex, outputArr[listIndex]);
+			}
 		}
 	}
 }

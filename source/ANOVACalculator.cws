@@ -30,7 +30,7 @@ Save Changes Before Compiling = "Always"
 Hide Windows = False
 Break At First Statement = False
 Sort Type = "File Name"
-Number of Opened Files = 4
+Number of Opened Files = 5
 Window Confinement Region Enabled = True
 MainColumnWidth = 337
 FileDateColumnWidth = 70
@@ -48,44 +48,48 @@ Batch Build Debug = False
 [File 0001]
 Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/Callbacks.c"
 File Type = "CSource"
-Disk Date = 3835350447
+Disk Date = 3835356315
 In Projects = "1,"
-Source Window State = "1,374,374,374,8,8,8,0,0,0,0,0,0,0,0,0,359,0,374,8,401,686,1,0,"
+Source Window State = "1,374,374,374,8,8,8,0,0,0,0,0,0,0,0,0,352,0,374,8,401,686,1,0,"
 Breakpoint 0001 = "375,0,enabled,"
 Tracepoint 0001 = "0,0,376,1,"
 Window Top = 126
 Window Left = 58
-Window Z-Order = 1
+Window Z-Order = 2
 
 [File 0002]
 Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/ANOVACalculator.c"
 File Type = "CSource"
-Disk Date = 3835350555
+Disk Date = 3835356930
 In Projects = "1,"
-Source Window State = "1,199,199,199,0,0,0,0,0,0,0,0,0,0,0,0,169,0,199,0,401,686,1,0,"
+Source Window State = "1,113,113,113,34,34,34,0,0,0,0,0,0,0,0,0,97,0,113,34,401,686,1,0,"
+Breakpoint 0001 = "120,0,enabled,"
+Tracepoint 0001 = "0,0,121,1,"
+Breakpoint 0002 = "179,0,enabled,"
+Tracepoint 0002 = "0,0,180,1,"
 Window Top = 95
 Window Left = 42
-Window Z-Order = 2
+Window Z-Order = 1
 
 [File 0003]
 Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/ANOVACalculator.h"
 File Type = "Include"
-Disk Date = 3835108864
+Disk Date = 3835356733
 In Projects = "1,"
-Source Window State = "1,46,46,46,2,2,2,0,0,0,0,0,0,0,0,0,15,0,46,2,401,686,1,0,"
+Source Window State = "1,47,47,47,0,0,0,0,0,0,0,0,0,0,0,0,22,0,47,0,401,686,1,0,"
 Window Top = 157
 Window Left = 74
-Window Z-Order = 4
+Window Z-Order = 3
 
 [File 0004]
 Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/Callbacks.h"
 File Type = "Include"
-Disk Date = 3835350071
+Disk Date = 3835353303
 In Projects = "1,"
-Source Window State = "1,38,38,38,11,25,11,0,3,0,0,0,0,0,0,0,8,0,38,25,401,686,1,0,"
+Source Window State = "1,39,39,39,26,26,26,0,0,0,0,0,0,0,0,0,9,0,39,26,401,686,1,0,"
 Window Top = 157
 Window Left = 74
-Window Z-Order = 3
+Window Z-Order = 4
 
 [File 0005]
 Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/ANOVAPanel.uir"
@@ -150,11 +154,22 @@ File Type = "Library"
 Disk Date = 3834930522
 In Projects = "1,"
 
+[File 0012]
+Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/ANOVACalculatorDefinitions.h"
+File Type = "Include"
+Disk Date = 3835353909
+In Projects = "1,"
+Source Window State = "1,23,23,23,8,21,8,0,3,0,0,0,0,0,0,0,0,0,23,21,401,686,1,0,"
+Window Top = 64
+Window Left = 26
+Window Z-Order = 5
+
 [Tab Order]
 Tab 0001 = "/c/Users/Michael_Harhay/Documents/ANOVA/source/ANOVACalculator.c"
 Tab 0002 = "/c/Users/Michael_Harhay/Documents/ANOVA/source/ANOVACalculator.h"
 Tab 0003 = "/c/Users/Michael_Harhay/Documents/ANOVA/source/Callbacks.c"
 Tab 0004 = "/c/Users/Michael_Harhay/Documents/ANOVA/source/Callbacks.h"
+Tab 0005 = "/c/Users/Michael_Harhay/Documents/ANOVA/source/ANOVACalculatorDefinitions.h"
 
 [Default Build Config 0001 Debug]
 Generate Browse Info = True

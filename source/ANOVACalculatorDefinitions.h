@@ -1,12 +1,12 @@
 /***************************************************************************//*!
-* \file Callbacks.h
+* \file ANOVACalculatorDefinitions.h
 * \author 
 * \copyright . All Rights Reserved.
-* \date 2025-07-09 11:44:39 AM
+* \date 2025-07-14 11:54:19 AM
 *******************************************************************************/
 
-#ifndef __Callbacks_H__
-#define __Callbacks_H__
+#ifndef __ANOVACalculatorDefinitions_H__
+#define __ANOVACalculatorDefinitions_H__
 
 #ifdef __cplusplus
     extern "C" {
@@ -16,36 +16,27 @@
 // Include files
 
 #include "cvidef.h"
-		
-#include "MainPanel.h"
-#include "CSVPanel.h"
-#include "ANOVAPanel.h"
-#include "ANOVACalculator.h"
-#include "ANOVACalculatorDefinitions.h"
-		
-#include "ArxtronToolslib.h"
 
 //==============================================================================
 // Constants
-
+		
+#define DATALENGTH 		(32)
+#define MAXFACTORCOLS	(3)
+#define MAXDATACOLS		(16)
+		
 //==============================================================================
 // Types
-		
+
 //==============================================================================
 // External variables
-		
-extern char ***glbCSVData;
-extern int glbNumRows;
-extern int glbNumFactorCols;
-extern int glbNumDataCols;
 
 //==============================================================================
 // Global functions
 
-void GetDataFromListBoxes (IN int panel, char FactorSelection[][DATALENGTH], char DataSelection[][DATALENGTH], char LimitSelection[][DATALENGTH]);
+int Declare_Your_Functions_Here (int x);
 
 #ifdef __cplusplus
     }
 #endif
 
-#endif  /* ndef __Callbacks_H__ */
+#endif  /* ndef __ANOVACalculatorDefinitions_H__ */

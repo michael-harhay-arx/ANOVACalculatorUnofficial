@@ -34,6 +34,7 @@ HDRS = 	"C:\\Users\\Public\\Documents\\National Instruments\\TestStand 2017 (32-
 include Jamfile_instr ;
 LOCATE on "ANOVACalculator.c" = "c:\\Users\\Michael_Harhay\\Documents\\ANOVA\\source" ;
 LOCATE on "ANOVACalculator.h" = "c:\\Users\\Michael_Harhay\\Documents\\ANOVA\\source" ;
+LOCATE on "ANOVACalculatorDefinitions.h" = "c:\\Users\\Michael_Harhay\\Documents\\ANOVA\\source" ;
 LOCATE on "ANOVAPanel.h" = "c:\\Users\\Michael_Harhay\\Documents\\ANOVA\\source" ;
 LOCATE on "Callbacks.c" = "c:\\Users\\Michael_Harhay\\Documents\\ANOVA\\source" ;
 LOCATE on "Callbacks.h" = "c:\\Users\\Michael_Harhay\\Documents\\ANOVA\\source" ;

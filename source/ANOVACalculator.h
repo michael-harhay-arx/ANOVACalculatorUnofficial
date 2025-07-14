@@ -18,6 +18,8 @@
 #include "cvidef.h"
 		
 #include "Callbacks.h"
+#include "ANOVACalculatorDefinitions.h"
+		
 #include "ArxtronToolslib.h"
 
 //==============================================================================
@@ -29,13 +31,20 @@
 // Node in ANOVA tree
 typedef struct ANOVANode
 {
-	char key[32];
+	char key[DATALENGTH];
 	int numValues;
 	double *values;
 	
 	int numChildren;
 	struct ANOVANode **children;
 } ANOVANode;
+
+// Row in data table
+typedef struct RowStruct
+{
+	char factors[MAXFACTORCOLS][DATALENGTH];
+	char data[MAXDATACOLS][DATALENGTH];
+} RowStruct;
 
 // Factor element grouping struct
 /*
@@ -53,12 +62,14 @@ typedef struct FactorElement
 // Global functions
 
 // Calculation process
-void ParseCSVSelection (IN int Panel, char FactorRange[][32], char DataRange[][32], char LimitRange[][32], ANOVANode *TreeRoot);
-void BuildANOVATree (IN int Panel, IN char FactorRange[][32], ANOVANode *CurrentRoot, int Level);
+void GetSSDataset (IN int Panel, char FactorRange[][DATALENGTH], char DataRange[][DATALENGTH], char LimitRange[][DATALENGTH], ANOVANode *TreeRoot);
+void ComputeGrandMeans (RowStruct Dataset[], double GrandMeans[]);
+
 int ComputeANOVA (ANOVANode *TreeRoot);
 
 // ANOVANode helpers
-ANOVANode *CreateANOVANode (IN char Key[32]);
+void BuildANOVATree (IN int Panel, IN char FactorRange[][DATALENGTH], ANOVANode *CurrentRoot, int Level);
+ANOVANode *CreateANOVANode (IN char Key[DATALENGTH]);
 void AddNodeValue (ANOVANode *Node, IN double Value);
 void AddChildNode (ANOVANode *ParentNode, ANOVANode *ChildNode);
 
