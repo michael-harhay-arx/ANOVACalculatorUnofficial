@@ -48,22 +48,24 @@ Batch Build Debug = False
 [File 0001]
 Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/Callbacks.c"
 File Type = "CSource"
-Disk Date = 3835109672
+Disk Date = 3835350447
 In Projects = "1,"
-Source Window State = "1,65,65,65,8,18,8,0,3,0,0,0,0,0,0,0,31,0,65,18,401,686,1,0,"
+Source Window State = "1,374,374,374,8,8,8,0,0,0,0,0,0,0,0,0,359,0,374,8,401,686,1,0,"
+Breakpoint 0001 = "375,0,enabled,"
+Tracepoint 0001 = "0,0,376,1,"
 Window Top = 126
 Window Left = 58
-Window Z-Order = 3
+Window Z-Order = 1
 
 [File 0002]
 Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/ANOVACalculator.c"
 File Type = "CSource"
-Disk Date = 3835110143
+Disk Date = 3835350555
 In Projects = "1,"
-Source Window State = "1,135,135,135,5,5,5,0,0,0,0,0,0,0,0,0,108,0,135,5,401,686,1,0,"
+Source Window State = "1,199,199,199,0,0,0,0,0,0,0,0,0,0,0,0,169,0,199,0,401,686,1,0,"
 Window Top = 95
 Window Left = 42
-Window Z-Order = 1
+Window Z-Order = 2
 
 [File 0003]
 Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/ANOVACalculator.h"
@@ -78,12 +80,12 @@ Window Z-Order = 4
 [File 0004]
 Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/Callbacks.h"
 File Type = "Include"
-Disk Date = 3835108906
+Disk Date = 3835350071
 In Projects = "1,"
-Source Window State = "1,34,34,34,15,15,15,0,0,0,0,0,0,0,0,0,0,0,34,15,401,686,1,0,"
+Source Window State = "1,38,38,38,11,25,11,0,3,0,0,0,0,0,0,0,8,0,38,25,401,686,1,0,"
 Window Top = 157
 Window Left = 74
-Window Z-Order = 2
+Window Z-Order = 3
 
 [File 0005]
 Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/ANOVAPanel.uir"

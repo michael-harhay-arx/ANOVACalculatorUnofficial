@@ -24,6 +24,8 @@
 
 //==============================================================================
 // Constants
+		
+#define DATALENGTH 		(32)
 
 //==============================================================================
 // Types
@@ -31,13 +33,15 @@
 //==============================================================================
 // External variables
 		
-extern int glbRowCount;
 extern char ***glbCSVData;
+extern int glbNumRows;
+extern int glbNumFactorCols;
+extern int glbNumDataCols;
 
 //==============================================================================
 // Global functions
 
-void GetDataFromListBoxes (IN int panel, char **FactorSelection, char **DataSelection, char **LimitSelection);
+void GetDataFromListBoxes (IN int panel, char FactorSelection[][DATALENGTH], char DataSelection[][DATALENGTH], char LimitSelection[][DATALENGTH]);
 
 #ifdef __cplusplus
     }
