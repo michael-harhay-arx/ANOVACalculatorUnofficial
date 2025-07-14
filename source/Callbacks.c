@@ -381,7 +381,18 @@ int CVICALLBACK CSVCalcButtonCB(int panel, int control, int event, void *callbac
 		// Load calculation results into ANOVA table
 		for (int row = 0; row < glbANOVAResult.numRows; row++)
 		{
-			printf ("Test, row = %d", row);
+			InsertTableRows (panel, ANOVAPANEL_ANOVATABLE, -1, 1, VAL_CELL_STRING);
+			
+			for (int col = 0; col < 6; col++)
+			{
+				switch (col)
+				{
+					case 0:
+						SetTableCellVal (panel, ANOVAPANEL_ANOVATABLE, MakePoint (col, row), glbANOVAResult.factorCombos[row]);
+					default:
+						SetTableCellVal (panel, ANOVAPANEL_ANOVATABLE, MakePoint (col, row), "test");
+				}
+			}
 		}
 		
 		DisplayPanel (glbANOVAPanelHandle);

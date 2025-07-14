@@ -48,12 +48,12 @@ Batch Build Debug = False
 [File 0001]
 Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/Callbacks.c"
 File Type = "CSource"
-Disk Date = 3835372122
+Disk Date = 3835373205
 In Projects = "1,"
-Source Window State = "1,381,381,381,54,54,54,0,0,0,0,0,0,0,0,0,353,0,381,54,401,686,1,0,"
+Source Window State = "1,392,392,392,99,99,99,0,0,0,0,0,0,0,0,0,369,0,392,99,401,686,1,0,"
 Window Top = 126
 Window Left = 58
-Window Z-Order = 4
+Window Z-Order = 1
 
 [File 0002]
 Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/ANOVACalculator.c"
@@ -63,7 +63,7 @@ In Projects = "1,"
 Source Window State = "1,135,135,135,45,45,45,0,0,0,0,0,0,0,0,0,120,0,135,45,401,686,1,0,"
 Window Top = 95
 Window Left = 42
-Window Z-Order = 1
+Window Z-Order = 5
 
 [File 0003]
 Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/ANOVACalculator.h"
@@ -83,7 +83,7 @@ In Projects = "1,"
 Source Window State = "1,39,39,39,11,25,11,0,3,0,0,0,0,0,0,0,0,0,39,25,401,686,1,0,"
 Window Top = 157
 Window Left = 74
-Window Z-Order = 5
+Window Z-Order = 7
 
 [File 0005]
 Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/ANOVAPanel.uir"
@@ -94,7 +94,7 @@ Window Top = 219
 Window Left = 106
 Window Height = 401
 Window Width = 630
-Window Z-Order = 6
+Window Z-Order = 3
 
 [File 0006]
 Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/CSVPanel.uir"
@@ -124,7 +124,7 @@ In Projects = "1,"
 Source Window State = "1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,401,630,1,0,"
 Window Top = 126
 Window Left = 58
-Window Z-Order = 7
+Window Z-Order = 4
 
 [File 0009]
 Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/CSVPanel.h"
@@ -158,7 +158,7 @@ In Projects = "1,"
 Source Window State = "1,24,24,24,8,19,8,0,3,0,0,0,0,0,0,0,0,0,24,19,401,686,1,0,"
 Window Top = 64
 Window Left = 26
-Window Z-Order = 3
+Window Z-Order = 6
 
 [Tab Order]
 Tab 0001 = "/c/Users/Michael_Harhay/Documents/ANOVA/source/ANOVACalculator.c"
