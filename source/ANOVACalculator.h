@@ -65,6 +65,9 @@ typedef struct FactorElement
 void GetSSDataset (IN int Panel, char FactorRange[][DATALENGTH], char DataRange[][DATALENGTH], char LimitRange[][DATALENGTH], ANOVANode *TreeRoot);
 void ComputeGrandMeans (RowStruct Dataset[], double GrandMeans[]);
 void ComputeTotalSS (RowStruct Dataset[], double GrandMeans[], double SSTotal[]);
+int matchOnMask (RowStruct *RowA, RowStruct *RowB, int Mask);
+void ComputeSSFactorCombo (RowStruct Dataset[], int Mask, double *GrandMeans, double *ssOut);
+void printFactorComboName (int Mask);
 
 int ComputeANOVA (ANOVANode *TreeRoot);
 

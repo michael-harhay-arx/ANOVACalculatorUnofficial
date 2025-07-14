@@ -51,22 +51,18 @@ File Type = "CSource"
 Disk Date = 3835363991
 In Projects = "1,"
 Source Window State = "1,375,375,375,8,8,8,0,0,0,0,0,0,0,0,0,362,0,375,8,401,686,1,0,"
-Breakpoint 0001 = "376,0,enabled,"
-Tracepoint 0001 = "0,0,376,1,"
 Window Top = 126
 Window Left = 58
-Window Z-Order = 2
+Window Z-Order = 3
 
 [File 0002]
 Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/ANOVACalculator.c"
 File Type = "CSource"
-Disk Date = 3835365223
+Disk Date = 3835369924
 In Projects = "1,"
-Source Window State = "1,224,224,224,21,21,21,0,0,0,0,0,0,0,0,0,215,0,224,21,401,686,1,0,"
-Breakpoint 0001 = "184,0,enabled,"
-Tracepoint 0001 = "0,0,184,1,"
-Breakpoint 0002 = "225,0,enabled,"
-Tracepoint 0002 = "0,0,226,1,"
+Source Window State = "1,155,155,155,23,23,23,0,0,0,0,0,0,0,0,0,138,0,155,23,401,686,1,0,"
+Breakpoint 0001 = "216,0,enabled,"
+Tracepoint 0001 = "0,0,207,1,"
 Window Top = 95
 Window Left = 42
 Window Z-Order = 1
@@ -74,22 +70,22 @@ Window Z-Order = 1
 [File 0003]
 Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/ANOVACalculator.h"
 File Type = "Include"
-Disk Date = 3835365180
+Disk Date = 3835369294
 In Projects = "1,"
-Source Window State = "1,66,66,66,81,81,81,0,0,0,0,0,0,0,0,0,28,0,66,81,401,686,1,0,"
+Source Window State = "1,69,69,69,25,25,25,0,0,0,0,0,0,0,0,0,48,0,69,25,401,686,1,0,"
 Window Top = 157
 Window Left = 74
-Window Z-Order = 3
+Window Z-Order = 2
 
 [File 0004]
 Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/Callbacks.h"
 File Type = "Include"
 Disk Date = 3835353303
 In Projects = "1,"
-Source Window State = "1,39,39,39,26,26,26,0,0,0,0,0,0,0,0,0,7,0,39,26,401,686,1,0,"
+Source Window State = "1,39,39,39,11,25,11,0,3,0,0,0,0,0,0,0,0,0,39,25,401,686,1,0,"
 Window Top = 157
 Window Left = 74
-Window Z-Order = 4
+Window Z-Order = 5
 
 [File 0005]
 Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/ANOVAPanel.uir"
@@ -159,10 +155,10 @@ Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/ANOVACalculatorDefinition
 File Type = "Include"
 Disk Date = 3835353909
 In Projects = "1,"
-Source Window State = "1,23,23,23,8,21,8,0,3,0,0,0,0,0,0,0,0,0,23,21,401,686,1,0,"
+Source Window State = "1,24,24,24,8,19,8,0,3,0,0,0,0,0,0,0,0,0,24,19,401,686,1,0,"
 Window Top = 64
 Window Left = 26
-Window Z-Order = 5
+Window Z-Order = 4
 
 [Tab Order]
 Tab 0001 = "/c/Users/Michael_Harhay/Documents/ANOVA/source/ANOVACalculator.c"

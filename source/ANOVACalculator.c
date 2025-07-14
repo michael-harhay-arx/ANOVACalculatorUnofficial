@@ -35,7 +35,7 @@ static int panelHandle = 0;
 //==============================================================================
 // Global variables
 
-int glbDataColHeight;
+int glbDataColHeight = 0;
 
 //==============================================================================
 // Global functions
@@ -75,8 +75,8 @@ void GetSSDataset (IN int Panel, char FactorRange[][DATALENGTH], char DataRange[
 {
 	// Parse ranges
 	int factorColNumbers[glbNumFactorCols];
-	int dataColNumbers[glbNumDataCols];
 	memset (factorColNumbers, 0, sizeof (factorColNumbers));
+	int dataColNumbers[glbNumDataCols];
 	memset (dataColNumbers, 0, sizeof (dataColNumbers));
 	
 	int startRow = 0;
@@ -120,10 +120,42 @@ void GetSSDataset (IN int Panel, char FactorRange[][DATALENGTH], char DataRange[
 	memset (grandMeans, 0, sizeof (grandMeans));
 	ComputeGrandMeans (dataset, grandMeans);
 	
-	// Get SS data
+	// Get total SS vales (per data column)
 	double ssTotal[glbNumDataCols];
 	memset (ssTotal, 0, sizeof (ssTotal));
 	ComputeTotalSS (dataset, grandMeans, ssTotal);
+	
+	// Get factor combo SS values 
+	double ssFactorCombos[8][glbNumDataCols];
+	memset (ssFactorCombos, 0, sizeof (ssFactorCombos));
+    double ssSum[glbNumDataCols];
+	memset (ssSum, 0, sizeof (ssSum));
+
+    // Loop through all non-zero masks (factor combinations)
+	int numFactorCombos = 1 << glbNumFactorCols;
+    for (int mask = 1; mask < numFactorCombos; mask++) 
+	{
+        ComputeSSFactorCombo (dataset, mask, grandMeans, ssFactorCombos[mask]);
+        printf ("SS["); 
+		printFactorComboName (mask); 
+		printf ("]:");
+        
+		for (int col = 0; col < glbNumDataCols; col++) 
+		{
+            printf (" %.3f", ssFactorCombos[mask][col]);
+            ssSum[col] += ssFactorCombos[mask][col];
+        }
+        printf("\n");
+    }
+	
+	// Error calculation
+    printf ("SS[Residual/Error]:");
+    for (int col = 0; col < glbNumDataCols; col++) 
+	{
+        ssFactorCombos[0][col] = ssTotal[col] - ssSum[col];
+        printf (" %.3f", ssFactorCombos[0][col]);
+    }
+    printf("\n");
 	
 	
 	//// Get list of unique factor elements
@@ -225,6 +257,93 @@ void ComputeTotalSS (RowStruct Dataset[], double GrandMeans[], double SSTotal[])
             double diff = (double) atof (Dataset[row].data[col]) - GrandMeans[col];
 			SSTotal[col] += pow (diff, 2);
         }
+    }
+}
+
+/***************************************************************************//*!
+* \brief Check if two rows match on selected factor mask
+*
+* \param [in] RowA					First RowStruct to be compared
+* \param [in] RowB					Second RowStruct to be compared
+* \param [in] Mask					Effect mask
+*******************************************************************************/
+int matchOnMask (RowStruct *RowA, RowStruct *RowB, int Mask) 
+{
+    for (int factor = 0; factor < glbNumFactorCols; factor++) 
+	{
+        if ((Mask & (1 << factor)) && (RowA->factors[factor] != RowB->factors[factor])) 
+		{
+            return 0;
+        }
+    }
+    return 1;
+}
+
+/***************************************************************************//*!
+* \brief Compute SS for the factor combo defined by mask
+*
+* \param [in] Dataset				A dataset of RowStructs
+* \param [in] Mask					Effect mask
+* \param [in] GrandMeans			A list containing the grand mean for each column
+* \param [in] SSOut					A list containing the SS for the chosen factor combo
+*******************************************************************************/
+void ComputeSSFactorCombo (RowStruct Dataset[], int Mask, double *GrandMeans, double *SSOut) 
+{
+    int visited[glbDataColHeight];
+	memset (visited, 0, sizeof (visited));
+
+    for (int row = 0; row < glbDataColHeight; row++) 
+	{
+		// Check if mask has already been used
+		if (visited[row])
+		{
+			continue;
+		}
+		
+        // Accumulate all rows matching this group
+        double sum[MAXDATACOLS] = {0.0};
+        int count = 0;
+
+        for (int subRow = 0; subRow < glbDataColHeight; subRow++) 
+		{
+            if (!visited[subRow] && matchOnMask (&Dataset[row], &Dataset[subRow], Mask)) 
+			{
+                for (int col = 0; col < glbNumDataCols; col++) 
+				{
+                    sum[col] += (double) atof (Dataset[subRow].data[col]);
+                }
+                count++;
+                visited[subRow] = 1;
+            }
+        }
+
+        for (int col = 0; col < glbNumDataCols; col++) 
+		{
+            double groupMean = sum[col] / count;
+            double diff = groupMean - GrandMeans[col];
+            SSOut[col] += count * diff * diff;
+        }
+    }
+}
+
+/***************************************************************************//*!
+* \brief Print factor combo
+*
+* \param [in] Mask					Factor combo mask
+*******************************************************************************/
+void printFactorComboName (int Mask) 
+{
+    if (Mask == 0) 
+	{ 
+		printf ("Residual/Error"); 
+		return; 
+	}
+    for (int i = 0; i < glbNumFactorCols; i++) 
+	{
+        if (Mask & (1 << i))
+		{
+			printf ("%c", 'A' + i);
+		}
     }
 }
 
