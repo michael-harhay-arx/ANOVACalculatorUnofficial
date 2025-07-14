@@ -46,6 +46,14 @@ typedef struct RowStruct
 	char data[MAXDATACOLS][DATALENGTH];
 } RowStruct;
 
+// ANOVA result data
+typedef struct ANOVAResult
+{
+	int numRows;
+	char factorCombos[10][32]; // Maximum 8 actual factor combos + equipment + total
+	double ssResults[10][MAXDATACOLS];
+} ANOVAResult;
+
 // Factor element grouping struct
 /*
 typedef struct FactorElement
@@ -57,6 +65,9 @@ typedef struct FactorElement
 
 //==============================================================================
 // External variables
+
+extern int glbNumMasks;
+extern ANOVAResult glbANOVAResult;
 
 //==============================================================================
 // Global functions

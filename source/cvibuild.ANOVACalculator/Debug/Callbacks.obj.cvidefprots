@@ -46,10 +46,10 @@ SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\Callbacks.c:345:1
 [GetDataFromListBoxes]
 Class="Function"
 Prototype="void GetDataFromListBoxes(const int panel, char FactorSelection[][32], char DataSelection[][32], char LimitSelection[][32]);"
-SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\Callbacks.c:416:1"
+SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\Callbacks.c:397:1"
 
 [ANOVAPanelCB]
 Class="Function"
 Prototype="int ANOVAPanelCB(int panel, int event, void *callbackData, int eventData1, int eventData2);"
-SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\Callbacks.c:460:1"
+SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\Callbacks.c:441:1"
 

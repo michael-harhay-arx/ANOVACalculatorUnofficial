@@ -36,6 +36,8 @@ static int panelHandle = 0;
 // Global variables
 
 int glbDataColHeight = 0;
+int glbNumMasks = 0;
+ANOVAResult glbANOVAResult = {0};
 
 //==============================================================================
 // Global functions
@@ -106,12 +108,10 @@ void GetSSDataset (IN int Panel, char FactorRange[][DATALENGTH], char DataRange[
 		{
 			strcpy (currentRow.factors[col], glbCSVData[startRow + row - 1][factorColNumbers[col] - 1]);
 		}
-		
 		for (int col = 0; col < glbNumDataCols; col++)
 		{
 			strcpy (currentRow.data[col], glbCSVData[startRow + row - 1][dataColNumbers[col] - 1]);
 		}
-		
 		dataset[row] = currentRow;
 	}
 	
@@ -125,23 +125,30 @@ void GetSSDataset (IN int Panel, char FactorRange[][DATALENGTH], char DataRange[
 	memset (ssTotal, 0, sizeof (ssTotal));
 	ComputeTotalSS (dataset, grandMeans, ssTotal);
 	
-	// Get factor combo SS values 
+	// Init other SS arrays
 	double ssFactorCombos[8][glbNumDataCols];
 	memset (ssFactorCombos, 0, sizeof (ssFactorCombos));
     double ssSum[glbNumDataCols];
 	memset (ssSum, 0, sizeof (ssSum));
-
-    // Loop through all non-zero masks (factor combinations)
-	int numFactorCombos = 1 << glbNumFactorCols;
-    for (int mask = 1; mask < numFactorCombos; mask++) 
+		
+	// Init results struct
+	int glbNumMasks = 1 << glbNumFactorCols;
+	glbANOVAResult.numRows = glbNumMasks + 2;
+	
+	// Iterate through masks (factor combos), get SS results
+    for (int mask = 1; mask < glbNumMasks; mask++) 
 	{
         ComputeSSFactorCombo (dataset, mask, grandMeans, ssFactorCombos[mask]);
+		
+		sprintf (glbANOVAResult.factorCombos[mask], "%d", mask); // TODO: Fix mask naming for table
+		
         printf ("SS["); 
 		printFactorComboName (mask); 
 		printf ("]:");
         
 		for (int col = 0; col < glbNumDataCols; col++) 
 		{
+			glbANOVAResult.ssResults[mask][col] = ssFactorCombos[mask][col];
             printf (" %.3f", ssFactorCombos[mask][col]);
             ssSum[col] += ssFactorCombos[mask][col];
         }
@@ -156,64 +163,9 @@ void GetSSDataset (IN int Panel, char FactorRange[][DATALENGTH], char DataRange[
         printf (" %.3f", ssFactorCombos[0][col]);
     }
     printf("\n");
-	
-	
-	//// Get list of unique factor elements
-	//int numRows = end_row - start_row + 1;
-	//char *existing = calloc (glbNumFactorCols * numRows * 32, 1);
-	//char glbUniqueFactors[glbNumFactorCols][numRows][32] = {0};
-	//int glbUniqueFactorCount[glbNumFactorCols] = {0};
-	//
-	//for (int i = 0; i < numRows; ++i)
-	//{
-	//	for (int j = 0; j < glbNumFactorCols; ++j)
-	//	{
-	//		if (strstr (existing + j * numRows * 32, glbCSVData[i][colNumbers[j]]))
-	//		{
-	//			continue;
-	//		}
-	//		strcat (existing + j * numRows * 32, glbCSVData[i][colNumbers[j]]);
-	//		strcpy (glbUniqueFactors[glbUniqueFactorCount[j]++], glbCSVData[i][colNumbers[j]]);
-	//	}
-	//}
-	
-	// Group duplicate factor elements into list
-	//int numUniqueFactorElements = 0;
-	//FactorElement factorElementList[1] = {0};
-	
-	/*
-	int product = 1;
-	for (int j = 0; j < glbNumFactorCols; ++j)
-	{
-		product *= glbUniqueFactorCount[j];
-	}
-	*/
-	
-	//// Get SS values 
-	//char names[buckets][pow (2, glbNumFactorCols)][64];
-	//double sums[buckets][pow (2, glbNumFactorCols)] = {0};
-	//int sumCount[buckets][pow (2, glbNumFactorCols)] = {0};
-	//int buckets = 7;
-	//
-	//for (int i = 0; i < numRows; ++i)
-	//{
-	//	for (int j = 0; j < buckets; ++j)
-	//	{
-	//		int m = 0;
-	//		for (int k = 0; k < glbNumFactorCols; ++k)
-	//		{
-	//			for (m; m < glbUniqueFactorCount[k]; ++m)
-	//			{
-	//				if (0 == strcmp (data[i][k], glbUniqueFactors[k][m])) break;
-	//			}
-	//		}
-	//		sums[j][m] += val;
-	//		++sumCount[j][m];
-	//	}
-	//}
 			
 	// Build ANOVA tree
-	BuildANOVATree (Panel, FactorRange, TreeRoot, 0);
+	//BuildANOVATree (Panel, FactorRange, TreeRoot, 0);
 }
 
 /***************************************************************************//*!
@@ -307,7 +259,7 @@ void ComputeSSFactorCombo (RowStruct Dataset[], int Mask, double *GrandMeans, do
         for (int subRow = 0; subRow < glbDataColHeight; subRow++) 
 		{
             if (!visited[subRow] && matchOnMask (&Dataset[row], &Dataset[subRow], Mask)) 
-			{
+			{				
                 for (int col = 0; col < glbNumDataCols; col++) 
 				{
                     sum[col] += (double) atof (Dataset[subRow].data[col]);

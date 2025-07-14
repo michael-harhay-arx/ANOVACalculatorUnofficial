@@ -1,60 +1,60 @@
 [main]
 Class="Function"
 Prototype="int main(int argc, char *argv[]);"
-SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:46:1"
+SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:48:1"
 
 [GetSSDataset]
 Class="Function"
 Prototype="void GetSSDataset(const int Panel, char FactorRange[][32], char DataRange[][32], char LimitRange[][32], struct ANOVANode *TreeRoot);"
-SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:74:1"
+SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:76:1"
 
 [ComputeGrandMeans]
 Class="Function"
 Prototype="void ComputeGrandMeans(struct RowStruct Dataset[], double GrandMeans[]);"
-SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:225:1"
+SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:177:1"
 
 [ComputeTotalSS]
 Class="Function"
 Prototype="void ComputeTotalSS(struct RowStruct Dataset[], double GrandMeans[], double SSTotal[]);"
-SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:250:1"
+SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:202:1"
 
 [matchOnMask]
 Class="Function"
 Prototype="int matchOnMask(struct RowStruct *RowA, struct RowStruct *RowB, int Mask);"
-SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:270:1"
+SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:222:1"
 
 [ComputeSSFactorCombo]
 Class="Function"
 Prototype="void ComputeSSFactorCombo(struct RowStruct Dataset[], int Mask, double *GrandMeans, double *SSOut);"
-SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:290:1"
+SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:242:1"
 
 [printFactorComboName]
 Class="Function"
 Prototype="void printFactorComboName(int Mask);"
-SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:334:1"
+SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:286:1"
 
 [ComputeANOVA]
 Class="Function"
 Prototype="int ComputeANOVA(struct ANOVANode *TreeRoot);"
-SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:353:1"
+SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:305:1"
 
 [BuildANOVATree]
 Class="Function"
 Prototype="void BuildANOVATree(const int Panel, const char FactorRange[][32], struct ANOVANode *CurrentRoot, int Level);"
-SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:365:1"
+SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:317:1"
 
 [CreateANOVANode]
 Class="Function"
 Prototype="struct ANOVANode *CreateANOVANode(const char Key[32]);"
-SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:412:1"
+SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:364:1"
 
 [AddNodeValue]
 Class="Function"
 Prototype="void AddNodeValue(struct ANOVANode *Node, const double Value);"
-SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:430:1"
+SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:382:1"
 
 [AddChildNode]
 Class="Function"
 Prototype="void AddChildNode(struct ANOVANode *ParentNode, struct ANOVANode *ChildNode);"
-SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:443:1"
+SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:395:1"
 

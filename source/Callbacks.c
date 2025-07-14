@@ -378,32 +378,13 @@ int CVICALLBACK CSVCalcButtonCB(int panel, int control, int event, void *callbac
 		// Perform calculations
 		//tsErrChk (ComputeANOVA (treeRoot), errmsg);
 		
-		// Load calculations into ANOVA table
+		// Load calculation results into ANOVA table
+		for (int row = 0; row < glbANOVAResult.numRows; row++)
+		{
+			printf ("Test, row = %d", row);
+		}
 		
-		//DisplayPanel (glbANOVAPanelHandle);
-		
-		
-		/*
-		// MANUAL INPUT FOR NOW
-		
-		char factorRange[][32] = {
-		    "C1R9:C1R39",
-		    "C7R9:C7R39",
-			"0"
-		};
-
-		char dataRange[][32] = {
-		    "C11R9:C11R39",
-		    "C12R9:C12R39",
-			"0"
-		};
-
-		char limitRange[][32] = {
-		    "C11R6:C11R7",
-		    "C12R6:C12R7",
-			"0"
-		};
-		*/
+		DisplayPanel (glbANOVAPanelHandle);
 	}
 
 Error:
