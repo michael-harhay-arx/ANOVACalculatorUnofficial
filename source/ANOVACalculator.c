@@ -121,8 +121,9 @@ void GetSSDataset (IN int Panel, char FactorRange[][DATALENGTH], char DataRange[
 	ComputeGrandMeans (dataset, grandMeans);
 	
 	// Get SS data
-
-	
+	double ssTotal[glbNumDataCols];
+	memset (ssTotal, 0, sizeof (ssTotal));
+	ComputeTotalSS (dataset, grandMeans, ssTotal);
 	
 	
 	//// Get list of unique factor elements
@@ -187,7 +188,7 @@ void GetSSDataset (IN int Panel, char FactorRange[][DATALENGTH], char DataRange[
 * \brief Calculate grand mean for each column
 *
 * \param [in] Dataset				A dataset of RowStructs
-* \param [in] GrandMeans			A list of the grand means for each column
+* \param [in] GrandMeans			A list containing the grand mean for each column
 *******************************************************************************/
 void ComputeGrandMeans (RowStruct Dataset[], double GrandMeans[])
 {	
@@ -204,6 +205,26 @@ void ComputeGrandMeans (RowStruct Dataset[], double GrandMeans[])
     for (int col = 0; col < glbNumDataCols; col++) 
 	{
         GrandMeans[col] /= glbDataColHeight;
+    }
+}
+
+/***************************************************************************//*!
+* \brief Calculate total SS for each column
+*
+* \param [in] Dataset				A dataset of RowStructs
+* \param [in] GrandMeans			A list containing the grand mean for each column
+* \param [in] SSTotal				A list containing the SS total for each column
+*******************************************************************************/
+void ComputeTotalSS (RowStruct Dataset[], double GrandMeans[], double SSTotal[])
+{	
+	// Get total SS for each column
+    for (int row = 0; row < glbDataColHeight; row++) 
+	{
+        for (int col = 0; col < glbNumDataCols; col++) 
+		{
+            double diff = (double) atof (Dataset[row].data[col]) - GrandMeans[col];
+			SSTotal[col] += pow (diff, 2);
+        }
     }
 }
 
