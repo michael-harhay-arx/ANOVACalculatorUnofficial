@@ -115,8 +115,9 @@ int CVICALLBACK OpenButtonCB(int panel, int control, int event, void *callbackDa
 		tsErrChk (CSVParse_GetDataByIndex (0, 0, glbNumRows - 1, colCount - 1, dataBuffer, errmsg), errmsg);
 
 		// Populate main table, as well as glbCSVData
-		glbCSVData = malloc (sizeof (char **) * (glbNumRows + 1));
-		for (int row = 1; row <= glbNumRows + 1; row++)
+		glbNumRows++; // increment to account for header
+		glbCSVData = malloc (sizeof (char **) * (glbNumRows));
+		for (int row = 1; row <= glbNumRows; row++)
 		{
 			glbCSVData[row - 1] = malloc (sizeof (char *) * colCount);
 			InsertTableRows (glbCSVPanelHandle, CSVPANEL_CSVTABLE, -1, 1, VAL_CELL_STRING);

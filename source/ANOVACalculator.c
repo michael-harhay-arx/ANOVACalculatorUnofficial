@@ -35,6 +35,8 @@ static int panelHandle = 0;
 //==============================================================================
 // Global variables
 
+int glbDataColHeight;
+
 //==============================================================================
 // Global functions
 
@@ -80,14 +82,13 @@ void GetSSDataset (IN int Panel, char FactorRange[][DATALENGTH], char DataRange[
 	int startRow = 0;
 	int endCol = 0;	
 	int endRow = 0;
-	int colHeight = 0;
 	
 	for (int i = 0; i < glbNumFactorCols; ++i)
 	{
 		sscanf (FactorRange[i], "C%dR%d:C%dR%d", factorColNumbers + i, &startRow, &endCol, &endRow);
 	}
 	
-	colHeight = endRow - startRow + 1;
+	glbDataColHeight = endRow - startRow + 1;
 	
 	for (int i = 0; i < glbNumDataCols; i++)
 	{
@@ -95,29 +96,32 @@ void GetSSDataset (IN int Panel, char FactorRange[][DATALENGTH], char DataRange[
 	}
 	
 	// Build list of RowStructs
-	RowStruct dataset[glbNumRows + 1];
+	RowStruct dataset[glbNumRows];
 	memset (dataset, 0, sizeof (dataset));
 	
 	RowStruct currentRow = {0};
-	for (int row = 0; row < colHeight; row++)
+	for (int row = 0; row < glbDataColHeight; row++)
 	{
 		for (int col = 0; col < glbNumFactorCols; col++)
 		{
-			strcpy (currentRow.factors[col], glbCSVData[startRow + row - 1][factorColNumbers[col]]);
+			strcpy (currentRow.factors[col], glbCSVData[startRow + row - 1][factorColNumbers[col] - 1]);
 		}
 		
 		for (int col = 0; col < glbNumDataCols; col++)
 		{
-			strcpy (currentRow.data[col], glbCSVData[startRow + row - 1][dataColNumbers[col]]);
+			strcpy (currentRow.data[col], glbCSVData[startRow + row - 1][dataColNumbers[col] - 1]);
 		}
 		
 		dataset[row] = currentRow;
 	}
 	
 	// Get grand means
-	double grandMeans[glbNumFactorCols + glbNumDataCols];
+	double grandMeans[glbNumDataCols];
 	memset (grandMeans, 0, sizeof (grandMeans));
 	ComputeGrandMeans (dataset, grandMeans);
+	
+	// Get SS data
+
 	
 	
 	
@@ -186,22 +190,20 @@ void GetSSDataset (IN int Panel, char FactorRange[][DATALENGTH], char DataRange[
 * \param [in] GrandMeans			A list of the grand means for each column
 *******************************************************************************/
 void ComputeGrandMeans (RowStruct Dataset[], double GrandMeans[])
-{
-	int numCols = glbNumFactorCols + glbNumDataCols;
-	
+{	
 	// Sum data from each column
-    for (int row = 0; row < glbNumRows; row++) 
+    for (int row = 0; row < glbDataColHeight; row++) 
 	{
-        for (int col = 0; col < numCols; col++) 
+        for (int col = 0; col < glbNumDataCols; col++) 
 		{
-            GrandMeans[col] += (double) atoi (Dataset[row].data[col]);
+            GrandMeans[col] += (double) atof (Dataset[row].data[col]);
         }
     }
 	
 	// Calculate grand means
-    for (int col = 0; col < numCols; col++) 
+    for (int col = 0; col < glbNumDataCols; col++) 
 	{
-        GrandMeans[col] /= glbNumRows;
+        GrandMeans[col] /= glbDataColHeight;
     }
 }
 
