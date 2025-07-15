@@ -351,6 +351,7 @@ int CVICALLBACK CSVCalcButtonCB(int panel, int control, int event, void *callbac
 	if (event == EVENT_LEFT_CLICK)
 	{
 		// Load ANOVA panel
+		HidePanel (glbCSVPanelHandle);
 		glbANOVAPanelHandle = LoadPanel (0, "ANOVAPanel.uir", ANOVAPANEL);
 
 		// TODO add "loading" sign?
@@ -379,18 +380,33 @@ int CVICALLBACK CSVCalcButtonCB(int panel, int control, int event, void *callbac
 		//tsErrChk (ComputeANOVA (treeRoot), errmsg);
 		
 		// Load calculation results into ANOVA table
-		for (int row = 0; row < glbANOVAResult.numRows; row++)
+		for (int col = 0; col < glbNumDataCols + 1; col++)
 		{
-			InsertTableRows (panel, ANOVAPANEL_ANOVATABLE, -1, 1, VAL_CELL_STRING);
-			
-			for (int col = 0; col < 6; col++)
+			for (int row = 0; row < glbANOVAResult.numRows; row++)
 			{
-				switch (col)
+				// If first column, insert rows and populate with stat names for each factor combo
+				if (col == 0)
 				{
-					case 0:
-						SetTableCellVal (panel, ANOVAPANEL_ANOVATABLE, MakePoint (col, row), glbANOVAResult.factorCombos[row]);
-					default:
-						SetTableCellVal (panel, ANOVAPANEL_ANOVATABLE, MakePoint (col, row), "test");
+					InsertTableRows (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, -1, 1, VAL_USE_MASTER_CELL_TYPE);
+					
+					char rowLabel[32] = {0};
+					GetANOVATableRowName (row % NUMDISPLAYROWS, rowLabel);
+					strcat (rowLabel, glbANOVAResult.factorCombos[row / NUMDISPLAYROWS]);
+
+					SetTableCellVal (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, MakePoint (col + 1, row + 1), rowLabel);
+				}
+				else
+				{
+					// Insert new data column
+					if (row == 0)
+					{
+						InsertTableColumns (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, -1, 1, VAL_CELL_NUMERIC); 
+						SetTableColumnAttribute (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, col + 1, ATTR_USE_LABEL_TEXT, 1);
+						SetTableColumnAttribute (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, col + 1, ATTR_LABEL_TEXT, "Test");
+					}
+						
+					// Insert data
+					SetTableCellVal (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, MakePoint (col + 1, row + 1), (double) col);
 				}
 			}
 		}
@@ -403,7 +419,7 @@ Error:
 }
 
 /***************************************************************************//*!
-* \brief Helper function that gets 
+* \brief Helper function that gets ranges from list boxes
 *******************************************************************************/
 void GetDataFromListBoxes (IN int panel, char FactorSelection[][DATALENGTH], char DataSelection[][DATALENGTH], char LimitSelection[][DATALENGTH])
 {	
@@ -443,6 +459,55 @@ void GetDataFromListBoxes (IN int panel, char FactorSelection[][DATALENGTH], cha
 				GetLabelFromIndex (panel, listBox, listIndex, outputArr[listIndex]);
 			}
 		}
+	}
+}
+
+/***************************************************************************//*!
+* \brief Helper function that gets appropriate row name
+*******************************************************************************/
+void GetANOVATableRowName (IN int RowNum, char *RowName)
+{	
+	switch (RowNum)
+	{
+		case 0:		
+			strcpy (RowName, "SumSqr_Parts_");
+			break;
+		case 1:		
+			strcpy (RowName, "SumSqr_Repeat_");
+			break;
+		case 2:		
+			strcpy (RowName, "DegFrd_Parts_");
+			break;
+		case 3:		
+			strcpy (RowName, "DegFrd_Repeat_");
+			break;
+		case 4:		
+			strcpy (RowName, "Variance_Parts_");
+			break;
+		case 5:		
+			strcpy (RowName, "Variance_Repeat_");
+			break;
+		case 6:		
+			strcpy (RowName, "StdDev_Parts_");
+			break;
+		case 7:		
+			strcpy (RowName, "StdDev_Repeat_");
+			break;
+		case 8:		
+			strcpy (RowName, "StdDev_Overall_");
+			break;
+		case 9:		
+			strcpy (RowName, "PTRatio_Parts_");
+			break;
+		case 10:	
+			strcpy (RowName, "PTRatio_Repeat_");
+			break;
+		case 11:	
+			strcpy (RowName, "PTRatio_Overall_");
+			break;
+		default:	
+			strcpy (RowName, "Error!!");
+			break;
 	}
 }
 

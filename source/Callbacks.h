@@ -43,6 +43,7 @@ extern int glbNumDataCols;
 // Global functions
 
 void GetDataFromListBoxes (IN int panel, char FactorSelection[][DATALENGTH], char DataSelection[][DATALENGTH], char LimitSelection[][DATALENGTH]);
+void GetANOVATableRowName (IN int RowNum, char *RowName);
 
 #ifdef __cplusplus
     }

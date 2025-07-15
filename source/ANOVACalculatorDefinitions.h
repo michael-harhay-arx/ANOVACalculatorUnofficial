@@ -23,6 +23,7 @@
 #define DATALENGTH 		(32)
 #define MAXFACTORCOLS	(3)
 #define MAXDATACOLS		(16)
+#define NUMDISPLAYROWS	(12)
 		
 //==============================================================================
 // Types

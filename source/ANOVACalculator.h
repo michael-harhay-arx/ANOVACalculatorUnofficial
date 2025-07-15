@@ -50,18 +50,9 @@ typedef struct RowStruct
 typedef struct ANOVAResult
 {
 	int numRows;
-	char factorCombos[10][32]; // Maximum 8 actual factor combos + equipment + total
-	double ssResults[10][MAXDATACOLS];
+	char factorCombos[10][DATALENGTH]; // Maximum 8 actual factor combos + equipment + total
+	//double ssResults[10][MAXDATACOLS];
 } ANOVAResult;
-
-// Factor element grouping struct
-/*
-typedef struct FactorElement
-{
-	char factorElement[32];
-	double dataValues[];
-} FactorMapping;
-*/
 
 //==============================================================================
 // External variables

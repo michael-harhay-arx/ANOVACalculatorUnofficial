@@ -132,11 +132,11 @@ void GetSSDataset (IN int Panel, char FactorRange[][DATALENGTH], char DataRange[
 	memset (ssSum, 0, sizeof (ssSum));
 		
 	// Init results struct
-	int glbNumMasks = 1 << glbNumFactorCols;
-	glbANOVAResult.numRows = glbNumMasks + 2;
+	int glbNumMasks = (1 << glbNumFactorCols) - 1;
+	glbANOVAResult.numRows = 12 * (glbNumMasks + 2);
 	
 	// Iterate through masks (factor combos), get SS results
-    for (int mask = 1; mask < glbNumMasks; mask++) 
+    for (int mask = 0; mask < glbNumMasks; mask++) 
 	{
         ComputeSSFactorCombo (dataset, mask, grandMeans, ssFactorCombos[mask]);
 		
@@ -148,12 +148,16 @@ void GetSSDataset (IN int Panel, char FactorRange[][DATALENGTH], char DataRange[
         
 		for (int col = 0; col < glbNumDataCols; col++) 
 		{
-			glbANOVAResult.ssResults[mask][col] = ssFactorCombos[mask][col];
+			//glbANOVAResult.ssResults[mask][col] = ssFactorCombos[mask][col];
             printf (" %.3f", ssFactorCombos[mask][col]);
             ssSum[col] += ssFactorCombos[mask][col];
         }
         printf("\n");
     }
+	
+	// Add equipment/total to factor combos list
+	strcpy (glbANOVAResult.factorCombos[glbNumMasks], "Equipment");
+	strcpy (glbANOVAResult.factorCombos[glbNumMasks + 1], "Total");
 	
 	// Error calculation
     printf ("SS[Residual/Error]:");
