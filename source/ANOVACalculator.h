@@ -51,7 +51,8 @@ typedef struct ANOVAResult
 {
 	int numRows;
 	char factorCombos[10][DATALENGTH]; // Maximum 8 actual factor combos + equipment + total
-	//double ssResults[10][MAXDATACOLS];
+	char dataColumns[MAXDATACOLS][DATALENGTH];
+	double ssResults[10][MAXDATACOLS];
 } ANOVAResult;
 
 //==============================================================================

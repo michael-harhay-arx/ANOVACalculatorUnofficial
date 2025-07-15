@@ -395,20 +395,39 @@ int CVICALLBACK CSVCalcButtonCB(int panel, int control, int event, void *callbac
 
 					SetTableCellVal (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, MakePoint (col + 1, row + 1), rowLabel);
 				}
+				
+				// If not first column, insert data
 				else
 				{
 					// Insert new data column
 					if (row == 0)
 					{
 						InsertTableColumns (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, -1, 1, VAL_CELL_NUMERIC); 
+						
+						int numCols = 0;
+						GetNumTableColumns (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, &numCols);
+						
 						SetTableColumnAttribute (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, col + 1, ATTR_USE_LABEL_TEXT, 1);
-						SetTableColumnAttribute (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, col + 1, ATTR_LABEL_TEXT, "Test");
+						SetTableColumnAttribute (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, col + 1, ATTR_LABEL_TEXT, glbANOVAResult.dataColumns[col - 1]);
 					}
 						
 					// Insert data
-					SetTableCellVal (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, MakePoint (col + 1, row + 1), (double) col);
+					double cellData = 0;
+					switch (row % NUMDISPLAYROWS)
+					{
+						case 0:
+							cellData = glbANOVAResult.ssResults[row / NUMDISPLAYROWS][col - 1];
+							break;
+							
+						default:
+							cellData = 0;
+					}
+					SetTableCellVal (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, MakePoint (col + 1, row + 1), cellData);
+						
 				}
 			}
+			
+			SetColumnWidthToWidestCellContents (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, col + 1);
 		}
 		
 		DisplayPanel (glbANOVAPanelHandle);

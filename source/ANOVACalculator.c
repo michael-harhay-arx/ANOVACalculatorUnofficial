@@ -111,6 +111,10 @@ void GetSSDataset (IN int Panel, char FactorRange[][DATALENGTH], char DataRange[
 		for (int col = 0; col < glbNumDataCols; col++)
 		{
 			strcpy (currentRow.data[col], glbCSVData[startRow + row - 1][dataColNumbers[col] - 1]);
+			if (row == 0)
+			{
+				strcpy (glbANOVAResult.dataColumns[col], currentRow.data[col]);
+			}
 		}
 		dataset[row] = currentRow;
 	}
@@ -141,16 +145,15 @@ void GetSSDataset (IN int Panel, char FactorRange[][DATALENGTH], char DataRange[
         ComputeSSFactorCombo (dataset, mask, grandMeans, ssFactorCombos[mask]);
 		
 		sprintf (glbANOVAResult.factorCombos[mask], "%d", mask); // TODO: Fix mask naming for table
-		
         printf ("SS["); 
 		printFactorComboName (mask); 
 		printf ("]:");
         
 		for (int col = 0; col < glbNumDataCols; col++) 
 		{
-			//glbANOVAResult.ssResults[mask][col] = ssFactorCombos[mask][col];
-            printf (" %.3f", ssFactorCombos[mask][col]);
-            ssSum[col] += ssFactorCombos[mask][col];
+			glbANOVAResult.ssResults[mask][col] = ssFactorCombos[mask][col];
+            printf (" %.3f", glbANOVAResult.ssResults[mask][col]);
+            ssSum[col] += glbANOVAResult.ssResults[mask][col];
         }
         printf("\n");
     }
