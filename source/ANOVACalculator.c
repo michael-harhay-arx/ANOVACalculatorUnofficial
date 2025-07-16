@@ -358,16 +358,19 @@ void ComputeDegreesFreedom ()
 	for (int fc = 1; fc <= glbANOVAResult.numRows / 12 - 2; fc++)
 	{
 	    int df = 1;
+		int numUniqueGroups = 1;
 		
 		for (int f = 0; f < glbNumFactorCols; f++) 
 		{
 			if (fc & (1 << f)) 
 			{
 				df *= glbNumUniqueFactorElements[f];
+				numUniqueGroups *= glbNumUniqueFactorElements[f];
 			}
 		}
 	
 		glbANOVAResult.degFrd[fc - 1] = df - 1;
+		glbANOVAResult.degFrdRepeat[fc - 1] = (glbDataColHeight - 1) - numUniqueGroups;
 	}
 }
 
@@ -381,6 +384,7 @@ void ComputeVariance ()
 	    for (int col = 0; col < glbNumDataCols; col++)
 		{
 			glbANOVAResult.variance[fc][col] = glbANOVAResult.ssResults[fc][col] / (double) glbANOVAResult.degFrd[fc];
+			glbANOVAResult.varianceRepeat[fc][col] = glbANOVAResult.ssResultsRepeat[fc][col] / (double) glbANOVAResult.degFrdRepeat[fc];
 		}
 	}
 }
@@ -395,6 +399,8 @@ void ComputeStdDev ()
 	    for (int col = 0; col < glbNumDataCols; col++)
 		{
 			glbANOVAResult.stdDev[fc][col] = sqrt (glbANOVAResult.variance[fc][col]);
+			glbANOVAResult.stdDevRepeat[fc][col] = sqrt (glbANOVAResult.varianceRepeat[fc][col]);
+			glbANOVAResult.stdDevOverall[fc][col] = sqrt (glbANOVAResult.variance[fc][col] + glbANOVAResult.varianceRepeat[fc][col]);
 		}
 	}
 }

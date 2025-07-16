@@ -438,6 +438,14 @@ int CVICALLBACK CSVCalcButtonCB(int panel, int control, int event, void *callbac
 							cellData = glbANOVAResult.stdDev[row / NUMDISPLAYROWS][col - 1];
 							break;
 							
+						case 7:
+							cellData = glbANOVAResult.stdDevRepeat[row / NUMDISPLAYROWS][col - 1];
+							break;
+							
+						case 8:
+							cellData = glbANOVAResult.stdDevOverall[row / NUMDISPLAYROWS][col - 1];
+							break;
+							
 						default:
 							cellData = 0;
 					}

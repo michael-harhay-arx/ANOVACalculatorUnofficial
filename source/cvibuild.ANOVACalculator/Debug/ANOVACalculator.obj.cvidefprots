@@ -46,15 +46,15 @@ SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c
 [ComputeVariance]
 Class="Function"
 Prototype="void ComputeVariance();"
-SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:377:1"
+SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:380:1"
 
 [ComputeStdDev]
 Class="Function"
 Prototype="void ComputeStdDev();"
-SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:391:1"
+SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:395:1"
 
 [ComputePTRatio]
 Class="Function"
 Prototype="void ComputePTRatio();"
-SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:405:1"
+SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:411:1"
 
