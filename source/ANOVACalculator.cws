@@ -48,9 +48,9 @@ Batch Build Debug = False
 [File 0001]
 Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/Callbacks.c"
 File Type = "CSource"
-Disk Date = 3835528924
+Disk Date = 3835537801
 In Projects = "1,"
-Source Window State = "1,385,385,385,99,99,99,0,0,0,0,0,0,0,0,0,354,0,385,99,401,686,1,0,"
+Source Window State = "1,430,430,430,34,34,34,0,0,0,0,0,0,0,0,0,395,0,430,34,401,686,1,0,"
 Window Top = 126
 Window Left = 58
 Window Z-Order = 1
@@ -58,22 +58,22 @@ Window Z-Order = 1
 [File 0002]
 Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/ANOVACalculator.c"
 File Type = "CSource"
-Disk Date = 3835528891
+Disk Date = 3835534664
 In Projects = "1,"
-Source Window State = "1,379,379,379,17,17,17,0,0,0,0,0,0,0,0,0,294,0,379,17,401,686,1,0,"
+Source Window State = "1,58,58,58,4,4,4,0,0,0,0,0,0,0,0,0,36,0,58,4,401,686,1,0,"
 Window Top = 95
 Window Left = 42
-Window Z-Order = 4
+Window Z-Order = 2
 
 [File 0003]
 Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/ANOVACalculator.h"
 File Type = "Include"
-Disk Date = 3835528697
+Disk Date = 3835534637
 In Projects = "1,"
-Source Window State = "1,46,46,46,50,50,50,0,0,0,0,0,0,0,0,0,26,0,46,50,401,686,1,0,"
+Source Window State = "1,74,74,74,117,117,117,0,0,0,0,0,0,0,0,0,45,0,74,117,401,686,1,0,"
 Window Top = 157
 Window Left = 74
-Window Z-Order = 2
+Window Z-Order = 3
 
 [File 0004]
 Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/Callbacks.h"
@@ -94,7 +94,7 @@ Window Top = 219
 Window Left = 106
 Window Height = 401
 Window Width = 630
-Window Z-Order = 3
+Window Z-Order = 4
 
 [File 0006]
 Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/ANOVAPanel.h"

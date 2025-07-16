@@ -383,7 +383,7 @@ int CVICALLBACK CSVCalcButtonCB(int panel, int control, int event, void *callbac
 				// If first column, insert rows and populate with stat names for each factor combo
 				if (col == 0)
 				{
-					InsertTableRows (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, -1, 1, VAL_USE_MASTER_CELL_TYPE);
+					InsertTableRows (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, -1, 1, VAL_CELL_STRING);
 					
 					char rowLabel[256] = {0};
 					GetANOVATableRowName (row % NUMDISPLAYROWS, rowLabel);
@@ -400,14 +400,13 @@ int CVICALLBACK CSVCalcButtonCB(int panel, int control, int event, void *callbac
 					{
 						InsertTableColumns (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, -1, 1, VAL_CELL_NUMERIC); 
 						
-						int numCols = 0;
-						GetNumTableColumns (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, &numCols);
-						
-						SetTableColumnAttribute (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, col + 1, ATTR_USE_LABEL_TEXT, 1);
-						SetTableColumnAttribute (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, col + 1, ATTR_LABEL_TEXT, glbANOVAResult.dataColumns[col - 1]);
+						SetTableColumnAttribute (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, -1, ATTR_USE_LABEL_TEXT, 1);
+						SetTableColumnAttribute (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, -1, ATTR_LABEL_TEXT, glbANOVAResult.dataColumns[col - 1]);
 					}
 						
 					// Insert data
+					SetTableCellAttribute (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, MakePoint (col + 1, row + 1), ATTR_FORMAT, VAL_SCIENTIFIC_FORMAT);
+					SetTableCellAttribute (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, MakePoint (col + 1, row + 1), ATTR_PRECISION, 3);
 					double cellData = 0;
 					switch (row % NUMDISPLAYROWS)
 					{
@@ -415,12 +414,28 @@ int CVICALLBACK CSVCalcButtonCB(int panel, int control, int event, void *callbac
 							cellData = glbANOVAResult.ssResults[row / NUMDISPLAYROWS][col - 1];
 							break;
 							
+						case 1:
+							cellData = glbANOVAResult.ssResultsRepeat[row / NUMDISPLAYROWS][col - 1];
+							break;
+							
 						case 2:
 							cellData = glbANOVAResult.degFrd[row / NUMDISPLAYROWS];
 							break;
 							
+						case 3:
+							cellData = glbANOVAResult.degFrdRepeat[row / NUMDISPLAYROWS];
+							break;
+							
 						case 4:
 							cellData = glbANOVAResult.variance[row / NUMDISPLAYROWS][col - 1];
+							break;
+							
+						case 5:
+							cellData = glbANOVAResult.varianceRepeat[row / NUMDISPLAYROWS][col - 1];
+							break;
+							
+						case 6:
+							cellData = glbANOVAResult.stdDev[row / NUMDISPLAYROWS][col - 1];
 							break;
 							
 						default:

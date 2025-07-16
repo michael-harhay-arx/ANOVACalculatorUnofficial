@@ -129,12 +129,6 @@ void ComputeANOVA (IN int Panel, char FactorRange[][DATALENGTH], char DataRange[
 	double ssTotal[glbNumDataCols];
 	memset (ssTotal, 0, sizeof (ssTotal));
 	ComputeTotalSS (dataset, grandMeans, ssTotal);
-	
-	// Init other SS arrays
-	double ssFactorCombos[8][glbNumDataCols];
-	memset (ssFactorCombos, 0, sizeof (ssFactorCombos));
-    double ssSum[glbNumDataCols];
-	memset (ssSum, 0, sizeof (ssSum));
 		
 	// Init results struct
 	int glbNumMasks = (1 << glbNumFactorCols) - 1;
@@ -147,31 +141,21 @@ void ComputeANOVA (IN int Panel, char FactorRange[][DATALENGTH], char DataRange[
 		char factorComboName[256] = {0};
 		GetFactorComboName (dataset, mask, factorComboName);
 		strcpy (glbANOVAResult.factorCombos[mask - 1], factorComboName);
-        printf ("SS[%s]:", factorComboName); 
 		
 		// Get SS results for specific factor combo
-        ComputeSSFactorCombo (dataset, mask, grandMeans, ssFactorCombos[mask - 1]);
-		
-        // Print SS results for factor combo
-		for (int col = 0; col < glbNumDataCols; col++) 
-		{
-			glbANOVAResult.ssResults[mask - 1][col] = ssFactorCombos[mask - 1][col];
-            printf (" %.3f", glbANOVAResult.ssResults[mask - 1][col]);
-            ssSum[col] += glbANOVAResult.ssResults[mask - 1][col];
-        }
-        printf("\n");
+        ComputeSSFactorCombo (dataset, mask, grandMeans, glbANOVAResult.ssResults[mask - 1], glbANOVAResult.ssResultsRepeat[mask - 1]);
     }
 	
 	// Add equipment/total to factor combos list
 	strcpy (glbANOVAResult.factorCombos[glbNumMasks], "Equipment");
 	strcpy (glbANOVAResult.factorCombos[glbNumMasks + 1], "Total");
 	
-	// Compute degrees of freedom
+	// Compute various stats
 	ComputeNumUniqueFactorElements (dataset);
 	ComputeDegreesFreedom ();
-	
-	// Compute variance
-	ComputeVariance();
+	ComputeVariance ();
+	ComputeStdDev ();
+	ComputePTRatio ();
 }
 
 /***************************************************************************//*!
@@ -245,7 +229,7 @@ int MatchOnMask (RowStruct RowA, RowStruct RowB, int Mask)
 * \param [in] GrandMeans			A list containing the grand mean for each column
 * \param [in] SSOut					A list containing the SS for the chosen factor combo
 *******************************************************************************/
-void ComputeSSFactorCombo (RowStruct Dataset[], IN int Mask, double *GrandMeans, double *SSOut) 
+void ComputeSSFactorCombo (RowStruct Dataset[], IN int Mask, double *GrandMeans, double *SSOut, double *SSOutRepeat) 
 {
     int visited[glbDataColHeight];
 	memset (visited, 0, sizeof (visited));
@@ -261,6 +245,8 @@ void ComputeSSFactorCombo (RowStruct Dataset[], IN int Mask, double *GrandMeans,
         // Accumulate all rows matching this group
         double sum[MAXDATACOLS] = {0};
         int count = 0;
+		int matchedRows[glbDataColHeight];
+    	int matchedCount = 0;
 
         for (int subRow = 1; subRow < glbDataColHeight; subRow++) 
 		{
@@ -268,19 +254,34 @@ void ComputeSSFactorCombo (RowStruct Dataset[], IN int Mask, double *GrandMeans,
 			{				
                 for (int col = 0; col < glbNumDataCols; col++) 
 				{
-                    sum[col] += (double) atof (Dataset[subRow].data[col]);
+                    sum[col] += atof (Dataset[subRow].data[col]);
                 }
-                count++;
+				matchedRows[matchedCount++] = subRow;
                 visited[subRow] = 1;
+				count++;
             }
         }
-
+		
+		// Calculate group mean (SSOut)
+		double groupMean[MAXDATACOLS] = {0};
         for (int col = 0; col < glbNumDataCols; col++) 
 		{
-            double groupMean = sum[col] / count;
-            double diff = groupMean - GrandMeans[col];
+            groupMean[col] = sum[col] / count;
+            double diff = groupMean[col] - GrandMeans[col];
             SSOut[col] += count * diff * diff;
         }
+		
+		// Calculate within-group mean (SSOutRepeat)
+		for (int i = 0; i < matchedCount; i++) 
+		{
+	        int rowIdx = matchedRows[i];
+	        for (int col = 0; col < glbNumDataCols; col++) 
+			{
+	            double val = atof (Dataset[rowIdx].data[col]);
+	            double diff = val - groupMean[col];
+	            SSOutRepeat[col] += diff * diff;
+	        }
+	    }
     }
 }
 
@@ -382,4 +383,26 @@ void ComputeVariance ()
 			glbANOVAResult.variance[fc][col] = glbANOVAResult.ssResults[fc][col] / (double) glbANOVAResult.degFrd[fc];
 		}
 	}
+}
+
+/***************************************************************************//*!
+* \brief Compute std dev for each factor combo
+*******************************************************************************/
+void ComputeStdDev ()
+{
+	for (int fc = 0; fc < glbANOVAResult.numRows / 12 - 2; fc++)
+	{
+	    for (int col = 0; col < glbNumDataCols; col++)
+		{
+			glbANOVAResult.stdDev[fc][col] = sqrt (glbANOVAResult.variance[fc][col]);
+		}
+	}
+}
+
+/***************************************************************************//*!
+* \brief Compute PT Ratio for each factor combo
+*******************************************************************************/
+void ComputePTRatio ()
+{
+	return;
 }
