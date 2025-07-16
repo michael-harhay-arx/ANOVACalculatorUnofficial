@@ -80,7 +80,7 @@ void ComputeNumUniqueFactorElements(RowStruct Dataset[]);
 void ComputeDegreesFreedom ();
 void ComputeVariance ();
 void ComputeStdDev ();
-void ComputePTRatio ();
+void ComputePTRatio (double LimitList[][2]);
 
 #ifdef __cplusplus
     }

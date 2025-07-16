@@ -446,6 +446,18 @@ int CVICALLBACK CSVCalcButtonCB(int panel, int control, int event, void *callbac
 							cellData = glbANOVAResult.stdDevOverall[row / NUMDISPLAYROWS][col - 1];
 							break;
 							
+						case 9:
+							cellData = glbANOVAResult.ptRatio[row / NUMDISPLAYROWS][col - 1];
+							break;
+							
+						case 10:
+							cellData = glbANOVAResult.ptRatioRepeat[row / NUMDISPLAYROWS][col - 1];
+							break;
+							
+						case 11:
+							cellData = glbANOVAResult.ptRatioOverall[row / NUMDISPLAYROWS][col - 1];
+							break;
+							
 						default:
 							cellData = 0;
 					}

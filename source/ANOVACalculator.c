@@ -81,21 +81,25 @@ void ComputeANOVA (IN int Panel, char FactorRange[][DATALENGTH], char DataRange[
 	memset (factorColNumbers, 0, sizeof (factorColNumbers));
 	int dataColNumbers[glbNumDataCols];
 	memset (dataColNumbers, 0, sizeof (dataColNumbers));
+	int limitColNumbers[glbNumDataCols];
+	memset (limitColNumbers, 0, sizeof (limitColNumbers));
 	
 	int startRow = 0;
 	int endCol = 0;	
 	int endRow = 0;
+	int limitStartRow = 0;
 	
 	for (int i = 0; i < glbNumFactorCols; ++i)
 	{
 		sscanf (FactorRange[i], "C%dR%d:C%dR%d", factorColNumbers + i, &startRow, &endCol, &endRow);
 	}
 	
-	glbDataColHeight = endRow - startRow + 1;
+	glbDataColHeight = endRow - startRow + 1;	
 	
 	for (int i = 0; i < glbNumDataCols; i++)
 	{
 		sscanf (DataRange[i], "C%d", dataColNumbers + i);
+		sscanf (LimitRange[i], "C%dR%d", limitColNumbers + i, &limitStartRow);
 	}
 	
 	// Build list of RowStructs
@@ -118,6 +122,18 @@ void ComputeANOVA (IN int Panel, char FactorRange[][DATALENGTH], char DataRange[
 			}
 		}
 		dataset[row] = currentRow;
+	}
+	
+	// Get limits
+	double limitList[glbNumDataCols][2];
+	memset (limitList, 0, sizeof (limitList));
+	
+	for (int col = 0; col < glbNumDataCols; col++)
+	{
+		for (int row = 0; row < 2; row++)
+		{
+			limitList[col][row] = atof (glbCSVData[limitStartRow + row - 1][limitColNumbers[col] - 1]);
+		}
 	}
 	
 	// Get grand means
@@ -155,7 +171,7 @@ void ComputeANOVA (IN int Panel, char FactorRange[][DATALENGTH], char DataRange[
 	ComputeDegreesFreedom ();
 	ComputeVariance ();
 	ComputeStdDev ();
-	ComputePTRatio ();
+	ComputePTRatio (limitList);
 }
 
 /***************************************************************************//*!
@@ -407,8 +423,20 @@ void ComputeStdDev ()
 
 /***************************************************************************//*!
 * \brief Compute PT Ratio for each factor combo
+*
+* \param [in] LimitList				A list containing limits for each data column
 *******************************************************************************/
-void ComputePTRatio ()
+void ComputePTRatio (double LimitList[][2])
 {
-	return;
+	for (int fc = 0; fc < glbANOVAResult.numRows / 12 - 2; fc++)
+	{
+	    for (int col = 0; col < glbNumDataCols; col++)
+		{
+			double limitDiff = abs (LimitList[col][1] - LimitList[col][0]);
+			
+			glbANOVAResult.ptRatio[fc][col] = 6 * glbANOVAResult.stdDev[fc][col] / limitDiff;
+			glbANOVAResult.ptRatioRepeat[fc][col] = 6 * glbANOVAResult.stdDevRepeat[fc][col] / limitDiff;
+			glbANOVAResult.ptRatioOverall[fc][col] = 6 * glbANOVAResult.stdDevOverall[fc][col] / limitDiff;
+		}
+	}
 }
