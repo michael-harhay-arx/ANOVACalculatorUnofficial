@@ -31,6 +31,7 @@
 
 #include "toolbox.h"
 #include <ansi_c.h>
+#include <time.h>
 
 #include "Callbacks.h"
 #include "CSVParse_LIB.h"
@@ -66,6 +67,10 @@ char ***glbCSVData= NULL;
 int glbNumRows = 0;
 int glbNumFactorCols = 0;
 int glbNumDataCols = 0;
+
+char glbFactorRange[MAXFACTORCOLS][DATALENGTH] = {0};
+char glbDataRange[MAXDATACOLS][DATALENGTH] = {0};
+char glbLimitRange[MAXDATACOLS][DATALENGTH] = {0};
 
 //==============================================================================
 // Global functions
@@ -362,18 +367,10 @@ int CVICALLBACK CSVCalcButtonCB(int panel, int control, int event, void *callbac
 		GetNumListItems (panel, CSVPANEL_DATALIST, &glbNumDataCols);
 		
 		// Get factors/data/limits from UI list boxes
-		char factorRange[glbNumFactorCols][DATALENGTH];
-		char dataRange[glbNumDataCols][DATALENGTH];
-		char limitRange[glbNumDataCols][DATALENGTH];
-
-		memset (factorRange, 0, sizeof(factorRange));     
-		memset (dataRange, 0, sizeof(dataRange));     
-		memset (limitRange, 0, sizeof(limitRange));     
-		
-		GetDataFromListBoxes (panel, factorRange, dataRange, limitRange);
+		GetDataFromListBoxes (panel, glbFactorRange, glbDataRange, glbLimitRange);
 
 		// Parse selected factors/data/limits
-		ComputeANOVA (panel, factorRange, dataRange, limitRange); // TODO add support for multi-col data selections... but can assume factors are one col
+		ComputeANOVA (panel, glbFactorRange, glbDataRange, glbLimitRange); // TODO add support for multi-col data selections... but can assume factors are one col
 		
 		// Load calculation results into ANOVA table
 		for (int col = 0; col < glbNumDataCols + 1; col++)
@@ -567,6 +564,45 @@ void GetANOVATableRowName (IN int RowNum, char *RowName)
 			strcpy (RowName, "Error!!");
 			break;
 	}
+}
+
+/***************************************************************************//*!
+* \brief Callback for save button
+*******************************************************************************/
+int CVICALLBACK ANOVASaveButtonCB (int panel, int control, int event, void *callbackData, int eventData1, int eventData2)
+{
+	if (event == EVENT_LEFT_CLICK)
+	{
+		// Save current data to struct
+		SaveData data;
+		memset (&data, 0, sizeof (data)); 
+		data.csvData = glbCSVData; // TODO, fix saving
+		data.numRows = glbNumRows;
+		data.numFactorCols = glbNumFactorCols;
+		data.numDataCols = glbNumDataCols;
+		memcpy (data.factorRange, glbFactorRange, MAXFACTORCOLS * DATALENGTH);
+		memcpy (data.dataRange, glbDataRange, MAXDATACOLS * DATALENGTH);
+		memcpy (data.limitRange, glbLimitRange, MAXDATACOLS * DATALENGTH);
+		data.anovaResult = glbANOVAResult; // TODO, fix saving?
+		
+		// Save struct to file
+		char filename[256] = {0};
+		time_t now = time(NULL);
+		struct tm *t = localtime(&now);
+		strftime(filename, 256, ".\\saves\\%Y-%m-%d_%H-%M-%S.anova", t);
+		
+		FILE *fp = fopen(filename, "wb");
+	    if (!fp) 
+		{
+	        perror("Error opening file");
+	        return 1;
+	    }
+		
+	    fwrite (&data, sizeof(SaveData), 1, fp);
+	    fclose (fp);
+	}
+	
+	return 0;
 }
 
 /***************************************************************************//*!

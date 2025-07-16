@@ -66,7 +66,7 @@ Error:
 }
 
 /***************************************************************************//*!
-* \brief Parse through CSV table selections and prepare data for calculations
+* \brief Parse through CSV data and perform ANOVA calculations
 *
 * \param [in] Panel					The current panel
 * \param [in] FactorRange			The factor range, in format CxRx:CxRx. Factor ranges can be assumed to only be single columns

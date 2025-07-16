@@ -6,7 +6,7 @@ SoftwareRev 5.00,,,,,,,Description,,"DUTS 1 TO 5, 5 DUTS",,
 ,,,,,,,LowLim,,80,4,-1
 ,,,,,,,HighLim,,95,7,1
 ,,,,,,,Units,,Percent,PSI,Sccm
-Date,Time,Test Time,Well,Part,Tests Failed,MIS#,Pass/Fail,Fail Test#,,,
+Date,Time,Test Time,Well,Part,Tests Failed,MIS#,Pass/Fail,Fail Test#,,Diff_Pressure,Leak_Rate
 2025-07-02,0:32:22,21.65,Right,1,0,10001,PASS,,112.069046,4.954883,0.019558
 2025-07-02,0:33:00,21.65,Right,2,0,10002,PASS,,88.40696,5.575065,0.012293
 2025-07-02,0:33:41,21.65,Right,3,0,10003,PASS,,88.439713,5.573174,0.012852

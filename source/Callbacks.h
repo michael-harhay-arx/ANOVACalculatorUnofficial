@@ -31,6 +31,21 @@
 //==============================================================================
 // Types
 		
+typedef struct SaveData
+{
+	char ***csvData;
+	
+	int numRows;
+	int numFactorCols;
+	int numDataCols;
+
+	char factorRange[MAXFACTORCOLS][DATALENGTH];
+	char dataRange[MAXDATACOLS][DATALENGTH];
+	char limitRange[MAXDATACOLS][DATALENGTH];
+	
+	ANOVAResult anovaResult;
+} SaveData;
+		
 //==============================================================================
 // External variables
 		
