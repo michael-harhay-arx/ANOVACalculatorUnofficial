@@ -373,10 +373,7 @@ int CVICALLBACK CSVCalcButtonCB(int panel, int control, int event, void *callbac
 		GetDataFromListBoxes (panel, factorRange, dataRange, limitRange);
 
 		// Parse selected factors/data/limits
-		GetSSDataset (panel, factorRange, dataRange, limitRange); // TODO add support for multi-col data selections... but can assume factors are one col
-		
-		// Perform calculations
-		//tsErrChk (ComputeANOVA (), errmsg);
+		ComputeANOVA (panel, factorRange, dataRange, limitRange); // TODO add support for multi-col data selections... but can assume factors are one col
 		
 		// Load calculation results into ANOVA table
 		for (int col = 0; col < glbNumDataCols + 1; col++)
@@ -416,6 +413,10 @@ int CVICALLBACK CSVCalcButtonCB(int panel, int control, int event, void *callbac
 					{
 						case 0:
 							cellData = glbANOVAResult.ssResults[row / NUMDISPLAYROWS][col - 1];
+							break;
+							
+						case 2:
+							cellData = glbANOVAResult.degFrd[row / NUMDISPLAYROWS];
 							break;
 							
 						default:

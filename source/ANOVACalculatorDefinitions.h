@@ -24,6 +24,7 @@
 #define MAXFACTORCOLS	(3)
 #define MAXDATACOLS		(16)
 #define NUMDISPLAYROWS	(12)
+#define MAXFACTORCOMBOS (10) // Maximum 8 actual factor combos + equipment + total
 		
 //==============================================================================
 // Types

@@ -39,14 +39,14 @@ typedef struct RowStruct
 typedef struct ANOVAResult
 {
 	int numRows;
-	char factorCombos[10][DATALENGTH]; // Maximum 8 actual factor combos + equipment + total
+	char factorCombos[MAXFACTORCOMBOS][DATALENGTH];
 	char dataColumns[MAXDATACOLS][DATALENGTH];
 	
-	double ssResults[10][MAXDATACOLS];
-	int degFrd[10][MAXDATACOLS];
-	double variance[10][MAXDATACOLS];
-	double stdDev[10][MAXDATACOLS];
-	double ptRatio[10][MAXDATACOLS];
+	double ssResults[MAXFACTORCOMBOS][MAXDATACOLS];
+	int degFrd[MAXFACTORCOMBOS];
+	double variance[MAXFACTORCOMBOS][MAXDATACOLS];
+	double stdDev[MAXFACTORCOMBOS][MAXDATACOLS];
+	double ptRatio[MAXFACTORCOMBOS][MAXDATACOLS];
 } ANOVAResult;
 
 //==============================================================================
@@ -58,17 +58,17 @@ extern ANOVAResult glbANOVAResult;
 //==============================================================================
 // Global functions
 
-// Calculation process
-void GetSSDataset (IN int Panel, char FactorRange[][DATALENGTH], char DataRange[][DATALENGTH], char LimitRange[][DATALENGTH]);
+// Main calc function
+void ComputeANOVA (IN int Panel, char FactorRange[][DATALENGTH], char DataRange[][DATALENGTH], char LimitRange[][DATALENGTH]);
 
 // Helpers
 void ComputeGrandMeans (RowStruct Dataset[], double GrandMeans[]);
 void ComputeTotalSS (RowStruct Dataset[], double GrandMeans[], double SSTotal[]);
-int matchOnMask (RowStruct RowA, RowStruct RowB, int Mask);
+int MatchOnMask (RowStruct RowA, RowStruct RowB, int Mask);
 void ComputeSSFactorCombo (RowStruct Dataset[], IN int Mask, double *GrandMeans, double *ssOut);
-void getFactorComboName (IN RowStruct Dataset[], IN int Mask, char *FactorComboName);
-
-int ComputeANOVA ();
+void GetFactorComboName (IN RowStruct Dataset[], IN int Mask, char *FactorComboName);
+void ComputeNumUniqueFactorElements(RowStruct Dataset[]);
+void ComputeDegreesFreedom ();
 
 #ifdef __cplusplus
     }

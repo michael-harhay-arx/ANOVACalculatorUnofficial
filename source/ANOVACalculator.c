@@ -37,6 +37,7 @@ static int panelHandle = 0;
 
 int glbDataColHeight = 0;
 int glbNumMasks = 0;
+int glbNumUniqueFactorElements[MAXFACTORCOLS] = {0};
 ANOVAResult glbANOVAResult = {0};
 
 //==============================================================================
@@ -73,7 +74,7 @@ Error:
 * \param [in] LimitRange			The limit range, in format CxRx:CxRx
 * \param [out] TreeRoot				Root of tree containing all data nodes, ready for ANOVA
 *******************************************************************************/
-void GetSSDataset (IN int Panel, char FactorRange[][DATALENGTH], char DataRange[][DATALENGTH], char LimitRange[][DATALENGTH])
+void ComputeANOVA (IN int Panel, char FactorRange[][DATALENGTH], char DataRange[][DATALENGTH], char LimitRange[][DATALENGTH])
 {
 	// Parse ranges
 	int factorColNumbers[glbNumFactorCols];
@@ -144,7 +145,7 @@ void GetSSDataset (IN int Panel, char FactorRange[][DATALENGTH], char DataRange[
 	{
 		// Get factor combo name
 		char factorComboName[256] = {0};
-		getFactorComboName (dataset, mask, factorComboName);
+		GetFactorComboName (dataset, mask, factorComboName);
 		strcpy (glbANOVAResult.factorCombos[mask - 1], factorComboName);
         printf ("SS[%s]:", factorComboName); 
 		
@@ -164,6 +165,10 @@ void GetSSDataset (IN int Panel, char FactorRange[][DATALENGTH], char DataRange[
 	// Add equipment/total to factor combos list
 	strcpy (glbANOVAResult.factorCombos[glbNumMasks], "Equipment");
 	strcpy (glbANOVAResult.factorCombos[glbNumMasks + 1], "Total");
+	
+	// Get degrees of freedom
+	ComputeNumUniqueFactorElements (dataset);
+	ComputeDegreesFreedom ();
 }
 
 /***************************************************************************//*!
@@ -217,7 +222,7 @@ void ComputeTotalSS (RowStruct Dataset[], double GrandMeans[], double SSTotal[])
 * \param [in] RowB					Second RowStruct to be compared
 * \param [in] Mask					Effect mask
 *******************************************************************************/
-int matchOnMask (RowStruct RowA, RowStruct RowB, int Mask) 
+int MatchOnMask (RowStruct RowA, RowStruct RowB, int Mask) 
 {
     for (int factor = 0; factor < glbNumFactorCols; factor++) 
 	{
@@ -256,7 +261,7 @@ void ComputeSSFactorCombo (RowStruct Dataset[], IN int Mask, double *GrandMeans,
 
         for (int subRow = 1; subRow < glbDataColHeight; subRow++) 
 		{
-            if (matchOnMask (Dataset[row], Dataset[subRow], Mask)) 
+            if (MatchOnMask (Dataset[row], Dataset[subRow], Mask)) 
 			{				
                 for (int col = 0; col < glbNumDataCols; col++) 
 				{
@@ -283,7 +288,7 @@ void ComputeSSFactorCombo (RowStruct Dataset[], IN int Mask, double *GrandMeans,
 * \param [in] Mask					Factor combo mask
 * \param [in] FactorComboName		Factor combo name
 *******************************************************************************/
-void getFactorComboName (IN RowStruct Dataset[], IN int Mask, char *FactorComboName)
+void GetFactorComboName (IN RowStruct Dataset[], IN int Mask, char *FactorComboName)
 {
     if (Mask == 0) 
 	{ 
@@ -307,9 +312,57 @@ void getFactorComboName (IN RowStruct Dataset[], IN int Mask, char *FactorComboN
 }
 
 /***************************************************************************//*!
-* \brief Perform ANOVA calculations
+* \brief Get degrees of freedom for each factor combo
+*
+* \param [in] Dataset				A dataset of RowStructs
 *******************************************************************************/
-int ComputeANOVA ()
+void ComputeNumUniqueFactorElements(RowStruct Dataset[]) 
 {
-	return 0;
+	char seen[glbNumFactorCols][glbDataColHeight][DATALENGTH];
+	memset (seen, 0, sizeof (seen));
+	
+	// Iterate through factors
+    for (int f = 0; f < glbNumFactorCols; f++) 
+	{
+		
+		// For each factor, get number of unique values
+		for (int row = 1; row < glbDataColHeight; row++) 
+		{
+			int alreadySeen = 0;
+			for (int seenVal = 0; seenVal < glbNumUniqueFactorElements[f]; seenVal++)
+			{
+	            if (strcmp (seen[f][seenVal], Dataset[row].factors[f]) == 0) 
+				{
+	                alreadySeen = 1; 
+	            }
+			}
+			
+			if (alreadySeen == 0)
+			{
+				strcpy (seen[f][glbNumUniqueFactorElements[f]], Dataset[row].factors[f]);
+				glbNumUniqueFactorElements[f]++;
+			}
+        }
+    }
+}
+
+/***************************************************************************//*!
+* \brief Get degrees of freedom for each factor combo
+*******************************************************************************/
+void ComputeDegreesFreedom ()
+{
+	for (int fc = 1; fc <= glbANOVAResult.numRows / 12 - 2; fc++)
+	{
+	    int df = 1;
+		
+		for (int f = 0; f < glbNumFactorCols; f++) 
+		{
+			if (fc & (1 << f)) 
+			{
+				df *= glbNumUniqueFactorElements[f];
+			}
+		}
+	
+		glbANOVAResult.degFrd[fc - 1] = df - 1;
+	}
 }
