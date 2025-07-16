@@ -373,11 +373,10 @@ int CVICALLBACK CSVCalcButtonCB(int panel, int control, int event, void *callbac
 		GetDataFromListBoxes (panel, factorRange, dataRange, limitRange);
 
 		// Parse selected factors/data/limits
-		ANOVANode *treeRoot = CreateANOVANode ("Root");
-		GetSSDataset (panel, factorRange, dataRange, limitRange, treeRoot); // TODO add support for multi-col data selections... but can assume factors are one col
+		GetSSDataset (panel, factorRange, dataRange, limitRange); // TODO add support for multi-col data selections... but can assume factors are one col
 		
 		// Perform calculations
-		//tsErrChk (ComputeANOVA (treeRoot), errmsg);
+		//tsErrChk (ComputeANOVA (), errmsg);
 		
 		// Load calculation results into ANOVA table
 		for (int col = 0; col < glbNumDataCols + 1; col++)
@@ -389,7 +388,7 @@ int CVICALLBACK CSVCalcButtonCB(int panel, int control, int event, void *callbac
 				{
 					InsertTableRows (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, -1, 1, VAL_USE_MASTER_CELL_TYPE);
 					
-					char rowLabel[32] = {0};
+					char rowLabel[256] = {0};
 					GetANOVATableRowName (row % NUMDISPLAYROWS, rowLabel);
 					strcat (rowLabel, glbANOVAResult.factorCombos[row / NUMDISPLAYROWS]);
 

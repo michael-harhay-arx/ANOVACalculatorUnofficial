@@ -28,17 +28,6 @@
 //==============================================================================
 // Types
 
-// Node in ANOVA tree
-typedef struct ANOVANode
-{
-	char key[DATALENGTH];
-	int numValues;
-	double *values;
-	
-	int numChildren;
-	struct ANOVANode **children;
-} ANOVANode;
-
 // Row in data table
 typedef struct RowStruct
 {
@@ -52,7 +41,12 @@ typedef struct ANOVAResult
 	int numRows;
 	char factorCombos[10][DATALENGTH]; // Maximum 8 actual factor combos + equipment + total
 	char dataColumns[MAXDATACOLS][DATALENGTH];
+	
 	double ssResults[10][MAXDATACOLS];
+	int degFrd[10][MAXDATACOLS];
+	double variance[10][MAXDATACOLS];
+	double stdDev[10][MAXDATACOLS];
+	double ptRatio[10][MAXDATACOLS];
 } ANOVAResult;
 
 //==============================================================================
@@ -65,20 +59,16 @@ extern ANOVAResult glbANOVAResult;
 // Global functions
 
 // Calculation process
-void GetSSDataset (IN int Panel, char FactorRange[][DATALENGTH], char DataRange[][DATALENGTH], char LimitRange[][DATALENGTH], ANOVANode *TreeRoot);
+void GetSSDataset (IN int Panel, char FactorRange[][DATALENGTH], char DataRange[][DATALENGTH], char LimitRange[][DATALENGTH]);
+
+// Helpers
 void ComputeGrandMeans (RowStruct Dataset[], double GrandMeans[]);
 void ComputeTotalSS (RowStruct Dataset[], double GrandMeans[], double SSTotal[]);
-int matchOnMask (RowStruct *RowA, RowStruct *RowB, int Mask);
-void ComputeSSFactorCombo (RowStruct Dataset[], int Mask, double *GrandMeans, double *ssOut);
-void printFactorComboName (int Mask);
+int matchOnMask (RowStruct RowA, RowStruct RowB, int Mask);
+void ComputeSSFactorCombo (RowStruct Dataset[], IN int Mask, double *GrandMeans, double *ssOut);
+void getFactorComboName (IN RowStruct Dataset[], IN int Mask, char *FactorComboName);
 
-int ComputeANOVA (ANOVANode *TreeRoot);
-
-// ANOVANode helpers
-void BuildANOVATree (IN int Panel, IN char FactorRange[][DATALENGTH], ANOVANode *CurrentRoot, int Level);
-ANOVANode *CreateANOVANode (IN char Key[DATALENGTH]);
-void AddNodeValue (ANOVANode *Node, IN double Value);
-void AddChildNode (ANOVANode *ParentNode, ANOVANode *ChildNode);
+int ComputeANOVA ();
 
 #ifdef __cplusplus
     }

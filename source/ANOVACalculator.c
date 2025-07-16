@@ -73,7 +73,7 @@ Error:
 * \param [in] LimitRange			The limit range, in format CxRx:CxRx
 * \param [out] TreeRoot				Root of tree containing all data nodes, ready for ANOVA
 *******************************************************************************/
-void GetSSDataset (IN int Panel, char FactorRange[][DATALENGTH], char DataRange[][DATALENGTH], char LimitRange[][DATALENGTH], ANOVANode *TreeRoot)
+void GetSSDataset (IN int Panel, char FactorRange[][DATALENGTH], char DataRange[][DATALENGTH], char LimitRange[][DATALENGTH])
 {
 	// Parse ranges
 	int factorColNumbers[glbNumFactorCols];
@@ -139,21 +139,24 @@ void GetSSDataset (IN int Panel, char FactorRange[][DATALENGTH], char DataRange[
 	int glbNumMasks = (1 << glbNumFactorCols) - 1;
 	glbANOVAResult.numRows = 12 * (glbNumMasks + 2);
 	
-	// Iterate through masks (factor combos), get SS results
-    for (int mask = 0; mask < glbNumMasks; mask++) 
+	// Iterate through masks (factor combos)
+    for (int mask = 1; mask <= glbNumMasks; mask++) 
 	{
-        ComputeSSFactorCombo (dataset, mask, grandMeans, ssFactorCombos[mask]);
+		// Get factor combo name
+		char factorComboName[256] = {0};
+		getFactorComboName (dataset, mask, factorComboName);
+		strcpy (glbANOVAResult.factorCombos[mask - 1], factorComboName);
+        printf ("SS[%s]:", factorComboName); 
 		
-		sprintf (glbANOVAResult.factorCombos[mask], "%d", mask); // TODO: Fix mask naming for table
-        printf ("SS["); 
-		printFactorComboName (mask); 
-		printf ("]:");
-        
+		// Get SS results for specific factor combo
+        ComputeSSFactorCombo (dataset, mask, grandMeans, ssFactorCombos[mask - 1]);
+		
+        // Print SS results for factor combo
 		for (int col = 0; col < glbNumDataCols; col++) 
 		{
-			glbANOVAResult.ssResults[mask][col] = ssFactorCombos[mask][col];
-            printf (" %.3f", glbANOVAResult.ssResults[mask][col]);
-            ssSum[col] += glbANOVAResult.ssResults[mask][col];
+			glbANOVAResult.ssResults[mask - 1][col] = ssFactorCombos[mask - 1][col];
+            printf (" %.3f", glbANOVAResult.ssResults[mask - 1][col]);
+            ssSum[col] += glbANOVAResult.ssResults[mask - 1][col];
         }
         printf("\n");
     }
@@ -161,18 +164,6 @@ void GetSSDataset (IN int Panel, char FactorRange[][DATALENGTH], char DataRange[
 	// Add equipment/total to factor combos list
 	strcpy (glbANOVAResult.factorCombos[glbNumMasks], "Equipment");
 	strcpy (glbANOVAResult.factorCombos[glbNumMasks + 1], "Total");
-	
-	// Error calculation
-    printf ("SS[Residual/Error]:");
-    for (int col = 0; col < glbNumDataCols; col++) 
-	{
-        ssFactorCombos[0][col] = ssTotal[col] - ssSum[col];
-        printf (" %.3f", ssFactorCombos[0][col]);
-    }
-    printf("\n");
-			
-	// Build ANOVA tree
-	//BuildANOVATree (Panel, FactorRange, TreeRoot, 0);
 }
 
 /***************************************************************************//*!
@@ -184,7 +175,7 @@ void GetSSDataset (IN int Panel, char FactorRange[][DATALENGTH], char DataRange[
 void ComputeGrandMeans (RowStruct Dataset[], double GrandMeans[])
 {	
 	// Sum data from each column
-    for (int row = 0; row < glbDataColHeight; row++) 
+    for (int row = 1; row < glbDataColHeight; row++) 
 	{
         for (int col = 0; col < glbNumDataCols; col++) 
 		{
@@ -195,7 +186,7 @@ void ComputeGrandMeans (RowStruct Dataset[], double GrandMeans[])
 	// Calculate grand means
     for (int col = 0; col < glbNumDataCols; col++) 
 	{
-        GrandMeans[col] /= glbDataColHeight;
+        GrandMeans[col] /= (glbDataColHeight - 1);
     }
 }
 
@@ -209,7 +200,7 @@ void ComputeGrandMeans (RowStruct Dataset[], double GrandMeans[])
 void ComputeTotalSS (RowStruct Dataset[], double GrandMeans[], double SSTotal[])
 {	
 	// Get total SS for each column
-    for (int row = 0; row < glbDataColHeight; row++) 
+    for (int row = 1; row < glbDataColHeight; row++) 
 	{
         for (int col = 0; col < glbNumDataCols; col++) 
 		{
@@ -226,11 +217,11 @@ void ComputeTotalSS (RowStruct Dataset[], double GrandMeans[], double SSTotal[])
 * \param [in] RowB					Second RowStruct to be compared
 * \param [in] Mask					Effect mask
 *******************************************************************************/
-int matchOnMask (RowStruct *RowA, RowStruct *RowB, int Mask) 
+int matchOnMask (RowStruct RowA, RowStruct RowB, int Mask) 
 {
     for (int factor = 0; factor < glbNumFactorCols; factor++) 
 	{
-        if ((Mask & (1 << factor)) && (RowA->factors[factor] != RowB->factors[factor])) 
+        if ((Mask & (1 << factor)) && (strcmp (RowA.factors[factor], RowB.factors[factor]) != 0)) 
 		{
             return 0;
         }
@@ -246,12 +237,12 @@ int matchOnMask (RowStruct *RowA, RowStruct *RowB, int Mask)
 * \param [in] GrandMeans			A list containing the grand mean for each column
 * \param [in] SSOut					A list containing the SS for the chosen factor combo
 *******************************************************************************/
-void ComputeSSFactorCombo (RowStruct Dataset[], int Mask, double *GrandMeans, double *SSOut) 
+void ComputeSSFactorCombo (RowStruct Dataset[], IN int Mask, double *GrandMeans, double *SSOut) 
 {
     int visited[glbDataColHeight];
 	memset (visited, 0, sizeof (visited));
 
-    for (int row = 0; row < glbDataColHeight; row++) 
+    for (int row = 1; row < glbDataColHeight; row++) 
 	{
 		// Check if mask has already been used
 		if (visited[row])
@@ -260,12 +251,12 @@ void ComputeSSFactorCombo (RowStruct Dataset[], int Mask, double *GrandMeans, do
 		}
 		
         // Accumulate all rows matching this group
-        double sum[MAXDATACOLS] = {0.0};
+        double sum[MAXDATACOLS] = {0};
         int count = 0;
 
-        for (int subRow = 0; subRow < glbDataColHeight; subRow++) 
+        for (int subRow = 1; subRow < glbDataColHeight; subRow++) 
 		{
-            if (!visited[subRow] && matchOnMask (&Dataset[row], &Dataset[subRow], Mask)) 
+            if (matchOnMask (Dataset[row], Dataset[subRow], Mask)) 
 			{				
                 for (int col = 0; col < glbNumDataCols; col++) 
 				{
@@ -286,22 +277,31 @@ void ComputeSSFactorCombo (RowStruct Dataset[], int Mask, double *GrandMeans, do
 }
 
 /***************************************************************************//*!
-* \brief Print factor combo
+* \brief Get factor combo name
 *
+* \param [in] Dataset				A dataset of RowStructs
 * \param [in] Mask					Factor combo mask
+* \param [in] FactorComboName		Factor combo name
 *******************************************************************************/
-void printFactorComboName (int Mask) 
+void getFactorComboName (IN RowStruct Dataset[], IN int Mask, char *FactorComboName)
 {
     if (Mask == 0) 
 	{ 
-		printf ("Residual/Error"); 
+		strcpy (FactorComboName, "Residual/Error"); 
 		return; 
 	}
-    for (int i = 0; i < glbNumFactorCols; i++) 
+	
+	int first = 1;
+    for (int col = 0; col < glbNumFactorCols; col++) 
 	{
-        if (Mask & (1 << i))
+        if (Mask & (1 << col))
 		{
-			printf ("%c", 'A' + i);
+			if (!first)
+			{
+				strcat (FactorComboName, " & ");
+			}
+			strcat (FactorComboName, Dataset[0].factors[col]);
+			first = 0;
 		}
     }
 }
@@ -309,99 +309,7 @@ void printFactorComboName (int Mask)
 /***************************************************************************//*!
 * \brief Perform ANOVA calculations
 *******************************************************************************/
-int ComputeANOVA (ANOVANode *TreeRoot)
+int ComputeANOVA ()
 {
 	return 0;
-}
-
-/***************************************************************************//*!
-* \brief Recursively builds a tree from ANOVANodes
-*
-* \param [in] Panel				The current panel
-* \param [in] CurrentRoot		The current root at the level the tree being worked on
-* \param [in] Level				The current level of the tree (# levels = # factors)
-*******************************************************************************/
-void BuildANOVATree (IN int Panel, IN char FactorRange[][DATALENGTH], ANOVANode *CurrentRoot, int Level)
-{
-	// Base case
-	if (Level >= glbNumFactorCols)
-	{
-		return;
-	}
-	
-	// Load factor col data
-	int start_row = 0;
-	int start_col = 0;
-	int end_row = 0;
-	int end_col = 0;
-	sscanf (FactorRange[Level], "C%dR%d:C%dR%d", &start_col, &start_row, &end_col, &end_row);
-	
-	// Add new nodes at current level (for current factor)
-	for (int factorElement = start_row + 1; factorElement <= end_row; factorElement++)
-	{
-		char nodeKey[DATALENGTH] = {0};
-		Point currentPoint = 
-		{
-			.x = start_col,
-			.y = factorElement
-		};
-		
-		GetTableCellVal (Panel, CSVPANEL_CSVTABLE, currentPoint, nodeKey);
-		
-		// Debug
-        for (int i = 0; i < Level; i++) {
-            printf("  ");
-        }
-        printf("Level %d - Adding node: %s\n", Level, nodeKey);
-		
-		ANOVANode *newNode = CreateANOVANode (nodeKey);
-		AddChildNode (CurrentRoot, newNode);
-		
-		// Recursive call to populate node children
-		BuildANOVATree (Panel, FactorRange, newNode, Level + 1);
-	}
-}
-
-/***************************************************************************//*!
-* \brief Create new ANOVANode
-*
-* \param [in] Key				A specific element from a factor (e.g., Factor "SN"
-*								contains the labels 1001, 1002, 1003... etc.)
-*******************************************************************************/
-ANOVANode *CreateANOVANode (IN char Key[DATALENGTH])
-{
-	ANOVANode *node = malloc (sizeof (ANOVANode));
-	strcpy (node->key, Key);
-	node->numValues = 0;
-	node->values = NULL;
-	node->numChildren = 0;
-	node->children = NULL;
-	
-	return node;
-}
-
-/***************************************************************************//*!
-* \brief Add a value to a node's list of values
-*
-* \param [in] Node				The target node
-* \param [in] Value				The value to be added
-*******************************************************************************/
-void AddNodeValue (ANOVANode *Node, IN double Value)
-{
-	Node->numValues++;
-	Node->values = realloc (Node->values, sizeof (double) * (Node->numValues));
-	Node->values[Node->numValues - 1] = Value;
-}
-
-/***************************************************************************//*!
-* \brief Assign a node to be a child of another node
-*
-* \param [in] ParentNode		The target parent node
-* \param [in] ChildNode			The target child node
-*******************************************************************************/
-void AddChildNode (ANOVANode *ParentNode, ANOVANode *ChildNode)
-{
-	ParentNode->numChildren++;
-	ParentNode->children = realloc (ParentNode->children, sizeof (ANOVANode *) * (ParentNode->numChildren));
-	ParentNode->children[ParentNode->numChildren - 1] = ChildNode;
 }
