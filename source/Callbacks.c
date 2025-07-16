@@ -419,6 +419,10 @@ int CVICALLBACK CSVCalcButtonCB(int panel, int control, int event, void *callbac
 							cellData = glbANOVAResult.degFrd[row / NUMDISPLAYROWS];
 							break;
 							
+						case 4:
+							cellData = glbANOVAResult.variance[row / NUMDISPLAYROWS][col - 1];
+							break;
+							
 						default:
 							cellData = 0;
 					}

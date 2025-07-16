@@ -166,9 +166,12 @@ void ComputeANOVA (IN int Panel, char FactorRange[][DATALENGTH], char DataRange[
 	strcpy (glbANOVAResult.factorCombos[glbNumMasks], "Equipment");
 	strcpy (glbANOVAResult.factorCombos[glbNumMasks + 1], "Total");
 	
-	// Get degrees of freedom
+	// Compute degrees of freedom
 	ComputeNumUniqueFactorElements (dataset);
 	ComputeDegreesFreedom ();
+	
+	// Compute variance
+	ComputeVariance();
 }
 
 /***************************************************************************//*!
@@ -364,5 +367,19 @@ void ComputeDegreesFreedom ()
 		}
 	
 		glbANOVAResult.degFrd[fc - 1] = df - 1;
+	}
+}
+
+/***************************************************************************//*!
+* \brief Compute variance for each factor combo
+*******************************************************************************/
+void ComputeVariance ()
+{
+	for (int fc = 0; fc < glbANOVAResult.numRows / 12 - 2; fc++)
+	{
+	    for (int col = 0; col < glbNumDataCols; col++)
+		{
+			glbANOVAResult.variance[fc][col] = glbANOVAResult.ssResults[fc][col] / (double) glbANOVAResult.degFrd[fc];
+		}
 	}
 }

@@ -69,6 +69,7 @@ void ComputeSSFactorCombo (RowStruct Dataset[], IN int Mask, double *GrandMeans,
 void GetFactorComboName (IN RowStruct Dataset[], IN int Mask, char *FactorComboName);
 void ComputeNumUniqueFactorElements(RowStruct Dataset[]);
 void ComputeDegreesFreedom ();
+void ComputeVariance ();
 
 #ifdef __cplusplus
     }
