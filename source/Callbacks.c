@@ -705,6 +705,79 @@ int CVICALLBACK ANOVASaveButtonCB (int panel, int control, int event, void *call
 }
 
 /***************************************************************************//*!
+* \brief Callback for export button
+*******************************************************************************/
+int CVICALLBACK ANOVAExportButtonCB (int panel, int control, int event, void *callbackData, int eventData1, int eventData2)
+{
+	if (event == EVENT_LEFT_CLICK)
+	{
+		// Get new CSV file
+		char filePath[MAX_PATHNAME_LEN] = "";
+		FileSelectPopup ("..\\", "*.csv", "*.csv", "Save Table As CSV", VAL_SAVE_BUTTON, 0, 1, 1, 1, filePath);
+		if (strlen (filePath) == 0) return 0;
+		
+		FILE *fp = fopen(filePath, "w");
+		if (!fp) 
+		{
+		    perror ("Failed to open file for writing.");
+		    return 0;
+		}
+
+		// Iterate through table, export each cell value to CSV
+		for (int row = 0; row < glbANOVAResult.numRows; row++) 
+		{
+		    for (int col = 0; col < glbNumDataCols + 1; col++) 
+			{
+		        char cellText[256] = "";
+				double cellData = 0;
+				void *dataPtr = NULL;
+				
+				if (col == 0)
+				{
+					dataPtr = cellText;
+				}
+				else 
+				{
+					dataPtr = &cellData;
+				}
+				
+		        GetTableCellVal (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, MakePoint (col + 1, row + 1), dataPtr);
+				
+				if (col != 0)
+				{
+					sprintf (cellText, "%f", *(double *)dataPtr);
+				}
+		        
+		        // Add quotes if necessary
+		        if (strchr (cellText, ',') || strchr (cellText, '"')) 
+				{
+		            char temp[256];
+		            sprintf (temp, "\"%s\"", cellText);
+		            fprintf (fp, "%s", temp);
+		        } 
+				else 
+				{
+		            fprintf (fp, "%s", cellText);
+		        }
+
+		        if (col < glbNumDataCols)
+				{
+		            fprintf (fp, ",");
+				}
+		    }
+		    fprintf (fp, "\n");
+		}
+
+		fclose(fp);
+		
+		// Display message
+		SetCtrlAttribute (glbANOVAPanelHandle, ANOVAPANEL_EXPORTTEXT, ATTR_VISIBLE, 1);
+	}
+	
+	return 0;
+}
+
+/***************************************************************************//*!
 * \brief Callback for edit button
 *******************************************************************************/
 int CVICALLBACK ANOVAEditButtonCB (int panel, int control, int event, void *callbackData, int eventData1, int eventData2)
