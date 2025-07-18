@@ -34,8 +34,6 @@
 #include "Callbacks.h"
 #include "CSVParse_LIB.h"
 
-#include "SystemLog_LIB.h"
-
 //==============================================================================
 // Constants
 
@@ -44,11 +42,6 @@
 
 //==============================================================================
 // Static global variables
-
-/***************************************************************************//*!
-* \brief Stores the log level used for SYSLOG macro
-*******************************************************************************/
-static int glbSysLogLevel = 0;
 
 //==============================================================================
 // Static functions
@@ -61,6 +54,7 @@ int glbCSVPanelHandle = 0;
 int glbANOVAPanelHandle = 0;
 
 // CSV file variables
+char glbCSVFilepath[512] = {0};
 char ***glbCSVData= NULL;
 int glbNumRows = 0;
 int glbNumCols = 0;
@@ -109,14 +103,10 @@ int CVICALLBACK MainPanelCB (int panel, int event, void *callbackData, int event
 *******************************************************************************/
 int CVICALLBACK OpenButtonCB(int panel, int control, int event, void *callbackData, int eventData1, int eventData2)
 {
-	char errmsg[ERRLEN] = {0};
-	fnInit;
-	
 	if (event == EVENT_LEFT_CLICK)
 	{
 		// Open file selection dialogue
-		char selectedFilepath[512];
-		int selectionStatus = FileSelectPopup ("", "*.csv", "*.*", "Select a CSV file...", VAL_OK_BUTTON, 0, 1, 1, 0, selectedFilepath);
+		int selectionStatus = FileSelectPopup ("", "*.csv", "*.*", "Select a CSV file...", VAL_OK_BUTTON, 0, 1, 1, 0, glbCSVFilepath);
 		if (selectionStatus == 0)
 		{
 			return 0;
@@ -124,46 +114,11 @@ int CVICALLBACK OpenButtonCB(int panel, int control, int event, void *callbackDa
 		
 		// Load CSV panel
 		glbCSVPanelHandle = LoadPanel (0, "CSVPanel.uir", CSVPANEL);
-		
-		// Parse selected CSV, load into buffer
-		int buffSize = DATALENGTH;
-		char headerBuffer[64 * buffSize]; // Can account for 64 x 32-byte column headers
-		char dataBuffer[64 * 64 * buffSize]; // Can account for 64 x 64 x 32-byte pieces of data
-		
-		tsErrChk (Initialize_CSVParse_LIB (selectedFilepath, 1, NULL, 0, buffSize, &glbNumCols, &glbNumRows, headerBuffer, errmsg), errmsg);
-		tsErrChk (CSVParse_GetDataByIndex (0, 0, glbNumRows - 1, glbNumCols - 1, dataBuffer, errmsg), errmsg);
-
-		// Populate main table, as well as glbCSVData
-		glbNumRows++; // increment to account for header
-		glbCSVData = malloc (sizeof (char **) * glbNumRows);
-		for (int row = 1; row <= glbNumRows; row++)
-		{
-			glbCSVData[row - 1] = malloc (sizeof (char *) * glbNumCols);
-			InsertTableRows (glbCSVPanelHandle, CSVPANEL_CSVTABLE, -1, 1, VAL_CELL_STRING);
-
-			for (int col = 1; col <= glbNumCols; col++)
-			{
-				glbCSVData[row - 1][col - 1] = calloc (buffSize, sizeof (char));
-				
-				if (row == 1)
-				{
-					InsertTableColumns (glbCSVPanelHandle, CSVPANEL_CSVTABLE, -1, 1, VAL_CELL_STRING);
-					SetTableCellVal (glbCSVPanelHandle, CSVPANEL_CSVTABLE, MakePoint (col, row), headerBuffer + (col - 1) * buffSize);
-					memcpy (glbCSVData[row - 1][col - 1], headerBuffer + (col - 1) * buffSize, buffSize);
-				}
-				else
-				{	
-					SetTableCellVal (glbCSVPanelHandle, CSVPANEL_CSVTABLE, MakePoint (col, row), dataBuffer + (row - 2) * buffSize * glbNumCols + (col - 1) * buffSize);
-					memcpy (glbCSVData[row - 1][col - 1], dataBuffer + (row - 2) * buffSize * glbNumCols + (col - 1) * buffSize, buffSize);
-				}
-			}
-		}
-
+		DisplayCSVTable ();
 		DisplayPanel (glbCSVPanelHandle);
 	}
 	
-Error:
-	return error;
+	return 0;
 }
 
 /***************************************************************************//*!
@@ -230,6 +185,7 @@ int CVICALLBACK LoadButtonCB(int panel, int control, int event, void *callbackDa
 		glbNumCols = data.numCols;
 		glbNumFactorCols = data.numFactorCols;
 		glbNumDataCols = data.numDataCols;
+		memcpy (glbCSVFilepath, data.csvFilepath, 512);
 		memcpy (glbFactorRange, data.factorRange, MAXFACTORCOLS * DATALENGTH);
 		memcpy (glbDataRange, data.dataRange, MAXDATACOLS * DATALENGTH);
 		memcpy (glbLimitRange, data.limitRange, MAXDATACOLS * DATALENGTH);
@@ -251,6 +207,7 @@ int CVICALLBACK CSVPanelCB (int panel, int event, void *callbackData, int eventD
 	if (event == EVENT_CLOSE)
 	{
 		DiscardPanel (glbCSVPanelHandle);
+		glbCSVPanelHandle = -1;
 	}
 	
 	return 0;
@@ -445,8 +402,9 @@ int CVICALLBACK CSVCalcButtonCB(int panel, int control, int event, void *callbac
 
 		// Parse selected factors/data/limits
 		ComputeANOVA (panel, glbFactorRange, glbDataRange, glbLimitRange); // TODO add support for multi-col data selections... but can assume factors are one col
-		DisplayANOVATable ();
 		
+		// Display ANOVA table
+		DisplayANOVATable ();
 		DisplayPanel (glbANOVAPanelHandle);
 	}
 
@@ -545,6 +503,52 @@ void GetANOVATableRowName (IN int RowNum, char *RowName)
 			strcpy (RowName, "Error!!");
 			break;
 	}
+}
+
+/***************************************************************************//*!
+* \brief Helper function that displays CSV panel and table
+*******************************************************************************/
+int DisplayCSVTable ()
+{
+	char errmsg[ERRLEN] = {0};
+	fnInit;
+	
+	// Parse selected CSV, load into buffer
+	int buffSize = DATALENGTH;
+	char headerBuffer[64 * buffSize]; // Can account for 64 x 32-byte column headers
+	char dataBuffer[64 * 64 * buffSize]; // Can account for 64 x 64 x 32-byte pieces of data
+	
+	tsErrChk (Initialize_CSVParse_LIB (glbCSVFilepath, 1, NULL, 0, buffSize, &glbNumCols, &glbNumRows, headerBuffer, errmsg), errmsg);
+	tsErrChk (CSVParse_GetDataByIndex (0, 0, glbNumRows - 1, glbNumCols - 1, dataBuffer, errmsg), errmsg);
+
+	// Populate main table, as well as glbCSVData
+	glbNumRows++; // increment to account for header
+	glbCSVData = malloc (sizeof (char **) * glbNumRows);
+	for (int row = 1; row <= glbNumRows; row++)
+	{
+		glbCSVData[row - 1] = malloc (sizeof (char *) * glbNumCols);
+		InsertTableRows (glbCSVPanelHandle, CSVPANEL_CSVTABLE, -1, 1, VAL_CELL_STRING);
+
+		for (int col = 1; col <= glbNumCols; col++)
+		{
+			glbCSVData[row - 1][col - 1] = calloc (buffSize, sizeof (char));
+			
+			if (row == 1)
+			{
+				InsertTableColumns (glbCSVPanelHandle, CSVPANEL_CSVTABLE, -1, 1, VAL_CELL_STRING);
+				SetTableCellVal (glbCSVPanelHandle, CSVPANEL_CSVTABLE, MakePoint (col, row), headerBuffer + (col - 1) * buffSize);
+				memcpy (glbCSVData[row - 1][col - 1], headerBuffer + (col - 1) * buffSize, buffSize);
+			}
+			else
+			{	
+				SetTableCellVal (glbCSVPanelHandle, CSVPANEL_CSVTABLE, MakePoint (col, row), dataBuffer + (row - 2) * buffSize * glbNumCols + (col - 1) * buffSize);
+				memcpy (glbCSVData[row - 1][col - 1], dataBuffer + (row - 2) * buffSize * glbNumCols + (col - 1) * buffSize, buffSize);
+			}
+		}
+	}
+
+Error:
+	return error;
 }
 
 /***************************************************************************//*!
@@ -662,6 +666,7 @@ int CVICALLBACK ANOVASaveButtonCB (int panel, int control, int event, void *call
 		data.numCols = glbNumCols;
 		data.numFactorCols = glbNumFactorCols;
 		data.numDataCols = glbNumDataCols;
+		memcpy (data.csvFilepath, glbCSVFilepath, 512);
 		memcpy (data.factorRange, glbFactorRange, MAXFACTORCOLS * DATALENGTH);
 		memcpy (data.dataRange, glbDataRange, MAXDATACOLS * DATALENGTH);
 		memcpy (data.limitRange, glbLimitRange, MAXDATACOLS * DATALENGTH);
@@ -694,6 +699,64 @@ int CVICALLBACK ANOVASaveButtonCB (int panel, int control, int event, void *call
 		
 		// Display message
 		SetCtrlAttribute (glbANOVAPanelHandle, ANOVAPANEL_SAVETEXT, ATTR_VISIBLE, 1);
+	}
+	
+	return 0;
+}
+
+/***************************************************************************//*!
+* \brief Callback for edit button
+*******************************************************************************/
+int CVICALLBACK ANOVAEditButtonCB (int panel, int control, int event, void *callbackData, int eventData1, int eventData2)
+{
+	if (event == EVENT_LEFT_CLICK)
+	{
+		DiscardPanel (glbANOVAPanelHandle);
+		
+		// Load CSV panel if not already loaded
+		if (glbCSVPanelHandle <= 0)
+		{
+			glbCSVPanelHandle = LoadPanel (0, "CSVPanel.uir", CSVPANEL);
+			DisplayCSVTable ();
+			
+			// Populate list boxes
+			for (int i = 0; i < 3; i++)
+			{
+				int listBox = 0;
+				int listDataLength = 0;
+				char (*listData)[DATALENGTH] = NULL;
+			
+				switch (i)
+				{
+					case 0:
+						listBox = CSVPANEL_FACTORLIST;
+						listDataLength = glbNumFactorCols;
+						listData = glbFactorRange;
+						break;
+						
+					case 1:
+						listBox = CSVPANEL_DATALIST;
+						listDataLength = glbNumDataCols;
+						listData = glbDataRange;
+						break;
+						
+					case 2:
+						listBox = CSVPANEL_LIMITLIST;
+						listDataLength = glbNumDataCols;
+						listData = glbLimitRange;
+						break;
+				}
+				
+				// Insert data into list
+				for (int j = 0; j < listDataLength; j++)
+				{
+					InsertListItem (glbCSVPanelHandle, listBox, -1, listData[j], "");
+					SetCtrlIndex (glbCSVPanelHandle, listBox, j);
+				}
+			}
+		}
+		
+		DisplayPanel (glbCSVPanelHandle);
 	}
 	
 	return 0;

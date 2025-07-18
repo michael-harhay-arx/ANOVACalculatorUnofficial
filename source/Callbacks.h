@@ -37,7 +37,7 @@ typedef struct SaveData
 	int numCols;
 	int numFactorCols;
 	int numDataCols;
-
+	char csvFilepath[512];
 	char factorRange[MAXFACTORCOLS][DATALENGTH];
 	char dataRange[MAXDATACOLS][DATALENGTH];
 	char limitRange[MAXDATACOLS][DATALENGTH];
@@ -58,6 +58,7 @@ extern int glbNumDataCols;
 
 void GetDataFromListBoxes (IN int panel, char FactorSelection[][DATALENGTH], char DataSelection[][DATALENGTH], char LimitSelection[][DATALENGTH]);
 void GetANOVATableRowName (IN int RowNum, char *RowName);
+int DisplayCSVTable ();
 void DisplayANOVATable ();
 
 #ifdef __cplusplus
