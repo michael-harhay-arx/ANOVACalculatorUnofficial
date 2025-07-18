@@ -30,7 +30,7 @@ Save Changes Before Compiling = "Always"
 Hide Windows = False
 Break At First Statement = False
 Sort Type = "File Name"
-Number of Opened Files = 8
+Number of Opened Files = 9
 Window Confinement Region Enabled = True
 MainColumnWidth = 240
 FileDateColumnWidth = 70
@@ -50,40 +50,40 @@ Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/Callbacks.c"
 File Type = "CSource"
 Disk Date = 3835708041
 In Projects = "1,"
-Source Window State = "1,753,753,753,65,65,65,0,0,0,0,0,0,0,0,0,717,0,753,65,401,686,1,0,"
+Source Window State = "1,182,182,182,23,23,23,0,0,0,0,0,0,0,0,0,108,0,182,23,401,686,1,0,"
 Window Top = 126
 Window Left = 58
-Window Z-Order = 1
+Window Z-Order = 3
 
 [File 0002]
 Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/ANOVACalculator.c"
 File Type = "CSource"
-Disk Date = 3835540720
+Disk Date = 3835711913
 In Projects = "1,"
-Source Window State = "1,411,411,411,0,0,0,0,0,0,0,0,0,0,0,0,208,0,411,0,401,686,1,0,"
+Source Window State = "1,155,155,155,52,52,52,0,0,0,0,0,0,0,0,0,132,0,155,52,401,686,1,0,"
 Window Top = 95
 Window Left = 42
-Window Z-Order = 4
+Window Z-Order = 1
 
 [File 0003]
 Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/ANOVACalculator.h"
 File Type = "Include"
 Disk Date = 3835545847
 In Projects = "1,"
-Source Window State = "1,35,35,35,12,12,12,0,0,0,0,0,0,0,0,0,15,0,35,12,401,686,1,0,"
+Source Window State = "1,35,35,35,12,12,12,0,0,0,0,0,0,0,0,0,0,0,35,12,401,686,1,0,"
 Window Top = 157
 Window Left = 74
-Window Z-Order = 5
+Window Z-Order = 2
 
 [File 0004]
 Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/Callbacks.h"
 File Type = "Include"
 Disk Date = 3835706238
 In Projects = "1,"
-Source Window State = "1,39,39,39,0,26,26,0,3,0,0,0,0,0,0,0,22,0,39,0,401,686,1,0,"
+Source Window State = "1,52,52,52,11,27,11,0,3,0,0,0,0,0,0,0,22,0,52,27,401,686,1,0,"
 Window Top = 157
 Window Left = 74
-Window Z-Order = 3
+Window Z-Order = 6
 
 [File 0005]
 Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/ANOVAPanel.uir"
@@ -94,7 +94,7 @@ Window Top = 219
 Window Left = 106
 Window Height = 401
 Window Width = 630
-Window Z-Order = 6
+Window Z-Order = 8
 
 [File 0006]
 Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/ANOVAPanel.h"
@@ -104,7 +104,7 @@ In Projects = "1,"
 Source Window State = "1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,401,630,1,0,"
 Window Top = 126
 Window Left = 58
-Window Z-Order = 7
+Window Z-Order = 9
 
 [File 0007]
 Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/ANOVACalculatorDefinitions.h"
@@ -114,7 +114,7 @@ In Projects = "1,"
 Source Window State = "1,45,45,45,54,54,54,0,0,0,0,0,0,0,0,0,13,0,45,54,401,686,1,0,"
 Window Top = 64
 Window Left = 26
-Window Z-Order = 8
+Window Z-Order = 5
 
 [File 0008]
 Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/CSVPanel.uir"
@@ -144,7 +144,7 @@ In Projects = "1,"
 Source Window State = "1,26,26,26,9,28,9,0,3,0,0,0,0,0,0,0,5,0,26,28,401,630,1,0,"
 Window Top = 33
 Window Left = 10
-Window Z-Order = 2
+Window Z-Order = 7
 
 [File 0011]
 Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/MainPanel.h"
@@ -161,6 +161,16 @@ File Type = "Library"
 Disk Date = 3829932115
 In Projects = "1,"
 
+[File 0013]
+Path = "/c/Program Files (x86)/National Instruments/CVI2019/include/ansi/stdio.h"
+File Type = "Include"
+Disk Date = 3636534226
+In Projects = ""
+Source Window State = "1,162,162,162,13,19,13,0,3,0,0,0,0,0,0,0,140,0,162,19,401,728,1,0,"
+Window Top = 343
+Window Left = 170
+Window Z-Order = 4
+
 [Tab Order]
 Tab 0001 = "/c/Users/Michael_Harhay/Documents/ANOVA/source/ANOVACalculator.c"
 Tab 0002 = "/c/Users/Michael_Harhay/Documents/ANOVA/source/ANOVACalculator.h"
@@ -170,6 +180,7 @@ Tab 0005 = "/c/Users/Michael_Harhay/Documents/ANOVA/source/ANOVACalculatorDefini
 Tab 0006 = "/c/Users/Michael_Harhay/Documents/ANOVA/source/ANOVAPanel.uir"
 Tab 0007 = "/c/Users/Michael_Harhay/Documents/ANOVA/source/ANOVAPanel.h"
 Tab 0008 = "/c/Users/Michael_Harhay/Documents/ANOVA/source/CSVPanel.h"
+Tab 0009 = "/c/Program Files (x86)/National Instruments/CVI2019/include/ansi/stdio.h"
 
 [Default Build Config 0001 Debug]
 Generate Browse Info = True

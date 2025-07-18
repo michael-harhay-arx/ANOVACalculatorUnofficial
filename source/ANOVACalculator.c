@@ -144,10 +144,15 @@ void ComputeANOVA (IN int Panel, char FactorRange[][DATALENGTH], char DataRange[
 	// Get total SS vales (per data column)
 	double ssTotal[glbNumDataCols];
 	memset (ssTotal, 0, sizeof (ssTotal));
+	double ssTotalRepeat[glbNumDataCols];
+	memset (ssTotalRepeat, 0, sizeof (ssTotalRepeat));
+	
 	ComputeTotalSS (dataset, grandMeans, ssTotal);
+	memcpy (glbANOVAResult.ssResults[1 << glbNumFactorCols], ssTotal, sizeof (ssTotal));
+	memcpy (glbANOVAResult.ssResultsRepeat[1 << glbNumFactorCols], ssTotalRepeat, sizeof (ssTotalRepeat));
 		
 	// Init results struct
-	int glbNumMasks = (1 << glbNumFactorCols) - 1;
+	int glbNumMasks = (1 << glbNumFactorCols)  - 1;
 	glbANOVAResult.numRows = 12 * (glbNumMasks + 2);
 	
 	// Iterate through masks (factor combos)
@@ -247,6 +252,7 @@ int MatchOnMask (RowStruct RowA, RowStruct RowB, int Mask)
 *******************************************************************************/
 void ComputeSSFactorCombo (RowStruct Dataset[], IN int Mask, double *GrandMeans, double *SSOut, double *SSOutRepeat) 
 {
+	// Factor combo SS calculation
     int visited[glbDataColHeight];
 	memset (visited, 0, sizeof (visited));
 
@@ -371,8 +377,15 @@ void ComputeNumUniqueFactorElements(RowStruct Dataset[])
 *******************************************************************************/
 void ComputeDegreesFreedom ()
 {
-	for (int fc = 1; fc <= glbANOVAResult.numRows / 12 - 2; fc++)
+	for (int fc = 1; fc <= glbANOVAResult.numRows / 12; fc++)
 	{
+		// Check if total
+		if (fc == pow (2, glbNumFactorCols))
+		{
+			glbANOVAResult.degFrd[fc] = (glbDataColHeight - 1) - 1; // glbDataColHeight includes header, so subtract 1 to get num of measurements for a data col
+		}
+		
+		// Otherwise perform standard calculation
 	    int df = 1;
 		int numUniqueGroups = 1;
 		
@@ -395,8 +408,10 @@ void ComputeDegreesFreedom ()
 *******************************************************************************/
 void ComputeVariance ()
 {
-	for (int fc = 0; fc < glbANOVAResult.numRows / 12 - 2; fc++)
+	for (int fc = 0; fc < glbANOVAResult.numRows / 12; fc++)
 	{
+		if (fc == glbANOVAResult.numRows / 12 - 2) continue; // Skip equipment
+		
 	    for (int col = 0; col < glbNumDataCols; col++)
 		{
 			glbANOVAResult.variance[fc][col] = glbANOVAResult.ssResults[fc][col] / (double) glbANOVAResult.degFrd[fc];
@@ -410,8 +425,10 @@ void ComputeVariance ()
 *******************************************************************************/
 void ComputeStdDev ()
 {
-	for (int fc = 0; fc < glbANOVAResult.numRows / 12 - 2; fc++)
+	for (int fc = 0; fc < glbANOVAResult.numRows / 12; fc++)
 	{
+		if (fc == glbANOVAResult.numRows / 12 - 2) continue; // Skip equipment
+		
 	    for (int col = 0; col < glbNumDataCols; col++)
 		{
 			glbANOVAResult.stdDev[fc][col] = sqrt (glbANOVAResult.variance[fc][col]);
@@ -428,8 +445,10 @@ void ComputeStdDev ()
 *******************************************************************************/
 void ComputePTRatio (double LimitList[][2])
 {
-	for (int fc = 0; fc < glbANOVAResult.numRows / 12 - 2; fc++)
+	for (int fc = 0; fc < glbANOVAResult.numRows / 12; fc++)
 	{
+		if (fc == glbANOVAResult.numRows / 12 - 2) continue; // Skip equipment
+		
 	    for (int col = 0; col < glbNumDataCols; col++)
 		{
 			double limitDiff = abs (LimitList[col][1] - LimitList[col][0]);
