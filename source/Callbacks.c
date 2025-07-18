@@ -65,6 +65,7 @@ int glbANOVAPanelHandle = 0;
 // CSV file variables
 char ***glbCSVData= NULL;
 int glbNumRows = 0;
+int glbNumCols = 0;
 int glbNumFactorCols = 0;
 int glbNumDataCols = 0;
 
@@ -87,6 +88,18 @@ int CVICALLBACK MainPanelCB (int panel, int event, void *callbackData, int event
 {
 	if (event == EVENT_CLOSE)
 	{
+		// Free glbCSVData
+		for (int row = 0; row < glbNumRows; row++)
+		{
+			for (int col = 0; col < glbNumCols; col++)
+			{
+				free (glbCSVData[row][col]);
+			}
+			free (glbCSVData[row]);
+		}
+		free (glbCSVData);
+		
+		// Quit GUI
 		QuitUserInterface (0);
 	}
 	
@@ -111,23 +124,22 @@ int CVICALLBACK OpenButtonCB(int panel, int control, int event, void *callbackDa
 		glbCSVPanelHandle = LoadPanel (0, "CSVPanel.uir", CSVPANEL);
 		
 		// Parse selected CSV, load into buffer
-		int colCount = 0;
 		int buffSize = DATALENGTH;
-		char headerBuffer[64 * DATALENGTH]; // Can account for 64 x 32-byte column headers
-		char dataBuffer[64 * 64 * DATALENGTH]; // Can account for 64 x 64 x 32-byte pieces of data
+		char headerBuffer[64 * buffSize]; // Can account for 64 x 32-byte column headers
+		char dataBuffer[64 * 64 * buffSize]; // Can account for 64 x 64 x 32-byte pieces of data
 		
-		tsErrChk (Initialize_CSVParse_LIB (selectedFilepath, 1, NULL, 0, buffSize, &colCount, &glbNumRows, headerBuffer, errmsg), errmsg);
-		tsErrChk (CSVParse_GetDataByIndex (0, 0, glbNumRows - 1, colCount - 1, dataBuffer, errmsg), errmsg);
+		tsErrChk (Initialize_CSVParse_LIB (selectedFilepath, 1, NULL, 0, buffSize, &glbNumCols, &glbNumRows, headerBuffer, errmsg), errmsg);
+		tsErrChk (CSVParse_GetDataByIndex (0, 0, glbNumRows - 1, glbNumCols - 1, dataBuffer, errmsg), errmsg);
 
 		// Populate main table, as well as glbCSVData
 		glbNumRows++; // increment to account for header
-		glbCSVData = malloc (sizeof (char **) * (glbNumRows));
+		glbCSVData = malloc (sizeof (char **) * glbNumRows);
 		for (int row = 1; row <= glbNumRows; row++)
 		{
-			glbCSVData[row - 1] = malloc (sizeof (char *) * colCount);
+			glbCSVData[row - 1] = malloc (sizeof (char *) * glbNumCols);
 			InsertTableRows (glbCSVPanelHandle, CSVPANEL_CSVTABLE, -1, 1, VAL_CELL_STRING);
 
-			for (int col = 1; col <= colCount; col++)
+			for (int col = 1; col <= glbNumCols; col++)
 			{
 				glbCSVData[row - 1][col - 1] = calloc (buffSize, sizeof (char));
 				
@@ -139,8 +151,8 @@ int CVICALLBACK OpenButtonCB(int panel, int control, int event, void *callbackDa
 				}
 				else
 				{	
-					SetTableCellVal (glbCSVPanelHandle, CSVPANEL_CSVTABLE, MakePoint (col, row), dataBuffer + (row - 2) * buffSize * colCount + (col - 1) * buffSize);
-					memcpy (glbCSVData[row - 1][col - 1], dataBuffer + (row - 2) * buffSize * colCount + (col - 1) * buffSize, buffSize);
+					SetTableCellVal (glbCSVPanelHandle, CSVPANEL_CSVTABLE, MakePoint (col, row), dataBuffer + (row - 2) * buffSize * glbNumCols + (col - 1) * buffSize);
+					memcpy (glbCSVData[row - 1][col - 1], dataBuffer + (row - 2) * buffSize * glbNumCols + (col - 1) * buffSize, buffSize);
 				}
 			}
 		}
@@ -161,8 +173,23 @@ int CVICALLBACK LoadButtonCB(int panel, int control, int event, void *callbackDa
 	{
 		// Load ANOVA panel
 		glbANOVAPanelHandle = LoadPanel (0, "ANOVAPanel.uir", ANOVAPANEL);
+		
+		// Select .anova file to load
+		char selectedFilepath[512];
+		FileSelectPopup ("..\\saves", "*.anova", "*.*", "Select an ANOVA file...", VAL_OK_BUTTON, 0, 1, 1, 0, selectedFilepath);
+		
+		// Open and read file
+		FILE *fp = fopen (selectedFilepath, "rb");
+	    if (!fp) 
+		{
+	        perror ("Couldn't get file to load");
+	        return 0;
+	    }
+
+	    //fread (data, sizeof (SaveData), 1, fp);
+	    fclose (fp);
+		
 		DisplayPanel (glbANOVAPanelHandle);
-		// TODO add "loading" sign?
 	}
 	
 	return 0;
@@ -576,20 +603,33 @@ int CVICALLBACK ANOVASaveButtonCB (int panel, int control, int event, void *call
 		// Save current data to struct
 		SaveData data;
 		memset (&data, 0, sizeof (data)); 
-		data.csvData = glbCSVData; // TODO, fix saving
+	
 		data.numRows = glbNumRows;
+		data.numCols = glbNumCols;
 		data.numFactorCols = glbNumFactorCols;
 		data.numDataCols = glbNumDataCols;
 		memcpy (data.factorRange, glbFactorRange, MAXFACTORCOLS * DATALENGTH);
 		memcpy (data.dataRange, glbDataRange, MAXDATACOLS * DATALENGTH);
 		memcpy (data.limitRange, glbLimitRange, MAXDATACOLS * DATALENGTH);
-		data.anovaResult = glbANOVAResult; // TODO, fix saving?
+		data.anovaResult = glbANOVAResult;
+		
+		// Save csvData with for loop
+		data.csvData = malloc (sizeof (char **) * glbNumRows);
+		for (int row = 0; row < glbNumRows; row++)
+		{
+			data.csvData[row] = malloc (sizeof (char *) * glbNumCols);
+			for (int col = 0; col < glbNumCols; col++)
+			{
+				data.csvData[row][col] = calloc (DATALENGTH, sizeof (char));
+				memcpy (data.csvData[row][col], glbCSVData[row][col], DATALENGTH * sizeof (char));
+			}
+		}
 		
 		// Save struct to file
 		char filename[256] = {0};
 		time_t now = time(NULL);
 		struct tm *t = localtime(&now);
-		strftime(filename, 256, ".\\saves\\%Y-%m-%d_%H-%M-%S.anova", t);
+		strftime(filename, 256, "..\\saves\\%Y-%m-%d_%H-%M-%S.anova", t);
 		
 		FILE *fp = fopen(filename, "wb");
 	    if (!fp) 
@@ -600,6 +640,17 @@ int CVICALLBACK ANOVASaveButtonCB (int panel, int control, int event, void *call
 		
 	    fwrite (&data, sizeof(SaveData), 1, fp);
 	    fclose (fp);
+		
+		// Free data.csvData
+		for (int row = 0; row < glbNumRows; row++)
+		{
+			for (int col = 0; col < glbNumCols; col++)
+			{
+				free (data.csvData[row][col]);
+			}
+			free (data.csvData[row]);
+		}
+		free (data.csvData);		
 	}
 	
 	return 0;

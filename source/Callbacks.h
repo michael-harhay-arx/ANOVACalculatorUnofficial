@@ -32,10 +32,9 @@
 // Types
 		
 typedef struct SaveData
-{
-	char ***csvData;
-	
+{	
 	int numRows;
+	int numCols;
 	int numFactorCols;
 	int numDataCols;
 
@@ -44,6 +43,7 @@ typedef struct SaveData
 	char limitRange[MAXDATACOLS][DATALENGTH];
 	
 	ANOVAResult anovaResult;
+	char ***csvData;
 } SaveData;
 		
 //==============================================================================
