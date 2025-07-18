@@ -43,7 +43,6 @@ typedef struct SaveData
 	char limitRange[MAXDATACOLS][DATALENGTH];
 	
 	ANOVAResult anovaResult;
-	char ***csvData;
 } SaveData;
 		
 //==============================================================================

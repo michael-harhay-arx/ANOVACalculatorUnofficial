@@ -16,6 +16,7 @@
 #define  ANOVAPANEL                       1       /* callback function: ANOVAPanelCB */
 #define  ANOVAPANEL_ANOVATABLE            2       /* control type: table, callback function: (none) */
 #define  ANOVAPANEL_SAVEBUTTON            3       /* control type: command, callback function: ANOVASaveButtonCB */
+#define  ANOVAPANEL_SAVETEXT              4       /* control type: textMsg, callback function: (none) */
 
 
      /* Control Arrays: */
