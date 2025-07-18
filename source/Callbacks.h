@@ -58,6 +58,7 @@ extern int glbNumDataCols;
 
 void GetDataFromListBoxes (IN int panel, char FactorSelection[][DATALENGTH], char DataSelection[][DATALENGTH], char LimitSelection[][DATALENGTH]);
 void GetANOVATableRowName (IN int RowNum, char *RowName);
+void DisplayANOVATable ();
 
 #ifdef __cplusplus
     }
