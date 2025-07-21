@@ -48,9 +48,9 @@ Batch Build Debug = False
 [File 0001]
 Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/Callbacks.c"
 File Type = "CSource"
-Disk Date = 3835977116
+Disk Date = 3835978056
 In Projects = "1,"
-Source Window State = "1,877,877,877,16,16,16,0,0,0,0,0,0,0,0,0,865,0,877,16,401,686,1,0,"
+Source Window State = "1,22,22,22,80,80,80,0,0,0,0,0,0,0,0,0,18,0,22,80,401,686,1,0,"
 Window Top = 126
 Window Left = 58
 Window Z-Order = 1
@@ -58,22 +58,22 @@ Window Z-Order = 1
 [File 0002]
 Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/ANOVACalculator.c"
 File Type = "CSource"
-Disk Date = 3835976891
+Disk Date = 3835977994
 In Projects = "1,"
-Source Window State = "1,124,124,124,54,54,54,0,0,0,0,0,0,0,0,0,92,0,124,54,401,686,1,0,"
+Source Window State = "1,530,530,530,5,5,5,0,0,0,0,0,0,0,0,0,489,0,530,5,401,686,1,0,"
 Window Top = 95
 Window Left = 42
-Window Z-Order = 5
+Window Z-Order = 2
 
 [File 0003]
 Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/ANOVACalculator.h"
 File Type = "Include"
 Disk Date = 3835970936
 In Projects = "1,"
-Source Window State = "1,59,59,59,57,57,57,0,0,0,0,0,0,0,0,0,11,0,59,57,401,686,1,0,"
+Source Window State = "1,59,59,59,57,57,57,0,0,0,0,0,0,0,0,0,17,0,59,57,401,686,1,0,"
 Window Top = 157
 Window Left = 74
-Window Z-Order = 2
+Window Z-Order = 3
 
 [File 0004]
 Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/Callbacks.h"
@@ -83,7 +83,7 @@ In Projects = "1,"
 Source Window State = "1,28,28,28,12,12,12,0,0,0,0,0,0,0,0,0,15,0,28,12,401,686,1,0,"
 Window Top = 157
 Window Left = 74
-Window Z-Order = 3
+Window Z-Order = 5
 
 [File 0005]
 Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/ANOVAPanel.uir"
@@ -99,9 +99,9 @@ Window Z-Order = 6
 [File 0006]
 Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/ANOVACalculatorDefinitions.h"
 File Type = "Include"
-Disk Date = 3835974566
+Disk Date = 3835977921
 In Projects = "1,"
-Source Window State = "1,46,46,46,21,21,21,0,0,0,0,0,0,0,0,0,22,0,46,21,401,686,1,0,"
+Source Window State = "1,23,23,23,31,31,31,0,0,0,0,0,0,0,0,0,8,0,23,31,401,686,1,0,"
 Window Top = 64
 Window Left = 26
 Window Z-Order = 4

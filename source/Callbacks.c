@@ -37,7 +37,7 @@
 //==============================================================================
 // Constants
 
-const char overviewRowLabels[10][DATALENGTH] = {"Variance_reproducibility", "Variance_repeatability", "Variance_total", "Variance_%perFactor",
+const char overviewRowLabels[11][DATALENGTH] = {"Variance_reproducibility", "Variance_reproducibility_%", "Variance_repeatability", "Variance_repeatability_%", "Variance_total",
 							 				   "StdDev_reproducibility", "StdDev_repeatability", "StdDev_overall",
 											   "PTRatio_reproducibility", "PTRatio_repeatability", "PTRatio_overall"};
 
@@ -798,40 +798,44 @@ void DisplayANOVATable ()
 						case 0:
 							cellData = glbANOVAResult.varianceReprod[col - 1];
 							break;
-							
+						
 						case 1:
-							cellData = glbANOVAResult.varianceRepeat[col - 1];
+							cellData = glbANOVAResult.varianceReprodPct[col - 1];
 							break;
 							
 						case 2:
-							cellData = glbANOVAResult.varianceTotal[col - 1];
+							cellData = glbANOVAResult.varianceRepeat[col - 1];
 							break;
 							
 						case 3:
-							cellData = 0; // TODO: Variance %
+							cellData = glbANOVAResult.varianceRepeatPct[col - 1];
 							break;
 							
 						case 4:
-							cellData = glbANOVAResult.stdDevReprod[col - 1];
+							cellData = glbANOVAResult.varianceTotal[col - 1];
 							break;
 							
 						case 5:
-							cellData = glbANOVAResult.stdDevRepeat[col - 1];
+							cellData = glbANOVAResult.stdDevReprod[col - 1];
 							break;
 							
 						case 6:
-							cellData = glbANOVAResult.stdDevTotal[col - 1];
+							cellData = glbANOVAResult.stdDevRepeat[col - 1];
 							break;
 							
 						case 7:
-							cellData = glbANOVAResult.ptRatioReprod[col - 1];
+							cellData = glbANOVAResult.stdDevTotal[col - 1];
 							break;
 							
 						case 8:
-							cellData = glbANOVAResult.ptRatioRepeat[col - 1];
+							cellData = glbANOVAResult.ptRatioReprod[col - 1];
 							break;
 							
 						case 9:
+							cellData = glbANOVAResult.ptRatioRepeat[col - 1];
+							break;
+							
+						case 10:
 							cellData = glbANOVAResult.ptRatioTotal[col - 1];
 							break;
 							

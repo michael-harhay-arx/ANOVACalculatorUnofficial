@@ -462,7 +462,7 @@ int ComputeVarianceDenom (RowStruct Dataset[], int Mask)
 /***************************************************************************//*!
 * \brief Get variance indices that involve operator
 *
-* \param [out] OperatorIndices				A list of which factor combo indices involve the operator
+* \param [out] OperatorIndices		A list of which factor combo indices involve the operator
 *******************************************************************************/
 void GetOperatorVariances (int OperatorIndices[MAXFACTORCOMBOS])
 {
@@ -521,6 +521,13 @@ void ComputeVariance (RowStruct Dataset[])
 				glbANOVAResult.varianceReprod[col] += glbANOVAResult.variance[fc][col];
 			}
 		}
+	}
+	
+	// Get variance as %
+	for (int col = 0; col < glbNumDataCols; col++)
+	{
+		glbANOVAResult.varianceReprodPct[col] = 100 * glbANOVAResult.varianceReprod[col] / glbANOVAResult.varianceTotal[col];
+		glbANOVAResult.varianceRepeatPct[col] = 100 * glbANOVAResult.varianceRepeat[col] / glbANOVAResult.varianceTotal[col];
 	}
 }
 

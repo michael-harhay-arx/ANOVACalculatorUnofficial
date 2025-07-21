@@ -23,7 +23,7 @@
 #define DATALENGTH 			(32)
 #define MAXFACTORCOLS		(3)
 #define MAXDATACOLS			(16)
-#define NUMOVERVIEWROWS		(10) // overview display
+#define NUMOVERVIEWROWS		(11) // overview display
 #define NUMINTERMEDROWS		(3) // SS, Df, MS (intermediate display)
 #define MAXFACTORCOMBOS 	((1 << MAXFACTORCOLS) + 1) // Maximum 8 actual factor combos + equipment + total
 		
@@ -49,7 +49,9 @@ typedef struct ANOVAResult
 	
 	// ANOVA overview results
 	double varianceReprod[MAXDATACOLS];
+	double varianceReprodPct[MAXDATACOLS];
 	double varianceRepeat[MAXDATACOLS];
+	double varianceRepeatPct[MAXDATACOLS];
 	double varianceTotal[MAXDATACOLS];
 	double stdDevReprod[MAXDATACOLS];
 	double stdDevRepeat[MAXDATACOLS];
