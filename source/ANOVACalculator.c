@@ -152,7 +152,7 @@ void ComputeANOVA (IN int Panel, char FactorRange[][DATALENGTH], char DataRange[
 		
 	// Init results struct
 	int glbNumMasks = (1 << glbNumFactorCols)  - 1;
-	glbANOVAResult.numRows = 12 * (glbNumMasks + 2);
+	glbANOVAResult.numRows = 3 * (glbNumMasks + 2);
 	
 	// Iterate through masks (factor combos)
     for (int mask = 1; mask <= glbNumMasks; mask++) 
@@ -413,7 +413,7 @@ void ComputeVariance ()
 		
 	    for (int col = 0; col < glbNumDataCols; col++)
 		{
-			glbANOVAResult.variance[fc][col] = glbANOVAResult.sumSqr[fc][col] / (double) glbANOVAResult.degFrd[fc];
+			glbANOVAResult.varianceReprod[fc][col] = glbANOVAResult.sumSqr[fc][col] / (double) glbANOVAResult.degFrd[fc];
 			glbANOVAResult.varianceRepeat[fc][col] = glbANOVAResult.sumSqrRepeat[fc][col] / (double) glbANOVAResult.degFrdRepeat[fc];
 		}
 	}
@@ -430,9 +430,9 @@ void ComputeStdDev ()
 		
 	    for (int col = 0; col < glbNumDataCols; col++)
 		{
-			glbANOVAResult.stdDev[fc][col] = sqrt (glbANOVAResult.variance[fc][col]);
+			glbANOVAResult.stdDevReprod[fc][col] = sqrt (glbANOVAResult.varianceReprod[fc][col]);
 			glbANOVAResult.stdDevRepeat[fc][col] = sqrt (glbANOVAResult.varianceRepeat[fc][col]);
-			glbANOVAResult.stdDevTotal[fc][col] = sqrt (glbANOVAResult.variance[fc][col] + glbANOVAResult.varianceRepeat[fc][col]);
+			glbANOVAResult.stdDevTotal[fc][col] = sqrt (glbANOVAResult.varianceReprod[fc][col] + glbANOVAResult.varianceRepeat[fc][col]);
 		}
 	}
 }
@@ -452,7 +452,7 @@ void ComputePTRatio (double LimitList[][2])
 		{
 			double limitDiff = abs (LimitList[col][1] - LimitList[col][0]);
 			
-			glbANOVAResult.ptRatio[fc][col] = 6 * glbANOVAResult.stdDev[fc][col] / limitDiff;
+			glbANOVAResult.ptRatioReprod[fc][col] = 6 * glbANOVAResult.stdDevReprod[fc][col] / limitDiff;
 			glbANOVAResult.ptRatioRepeat[fc][col] = 6 * glbANOVAResult.stdDevRepeat[fc][col] / limitDiff;
 			glbANOVAResult.ptRatioTotal[fc][col] = 6 * glbANOVAResult.stdDevTotal[fc][col] / limitDiff;
 		}

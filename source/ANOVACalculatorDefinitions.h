@@ -23,8 +23,8 @@
 #define DATALENGTH 		(32)
 #define MAXFACTORCOLS	(3)
 #define MAXDATACOLS		(16)
-#define NUMDISPLAYROWS	(12)
-#define MAXFACTORCOMBOS ((1 << MAXFACTORCOLS) + 1) // Maximum 8 actual factor combos + equipment + total
+#define NUMDISPLAYROWS	(3) // SS, Df, MS (intermediate display)
+#define MAXFACTORCOMBOS ((1 << MAXFACTORCOLS) + 2) // Maximum 8 actual factor combos + equipment + total
 		
 //==============================================================================
 // Types
@@ -36,23 +36,24 @@ typedef struct ANOVAResult
 	char rowLabels[MAXFACTORCOMBOS][DATALENGTH];
 	char colLabels[MAXDATACOLS][DATALENGTH];
 	
-	// Main results
+	// Intermediate results
 	double sumSqr[MAXFACTORCOMBOS][MAXDATACOLS];
 	int degFrd[MAXFACTORCOMBOS];
-	double variance[MAXFACTORCOMBOS][MAXDATACOLS];
-	double stdDev[MAXFACTORCOMBOS][MAXDATACOLS];
-	double ptRatio[MAXFACTORCOMBOS][MAXDATACOLS];
+	double meanSqr[MAXFACTORCOMBOS][MAXDATACOLS];
 	
-	// Equipment
 	double sumSqrRepeat[MAXFACTORCOMBOS][MAXDATACOLS];
 	int degFrdRepeat[MAXFACTORCOMBOS];
-	double varianceRepeat[MAXFACTORCOMBOS][MAXDATACOLS];
-	double stdDevRepeat[MAXFACTORCOMBOS][MAXDATACOLS];
-	double ptRatioRepeat[MAXFACTORCOMBOS][MAXDATACOLS];
+	double meanSqrRepeat[MAXFACTORCOMBOS][MAXDATACOLS];
 	
-	// Total
+	// ANOVA overview results
+	double varianceReprod[MAXFACTORCOMBOS][MAXDATACOLS];
+	double varianceRepeat[MAXFACTORCOMBOS][MAXDATACOLS];
 	double varianceTotal[MAXFACTORCOMBOS][MAXDATACOLS];
+	double stdDevReprod[MAXFACTORCOMBOS][MAXDATACOLS];
+	double stdDevRepeat[MAXFACTORCOMBOS][MAXDATACOLS];
 	double stdDevTotal[MAXFACTORCOMBOS][MAXDATACOLS];
+	double ptRatioReprod[MAXFACTORCOMBOS][MAXDATACOLS];
+	double ptRatioRepeat[MAXFACTORCOMBOS][MAXDATACOLS];
 	double ptRatioTotal[MAXFACTORCOMBOS][MAXDATACOLS];
 } ANOVAResult;
 
