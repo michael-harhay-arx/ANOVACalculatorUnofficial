@@ -775,8 +775,8 @@ void DisplayANOVATable ()
 			}
 			
 			InsertTableColumns (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, -1, 1, cellType); 
-			SetTableColumnAttribute (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, -1, ATTR_USE_LABEL_TEXT, 1);
-			SetTableColumnAttribute (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, -1, ATTR_LABEL_TEXT, glbANOVAResult.colLabels[col]);
+			SetTableColumnAttribute (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, col + 1, ATTR_USE_LABEL_TEXT, 1);
+			SetTableColumnAttribute (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, col + 1, ATTR_LABEL_TEXT, glbANOVAResult.colLabels[col]);
 				
 			for (int row = 0; row < NUMOVERVIEWROWS; row++)
 			{				
@@ -859,8 +859,8 @@ void DisplayANOVATable ()
 			}
 			
 			InsertTableColumns (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, -1, 1, cellType); 
-			SetTableColumnAttribute (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, -1, ATTR_USE_LABEL_TEXT, 1);
-			SetTableColumnAttribute (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, -1, ATTR_LABEL_TEXT, glbANOVAResult.colLabels[col]);
+			SetTableColumnAttribute (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, col + 1, ATTR_USE_LABEL_TEXT, 1);
+			SetTableColumnAttribute (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, col + 1, ATTR_LABEL_TEXT, glbANOVAResult.colLabels[col]);
 				
 			for (int row = 0; row < glbANOVAResult.numRows; row++)
 			{				

@@ -117,11 +117,12 @@ void ComputeANOVA (IN int Panel, char FactorRange[][DATALENGTH], char DataRange[
 			strcpy (currentRow.data[col], glbCSVData[startRow + row - 1][dataColNumbers[col] - 1]);
 			if (row == 0)
 			{
-				strcpy (glbANOVAResult.colLabels[col], currentRow.data[col]);
+				strcpy (glbANOVAResult.colLabels[col + 1], currentRow.data[col]);
 			}
 		}
 		dataset[row] = currentRow;
 	}
+	strcpy (glbANOVAResult.colLabels[0], "Data Type");
 	
 	// Get limits
 	double limitList[glbNumDataCols][2];
