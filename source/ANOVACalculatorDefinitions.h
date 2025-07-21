@@ -41,21 +41,23 @@ typedef struct ANOVAResult
 	double sumSqr[MAXFACTORCOMBOS][MAXDATACOLS];
 	int degFrd[MAXFACTORCOMBOS];
 	double meanSqr[MAXFACTORCOMBOS][MAXDATACOLS];
+	double denominator[MAXFACTORCOMBOS][MAXDATACOLS];
+	double variance[MAXFACTORCOMBOS][MAXDATACOLS];
 	
 	double sumSqrRepeat[MAXDATACOLS];
-	int degFrdRepeat[MAXFACTORCOMBOS];
+	int degFrdRepeat;
 	double meanSqrRepeat[MAXDATACOLS];
 	
 	// ANOVA overview results
-	double varianceReprod[MAXFACTORCOMBOS][MAXDATACOLS];
-	double varianceRepeat[MAXFACTORCOMBOS][MAXDATACOLS];
-	double varianceTotal[MAXFACTORCOMBOS][MAXDATACOLS];
-	double stdDevReprod[MAXFACTORCOMBOS][MAXDATACOLS];
-	double stdDevRepeat[MAXFACTORCOMBOS][MAXDATACOLS];
-	double stdDevTotal[MAXFACTORCOMBOS][MAXDATACOLS];
-	double ptRatioReprod[MAXFACTORCOMBOS][MAXDATACOLS];
-	double ptRatioRepeat[MAXFACTORCOMBOS][MAXDATACOLS];
-	double ptRatioTotal[MAXFACTORCOMBOS][MAXDATACOLS];
+	double varianceReprod[MAXDATACOLS];
+	double varianceRepeat[MAXDATACOLS];
+	double varianceTotal[MAXDATACOLS];
+	double stdDevReprod[MAXDATACOLS];
+	double stdDevRepeat[MAXDATACOLS];
+	double stdDevTotal[MAXDATACOLS];
+	double ptRatioReprod[MAXDATACOLS];
+	double ptRatioRepeat[MAXDATACOLS];
+	double ptRatioTotal[MAXDATACOLS];
 } ANOVAResult;
 
 //==============================================================================

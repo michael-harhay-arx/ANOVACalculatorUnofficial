@@ -730,40 +730,13 @@ void GetANOVATableRowName (IN int RowNum, char *RowName)
 	switch (RowNum)
 	{
 		case 0:		
-			strcpy (RowName, "SumSqr_Parts_");
+			strcpy (RowName, "SumSqr_");
 			break;
 		case 1:		
-			strcpy (RowName, "SumSqr_Repeat_");
+			strcpy (RowName, "DegFrd_");
 			break;
 		case 2:		
-			strcpy (RowName, "DegFrd_Parts_");
-			break;
-		case 3:		
-			strcpy (RowName, "DegFrd_Repeat_");
-			break;
-		case 4:		
-			strcpy (RowName, "Variance_Parts_");
-			break;
-		case 5:		
-			strcpy (RowName, "Variance_Repeat_");
-			break;
-		case 6:		
-			strcpy (RowName, "StdDev_Parts_");
-			break;
-		case 7:		
-			strcpy (RowName, "StdDev_Repeat_");
-			break;
-		case 8:		
-			strcpy (RowName, "StdDev_Overall_");
-			break;
-		case 9:		
-			strcpy (RowName, "PTRatio_Parts_");
-			break;
-		case 10:	
-			strcpy (RowName, "PTRatio_Repeat_");
-			break;
-		case 11:	
-			strcpy (RowName, "PTRatio_Overall_");
+			strcpy (RowName, "MeanSqr_");
 			break;
 		default:	
 			strcpy (RowName, "Error!!");
@@ -823,15 +796,15 @@ void DisplayANOVATable ()
 					switch (row)
 					{
 						case 0:
-							cellData = glbANOVAResult.varianceReprod[row][col - 1];
+							cellData = glbANOVAResult.varianceReprod[col - 1];
 							break;
 							
 						case 1:
-							cellData = glbANOVAResult.varianceRepeat[row][col - 1];
+							cellData = glbANOVAResult.varianceRepeat[col - 1];
 							break;
 							
 						case 2:
-							cellData = glbANOVAResult.varianceTotal[row][col - 1];
+							cellData = glbANOVAResult.varianceTotal[col - 1];
 							break;
 							
 						case 3:
@@ -839,27 +812,27 @@ void DisplayANOVATable ()
 							break;
 							
 						case 4:
-							cellData = glbANOVAResult.stdDevReprod[row][col - 1];
+							cellData = glbANOVAResult.stdDevReprod[col - 1];
 							break;
 							
 						case 5:
-							cellData = glbANOVAResult.stdDevRepeat[row][col - 1];
+							cellData = glbANOVAResult.stdDevRepeat[col - 1];
 							break;
 							
 						case 6:
-							cellData = glbANOVAResult.stdDevTotal[row][col - 1];
+							cellData = glbANOVAResult.stdDevTotal[col - 1];
 							break;
 							
 						case 7:
-							cellData = glbANOVAResult.ptRatioReprod[row][col - 1];
+							cellData = glbANOVAResult.ptRatioReprod[col - 1];
 							break;
 							
 						case 8:
-							cellData = glbANOVAResult.ptRatioRepeat[row][col - 1];
+							cellData = glbANOVAResult.ptRatioRepeat[col - 1];
 							break;
 							
 						case 9:
-							cellData = glbANOVAResult.ptRatioTotal[row][col - 1];
+							cellData = glbANOVAResult.ptRatioTotal[col - 1];
 							break;
 							
 						default:

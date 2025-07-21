@@ -161,7 +161,8 @@ void ComputeANOVA (IN int Panel, char FactorRange[][DATALENGTH], char DataRange[
 	
 	// Compute various stats
 	ComputeNumUniqueFactorElements (dataset);
-	ComputeDegreesFreedom ();
+	ComputeDegreesFreedom (dataset);
+	ComputeMeanSquare ();
 	ComputeVariance ();
 	ComputeStdDev ();
 	ComputePTRatio (limitList);
@@ -276,7 +277,7 @@ void ComputeSS (RowStruct Dataset[], IN int Mask, double *GrandMeans, double *SS
 		        }
 			}
 		}
-    }
+	}
 }
 
 /***************************************************************************//*!
@@ -346,8 +347,10 @@ void ComputeNumUniqueFactorElements(RowStruct Dataset[])
 
 /***************************************************************************//*!
 * \brief Compute degrees of freedom for each factor combo
+*
+* \param [in] Dataset				A dataset of RowStructs
 *******************************************************************************/
-void ComputeDegreesFreedom ()
+void ComputeDegreesFreedom (RowStruct Dataset[])
 {
 	for (int fc = 1; fc <= glbANOVAResult.numRows / NUMINTERMEDROWS; fc++)
 	{
@@ -371,23 +374,176 @@ void ComputeDegreesFreedom ()
 		}
 	
 		glbANOVAResult.degFrd[fc - 1] = df - 1;
-		glbANOVAResult.degFrdRepeat[fc - 1] = (glbDataColHeight - 1) - numUniqueGroups;
+	}
+	
+	// Calculate equipment degrees of freedom
+	int counted[glbDataColHeight];
+	memset (counted, 0, sizeof (counted));
+	int fullMask = (1 << glbNumFactorCols) - 1; 
+	
+    for (int row = 0; row < glbDataColHeight; row++)
+    {
+        if (counted[row])
+		{
+            continue;
+		}
+
+        int matchCount = 1;
+        counted[row] = 1;
+
+        for (int cmp = row + 1; cmp < glbDataColHeight; cmp++)
+        {
+            if (!counted[cmp] && MatchOnMask (Dataset[row], Dataset[cmp], fullMask))
+            {
+                matchCount++;
+                counted[cmp] = 1;
+            }
+        }
+
+        // Each group adds (r - 1) to DoF
+        glbANOVAResult.degFrdRepeat += (matchCount - 1);
+    }	
+}
+
+/***************************************************************************//*!
+* \brief Compute MS for each factor combo
+*******************************************************************************/
+void ComputeMeanSquare ()
+{		
+    for (int col = 0; col < glbNumDataCols; col++)
+	{	
+		for (int fc = 0; fc < glbANOVAResult.numRows / NUMINTERMEDROWS; fc++)
+		{	
+			glbANOVAResult.meanSqr[fc][col] = glbANOVAResult.sumSqr[fc][col] / glbANOVAResult.degFrd[fc];
+		}
+		
+		glbANOVAResult.meanSqrRepeat[col] = glbANOVAResult.sumSqrRepeat[col] / glbANOVAResult.degFrdRepeat;
+	}
+}
+
+/***************************************************************************//*!
+* \brief Compute the denominator for calculating variance
+*
+* \param [in] Dataset				A dataset of RowStructs
+* \param [in] Mask					Factor combo mask
+*******************************************************************************/
+int ComputeVarianceDenom (RowStruct Dataset[], int Mask)
+{
+	int counted[glbDataColHeight];
+	memset (counted, 0, sizeof (counted));
+    int sumNI = 0;
+
+    for (int row = 1; row < glbDataColHeight; row++) 
+	{
+        if (counted[row]) 
+		{
+			continue;
+		}
+		
+        int matchCount = 1;
+        counted[row] = 1;
+
+        for (int cmp = 1; cmp < glbDataColHeight; cmp++) 
+		{
+            if (!counted[cmp] && MatchOnMask(Dataset[row], Dataset[cmp], Mask)) 
+			{
+                counted[cmp] = 1;
+                matchCount++;
+            }
+        }
+
+        sumNI += matchCount;
+    }
+	
+	return sumNI;
+}
+
+/***************************************************************************//*!
+* \brief Get variance indices that involve operator
+*
+* \param [in] Dataset				A dataset of RowStructs
+* \param [in] Mask					Factor combo mask
+*******************************************************************************/
+void GetOperatorVariances (int Operator, int OperatorIndices[MAXFACTORCOMBOS])
+{
+	if (glbNumFactorCols == 1)
+	{
+		OperatorIndices[0] = 1;
+	}
+	
+	else if (glbNumFactorCols == 2)
+	{
+		OperatorIndices[2] = 1;
+		
+		if (Operator == 0)
+		{
+			OperatorIndices[0] = 1;
+		}
+		else if (Operator == 1)
+		{
+			OperatorIndices[1] = 1;
+		}
+	}
+	
+	else if (glbNumFactorCols == 3)
+	{
+		OperatorIndices[6] = 1;
+		
+		if (Operator == 0)
+		{
+			OperatorIndices[0] = 1;
+			OperatorIndices[2] = 1;
+			OperatorIndices[4] = 1;
+		}
+		else if (Operator == 1)
+		{
+			OperatorIndices[1] = 1;
+			OperatorIndices[2] = 1;
+			OperatorIndices[5] = 1;
+		}
+		else if (Operator == 2)
+		{
+			OperatorIndices[3] = 1;
+			OperatorIndices[4] = 1;
+			OperatorIndices[5] = 1;
+		}
 	}
 }
 
 /***************************************************************************//*!
 * \brief Compute variance for each factor combo
 *******************************************************************************/
-void ComputeVariance ()
-{
-	for (int fc = 0; fc < glbANOVAResult.numRows / NUMINTERMEDROWS; fc++)
+void ComputeVariance (RowStruct Dataset[])
+{	
+	// Get variance for each factor combo, and equipment
+    for (int col = 0; col < glbNumDataCols; col++)
 	{
-		if (fc == glbANOVAResult.numRows / NUMINTERMEDROWS - 1) continue; // Skip equipment
+		for (int fc = 1; fc <= glbANOVAResult.numRows / NUMINTERMEDROWS - 1; fc++)
+		{	
+			// Get denom
+			int sumNI = ComputeVarianceDenom (Dataset, fc);
+			glbANOVAResult.variance[fc - 1][col] = (glbANOVAResult.meanSqr[fc - 1][col] - glbANOVAResult.meanSqrRepeat[col]) / (sumNI / glbANOVAResult.degFrd[fc - 1]);
+		}
+		glbANOVAResult.varianceRepeat[col] = glbANOVAResult.meanSqrRepeat[col];	
+	}
+										 
+	// Get reprod variance
+	int operatorVarianceIndices[glbANOVAResult.numRows / NUMINTERMEDROWS - 1];
+	memset (operatorVarianceIndices, 0, sizeof (operatorVarianceIndices));
+	
+	int operator = 1;
+	GetOperatorVariances (operator, operatorVarianceIndices); // TODO
+	
+	for (int col = 0; col < glbNumDataCols; col++)
+	{
+		glbANOVAResult.varianceReprod[col] = 0;
 		
-	    for (int col = 0; col < glbNumDataCols; col++)
+		for (int fc = 0; fc < glbANOVAResult.numRows / NUMINTERMEDROWS - 1; fc++)
 		{
-			glbANOVAResult.varianceReprod[fc][col] = glbANOVAResult.sumSqr[fc][col] / (double) glbANOVAResult.degFrd[fc];
-			glbANOVAResult.varianceRepeat[fc][col] = glbANOVAResult.sumSqrRepeat[col] / (double) glbANOVAResult.degFrdRepeat[fc];
+			if (operatorVarianceIndices[fc])
+			{
+				glbANOVAResult.varianceReprod[col] += glbANOVAResult.variance[fc][col];
+			}
 		}
 	}
 }
@@ -403,9 +559,9 @@ void ComputeStdDev ()
 		
 	    for (int col = 0; col < glbNumDataCols; col++)
 		{
-			glbANOVAResult.stdDevReprod[fc][col] = sqrt (glbANOVAResult.varianceReprod[fc][col]);
-			glbANOVAResult.stdDevRepeat[fc][col] = sqrt (glbANOVAResult.varianceRepeat[fc][col]);
-			glbANOVAResult.stdDevTotal[fc][col] = sqrt (glbANOVAResult.varianceReprod[fc][col] + glbANOVAResult.varianceRepeat[fc][col]);
+			glbANOVAResult.stdDevReprod[col] = sqrt (glbANOVAResult.varianceReprod[col]);
+			glbANOVAResult.stdDevRepeat[col] = sqrt (glbANOVAResult.varianceRepeat[col]);
+			glbANOVAResult.stdDevTotal[col] = sqrt (glbANOVAResult.varianceReprod[col] + glbANOVAResult.varianceRepeat[col]);
 		}
 	}
 }
@@ -425,9 +581,9 @@ void ComputePTRatio (double LimitList[][2])
 		{
 			double limitDiff = abs (LimitList[col][1] - LimitList[col][0]);
 			
-			glbANOVAResult.ptRatioReprod[fc][col] = 6 * glbANOVAResult.stdDevReprod[fc][col] / limitDiff;
-			glbANOVAResult.ptRatioRepeat[fc][col] = 6 * glbANOVAResult.stdDevRepeat[fc][col] / limitDiff;
-			glbANOVAResult.ptRatioTotal[fc][col] = 6 * glbANOVAResult.stdDevTotal[fc][col] / limitDiff;
+			glbANOVAResult.ptRatioReprod[col] = 6 * glbANOVAResult.stdDevReprod[col] / limitDiff;
+			glbANOVAResult.ptRatioRepeat[col] = 6 * glbANOVAResult.stdDevRepeat[col] / limitDiff;
+			glbANOVAResult.ptRatioTotal[col] = 6 * glbANOVAResult.stdDevTotal[col] / limitDiff;
 		}
 	}
 }

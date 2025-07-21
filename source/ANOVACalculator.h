@@ -55,7 +55,9 @@ void GetFactorComboName (IN RowStruct Dataset[], IN int Mask, char *FactorComboN
 void ComputeNumUniqueFactorElements(RowStruct Dataset[]);
 
 // Stats calculations
-void ComputeDegreesFreedom ();
+void ComputeDegreesFreedom (RowStruct Dataset[]);
+void ComputeMeanSquare ();
+int ComputeVarianceDenom (RowStruct Dataset[], int Mask);
 void ComputeVariance ();
 void ComputeStdDev ();
 void ComputePTRatio (double LimitList[][2]);
