@@ -48,9 +48,11 @@ Batch Build Debug = False
 [File 0001]
 Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/Callbacks.c"
 File Type = "CSource"
-Disk Date = 3835973319
+Disk Date = 3835974969
 In Projects = "1,"
-Source Window State = "1,737,737,737,14,14,14,0,0,0,0,0,0,0,0,0,720,0,737,14,401,686,1,0,"
+Source Window State = "1,756,756,756,41,41,41,0,0,0,0,0,0,0,0,0,745,0,756,41,401,686,1,0,"
+Breakpoint 0001 = "750,0,enabled,"
+Tracepoint 0001 = "0,0,751,1,"
 Window Top = 126
 Window Left = 58
 Window Z-Order = 2
@@ -58,9 +60,9 @@ Window Z-Order = 2
 [File 0002]
 Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/ANOVACalculator.c"
 File Type = "CSource"
-Disk Date = 3835972951
+Disk Date = 3835976280
 In Projects = "1,"
-Source Window State = "1,133,133,133,56,56,56,0,0,0,0,0,0,0,0,0,112,0,133,56,401,686,1,0,"
+Source Window State = "1,500,500,500,137,137,137,0,0,0,0,0,0,0,0,0,488,0,500,137,401,686,1,0,"
 Window Top = 95
 Window Left = 42
 Window Z-Order = 1
@@ -70,7 +72,7 @@ Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/ANOVACalculator.h"
 File Type = "Include"
 Disk Date = 3835970936
 In Projects = "1,"
-Source Window State = "1,59,59,59,57,57,57,0,0,0,0,0,0,0,0,0,26,0,59,57,401,686,1,0,"
+Source Window State = "1,59,59,59,57,57,57,0,0,0,0,0,0,0,0,0,11,0,59,57,401,686,1,0,"
 Window Top = 157
 Window Left = 74
 Window Z-Order = 4
@@ -83,7 +85,7 @@ In Projects = "1,"
 Source Window State = "1,28,28,28,12,12,12,0,0,0,0,0,0,0,0,0,15,0,28,12,401,686,1,0,"
 Window Top = 157
 Window Left = 74
-Window Z-Order = 5
+Window Z-Order = 6
 
 [File 0005]
 Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/ANOVAPanel.uir"
@@ -94,14 +96,14 @@ Window Top = 219
 Window Left = 106
 Window Height = 401
 Window Width = 630
-Window Z-Order = 6
+Window Z-Order = 5
 
 [File 0006]
 Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/ANOVACalculatorDefinitions.h"
 File Type = "Include"
-Disk Date = 3835969754
+Disk Date = 3835974566
 In Projects = "1,"
-Source Window State = "1,43,43,43,38,38,38,0,0,0,0,0,0,0,0,0,21,0,43,38,401,686,1,0,"
+Source Window State = "1,46,46,46,21,21,21,0,0,0,0,0,0,0,0,0,37,0,46,21,401,686,1,0,"
 Window Top = 64
 Window Left = 26
 Window Z-Order = 3

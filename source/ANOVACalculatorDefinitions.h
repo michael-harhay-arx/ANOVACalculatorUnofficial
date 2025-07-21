@@ -41,7 +41,6 @@ typedef struct ANOVAResult
 	double sumSqr[MAXFACTORCOMBOS][MAXDATACOLS];
 	int degFrd[MAXFACTORCOMBOS];
 	double meanSqr[MAXFACTORCOMBOS][MAXDATACOLS];
-	double denominator[MAXFACTORCOMBOS][MAXDATACOLS];
 	double variance[MAXFACTORCOMBOS][MAXDATACOLS];
 	
 	double sumSqrRepeat[MAXDATACOLS];
