@@ -805,7 +805,7 @@ void DisplayANOVATable ()
 			SetTableColumnAttribute (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, -1, ATTR_USE_LABEL_TEXT, 1);
 			SetTableColumnAttribute (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, -1, ATTR_LABEL_TEXT, glbANOVAResult.colLabels[col]);
 				
-			for (int row = 0; row < 10; row++) // hard-coded since overview will always contain same amount of rows
+			for (int row = 0; row < NUMOVERVIEWROWS; row++)
 			{				
 				// If first column, insert rows and populate row labels
 				if (col == 0)
@@ -897,8 +897,8 @@ void DisplayANOVATable ()
 					InsertTableRows (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, -1, 1, VAL_CELL_STRING);
 					
 					char rowLabel[256] = {0};
-					GetANOVATableRowName (row % NUMDISPLAYROWS, rowLabel);
-					strcat (rowLabel, glbANOVAResult.rowLabels[row / NUMDISPLAYROWS]);
+					GetANOVATableRowName (row % NUMINTERMEDROWS, rowLabel);
+					strcat (rowLabel, glbANOVAResult.rowLabels[row / NUMINTERMEDROWS]);
 
 					SetTableCellVal (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, MakePoint (col + 1, row + 1), rowLabel);
 				}
@@ -909,18 +909,18 @@ void DisplayANOVATable ()
 					SetTableCellAttribute (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, MakePoint (col + 1, row + 1), ATTR_FORMAT, VAL_SCIENTIFIC_FORMAT);
 					SetTableCellAttribute (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, MakePoint (col + 1, row + 1), ATTR_PRECISION, 3);
 					double cellData = 0;
-					switch (row % NUMDISPLAYROWS)
+					switch (row % NUMINTERMEDROWS)
 					{
 						case 0:
-							cellData = glbANOVAResult.sumSqr[row / NUMDISPLAYROWS][col - 1];
+							cellData = glbANOVAResult.sumSqr[row / NUMINTERMEDROWS][col - 1];
 							break;
 							
 						case 1:
-							cellData = glbANOVAResult.degFrd[row / NUMDISPLAYROWS];
+							cellData = glbANOVAResult.degFrd[row / NUMINTERMEDROWS];
 							break;
 							
 						case 2:
-							cellData = glbANOVAResult.meanSqr[row / NUMDISPLAYROWS][col - 1];
+							cellData = glbANOVAResult.meanSqr[row / NUMINTERMEDROWS][col - 1];
 							break;
 							
 						// TODO: add more cases for equipment

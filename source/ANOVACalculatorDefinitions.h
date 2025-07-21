@@ -20,11 +20,12 @@
 //==============================================================================
 // Constants
 		
-#define DATALENGTH 		(32)
-#define MAXFACTORCOLS	(3)
-#define MAXDATACOLS		(16)
-#define NUMDISPLAYROWS	(3) // SS, Df, MS (intermediate display)
-#define MAXFACTORCOMBOS ((1 << MAXFACTORCOLS) + 2) // Maximum 8 actual factor combos + equipment + total
+#define DATALENGTH 			(32)
+#define MAXFACTORCOLS		(3)
+#define MAXDATACOLS			(16)
+#define NUMOVERVIEWROWS		(10) // overview display
+#define NUMINTERMEDROWS		(3) // SS, Df, MS (intermediate display)
+#define MAXFACTORCOMBOS 	((1 << MAXFACTORCOLS) + 1) // Maximum 8 actual factor combos + equipment + total
 		
 //==============================================================================
 // Types
@@ -41,9 +42,9 @@ typedef struct ANOVAResult
 	int degFrd[MAXFACTORCOMBOS];
 	double meanSqr[MAXFACTORCOMBOS][MAXDATACOLS];
 	
-	double sumSqrRepeat[MAXFACTORCOMBOS][MAXDATACOLS];
+	double sumSqrRepeat[MAXDATACOLS];
 	int degFrdRepeat[MAXFACTORCOMBOS];
-	double meanSqrRepeat[MAXFACTORCOMBOS][MAXDATACOLS];
+	double meanSqrRepeat[MAXDATACOLS];
 	
 	// ANOVA overview results
 	double varianceReprod[MAXFACTORCOMBOS][MAXDATACOLS];

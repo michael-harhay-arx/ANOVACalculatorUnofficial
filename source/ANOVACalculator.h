@@ -50,7 +50,7 @@ void ComputeANOVA (IN int Panel, char FactorRange[][DATALENGTH], char DataRange[
 void ComputeGrandMeans (RowStruct Dataset[], double GrandMeans[]);
 void ComputeTotalSS (RowStruct Dataset[], double GrandMeans[], double SSTotal[]);
 int MatchOnMask (RowStruct RowA, RowStruct RowB, int Mask);
-void ComputeSSFactorCombo (RowStruct Dataset[], IN int Mask, double *GrandMeans, double *SSOut, double *SSOutRepeat);
+void ComputeSS (RowStruct Dataset[], IN int Mask, double *GrandMeans, double *SSOut, double *SSOutRepeat);
 void GetFactorComboName (IN RowStruct Dataset[], IN int Mask, char *FactorComboName);
 void ComputeNumUniqueFactorElements(RowStruct Dataset[]);
 

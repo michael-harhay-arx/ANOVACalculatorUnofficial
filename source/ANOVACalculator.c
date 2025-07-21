@@ -36,7 +36,7 @@ static int panelHandle = 0;
 // Global variables
 
 int glbDataColHeight = 0;
-int glbNumMasks = 0;
+int numMasks = 0;
 int glbNumUniqueFactorElements[MAXFACTORCOLS] = {0};
 ANOVAResult glbANOVAResult = {0};
 
@@ -139,23 +139,13 @@ void ComputeANOVA (IN int Panel, char FactorRange[][DATALENGTH], char DataRange[
 	double grandMeans[glbNumDataCols];
 	memset (grandMeans, 0, sizeof (grandMeans));
 	ComputeGrandMeans (dataset, grandMeans);
-	
-	// Get total SS vales (per data column)
-	double ssTotal[glbNumDataCols];
-	memset (ssTotal, 0, sizeof (ssTotal));
-	double ssTotalRepeat[glbNumDataCols];
-	memset (ssTotalRepeat, 0, sizeof (ssTotalRepeat));
-	
-	ComputeTotalSS (dataset, grandMeans, ssTotal);
-	memcpy (glbANOVAResult.sumSqr[1 << glbNumFactorCols], ssTotal, sizeof (ssTotal));
-	memcpy (glbANOVAResult.sumSqrRepeat[1 << glbNumFactorCols], ssTotalRepeat, sizeof (ssTotalRepeat));
 		
 	// Init results struct
-	int glbNumMasks = (1 << glbNumFactorCols)  - 1;
-	glbANOVAResult.numRows = 3 * (glbNumMasks + 2);
+	int numMasks = (1 << glbNumFactorCols) - 1;
+	glbANOVAResult.numRows = 3 * (numMasks + 1);
 	
 	// Iterate through masks (factor combos)
-    for (int mask = 1; mask <= glbNumMasks; mask++) 
+    for (int mask = 1; mask <= numMasks; mask++) 
 	{
 		// Get factor combo name
 		char factorComboName[256] = {0};
@@ -163,12 +153,11 @@ void ComputeANOVA (IN int Panel, char FactorRange[][DATALENGTH], char DataRange[
 		strcpy (glbANOVAResult.rowLabels[mask - 1], factorComboName);
 		
 		// Get SS results for specific factor combo
-        ComputeSSFactorCombo (dataset, mask, grandMeans, glbANOVAResult.sumSqr[mask - 1], glbANOVAResult.sumSqrRepeat[mask - 1]);
+        ComputeSS (dataset, mask, grandMeans, glbANOVAResult.sumSqr[mask - 1], glbANOVAResult.sumSqrRepeat);
     }
 	
-	// Add equipment/total to factor combos list
-	strcpy (glbANOVAResult.rowLabels[glbNumMasks], "Equipment");
-	strcpy (glbANOVAResult.rowLabels[glbNumMasks + 1], "Total");
+	// Add equipment to row labels list
+	strcpy (glbANOVAResult.rowLabels[numMasks], "Equipment");
 	
 	// Compute various stats
 	ComputeNumUniqueFactorElements (dataset);
@@ -203,26 +192,6 @@ void ComputeGrandMeans (RowStruct Dataset[], double GrandMeans[])
 }
 
 /***************************************************************************//*!
-* \brief Calculate total SS for each column
-*
-* \param [in] Dataset				A dataset of RowStructs
-* \param [in] GrandMeans			A list containing the grand mean for each column
-* \param [in] SSTotal				A list containing the SS total for each column
-*******************************************************************************/
-void ComputeTotalSS (RowStruct Dataset[], double GrandMeans[], double SSTotal[])
-{	
-	// Get total SS for each column
-    for (int row = 1; row < glbDataColHeight; row++) 
-	{
-        for (int col = 0; col < glbNumDataCols; col++) 
-		{
-            double diff = (double) atof (Dataset[row].data[col]) - GrandMeans[col];
-			SSTotal[col] += pow (diff, 2);
-        }
-    }
-}
-
-/***************************************************************************//*!
 * \brief Check if two rows match on selected factor mask
 *
 * \param [in] RowA					First RowStruct to be compared
@@ -247,9 +216,10 @@ int MatchOnMask (RowStruct RowA, RowStruct RowB, int Mask)
 * \param [in] Dataset				A dataset of RowStructs
 * \param [in] Mask					Effect mask
 * \param [in] GrandMeans			A list containing the grand mean for each column
-* \param [in] SSOut					A list containing the SS for the chosen factor combo
+* \param [out] SSOut				A list containing the SS for the chosen factor combo
+* \param [out] SSOut				A list containing the SS for equipment
 *******************************************************************************/
-void ComputeSSFactorCombo (RowStruct Dataset[], IN int Mask, double *GrandMeans, double *SSOut, double *SSOutRepeat) 
+void ComputeSS (RowStruct Dataset[], IN int Mask, double *GrandMeans, double *SSOut, double *SSOutRepeat) 
 {
 	// Factor combo SS calculation
     int visited[glbDataColHeight];
@@ -283,7 +253,7 @@ void ComputeSSFactorCombo (RowStruct Dataset[], IN int Mask, double *GrandMeans,
             }
         }
 		
-		// Calculate group mean (SSOut)
+		// Calculate SSOut
 		double groupMean[MAXDATACOLS] = {0};
         for (int col = 0; col < glbNumDataCols; col++) 
 		{
@@ -292,17 +262,20 @@ void ComputeSSFactorCombo (RowStruct Dataset[], IN int Mask, double *GrandMeans,
             SSOut[col] += count * diff * diff;
         }
 		
-		// Calculate within-group mean (SSOutRepeat)
-		for (int i = 0; i < matchedCount; i++) 
+		// Calculate SS for equipment
+		if (__builtin_popcount(Mask) == glbNumFactorCols)
 		{
-	        int rowIdx = matchedRows[i];
-	        for (int col = 0; col < glbNumDataCols; col++) 
+			for (int i = 0; i < matchedCount; i++) 
 			{
-	            double val = atof (Dataset[rowIdx].data[col]);
-	            double diff = val - groupMean[col];
-	            SSOutRepeat[col] += diff * diff;
-	        }
-	    }
+		        int rowIdx = matchedRows[i];
+		        for (int col = 0; col < glbNumDataCols; col++) 
+				{
+		            double val = atof (Dataset[rowIdx].data[col]);
+		            double diff = val - groupMean[col];
+		            SSOutRepeat[col] += diff * diff;
+		        }
+			}
+		}
     }
 }
 
@@ -337,7 +310,7 @@ void GetFactorComboName (IN RowStruct Dataset[], IN int Mask, char *FactorComboN
 }
 
 /***************************************************************************//*!
-* \brief Get degrees of freedom for each factor combo
+* \brief Get the number of unique factor elements per factor
 *
 * \param [in] Dataset				A dataset of RowStructs
 *******************************************************************************/
@@ -372,11 +345,11 @@ void ComputeNumUniqueFactorElements(RowStruct Dataset[])
 }
 
 /***************************************************************************//*!
-* \brief Get degrees of freedom for each factor combo
+* \brief Compute degrees of freedom for each factor combo
 *******************************************************************************/
 void ComputeDegreesFreedom ()
 {
-	for (int fc = 1; fc <= glbANOVAResult.numRows / 12; fc++)
+	for (int fc = 1; fc <= glbANOVAResult.numRows / NUMINTERMEDROWS; fc++)
 	{
 		// Check if total
 		if (fc == pow (2, glbNumFactorCols))
@@ -407,14 +380,14 @@ void ComputeDegreesFreedom ()
 *******************************************************************************/
 void ComputeVariance ()
 {
-	for (int fc = 0; fc < glbANOVAResult.numRows / 12; fc++)
+	for (int fc = 0; fc < glbANOVAResult.numRows / NUMINTERMEDROWS; fc++)
 	{
-		if (fc == glbANOVAResult.numRows / 12 - 2) continue; // Skip equipment
+		if (fc == glbANOVAResult.numRows / NUMINTERMEDROWS - 1) continue; // Skip equipment
 		
 	    for (int col = 0; col < glbNumDataCols; col++)
 		{
 			glbANOVAResult.varianceReprod[fc][col] = glbANOVAResult.sumSqr[fc][col] / (double) glbANOVAResult.degFrd[fc];
-			glbANOVAResult.varianceRepeat[fc][col] = glbANOVAResult.sumSqrRepeat[fc][col] / (double) glbANOVAResult.degFrdRepeat[fc];
+			glbANOVAResult.varianceRepeat[fc][col] = glbANOVAResult.sumSqrRepeat[col] / (double) glbANOVAResult.degFrdRepeat[fc];
 		}
 	}
 }
