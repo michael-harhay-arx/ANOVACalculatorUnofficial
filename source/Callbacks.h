@@ -41,7 +41,6 @@ typedef struct SaveData
 	char factorRange[MAXFACTORCOLS][DATALENGTH];
 	char dataRange[MAXDATACOLS][DATALENGTH];
 	char limitRange[MAXDATACOLS][DATALENGTH];
-	
 	ANOVAResult anovaResult;
 } SaveData;
 		
@@ -56,9 +55,9 @@ extern int glbNumDataCols;
 //==============================================================================
 // Global functions
 
+int DisplayCSVTable ();
 void GetDataFromListBoxes (IN int panel, char FactorSelection[][DATALENGTH], char DataSelection[][DATALENGTH], char LimitSelection[][DATALENGTH]);
 void GetANOVATableRowName (IN int RowNum, char *RowName);
-int DisplayCSVTable ();
 void DisplayANOVATable ();
 
 #ifdef __cplusplus

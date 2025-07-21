@@ -72,7 +72,6 @@ Error:
 * \param [in] FactorRange			The factor range, in format CxRx:CxRx. Factor ranges can be assumed to only be single columns
 * \param [in] DataRange				The data range, in format CxRx:CxRx.
 * \param [in] LimitRange			The limit range, in format CxRx:CxRx
-* \param [out] TreeRoot				Root of tree containing all data nodes, ready for ANOVA
 *******************************************************************************/
 void ComputeANOVA (IN int Panel, char FactorRange[][DATALENGTH], char DataRange[][DATALENGTH], char LimitRange[][DATALENGTH])
 {
@@ -148,8 +147,8 @@ void ComputeANOVA (IN int Panel, char FactorRange[][DATALENGTH], char DataRange[
 	memset (ssTotalRepeat, 0, sizeof (ssTotalRepeat));
 	
 	ComputeTotalSS (dataset, grandMeans, ssTotal);
-	memcpy (glbANOVAResult.ssResults[1 << glbNumFactorCols], ssTotal, sizeof (ssTotal));
-	memcpy (glbANOVAResult.ssResultsRepeat[1 << glbNumFactorCols], ssTotalRepeat, sizeof (ssTotalRepeat));
+	memcpy (glbANOVAResult.sumSqr[1 << glbNumFactorCols], ssTotal, sizeof (ssTotal));
+	memcpy (glbANOVAResult.sumSqrRepeat[1 << glbNumFactorCols], ssTotalRepeat, sizeof (ssTotalRepeat));
 		
 	// Init results struct
 	int glbNumMasks = (1 << glbNumFactorCols)  - 1;
@@ -164,7 +163,7 @@ void ComputeANOVA (IN int Panel, char FactorRange[][DATALENGTH], char DataRange[
 		strcpy (glbANOVAResult.factorCombos[mask - 1], factorComboName);
 		
 		// Get SS results for specific factor combo
-        ComputeSSFactorCombo (dataset, mask, grandMeans, glbANOVAResult.ssResults[mask - 1], glbANOVAResult.ssResultsRepeat[mask - 1]);
+        ComputeSSFactorCombo (dataset, mask, grandMeans, glbANOVAResult.sumSqr[mask - 1], glbANOVAResult.sumSqrRepeat[mask - 1]);
     }
 	
 	// Add equipment/total to factor combos list
@@ -414,8 +413,8 @@ void ComputeVariance ()
 		
 	    for (int col = 0; col < glbNumDataCols; col++)
 		{
-			glbANOVAResult.variance[fc][col] = glbANOVAResult.ssResults[fc][col] / (double) glbANOVAResult.degFrd[fc];
-			glbANOVAResult.varianceRepeat[fc][col] = glbANOVAResult.ssResultsRepeat[fc][col] / (double) glbANOVAResult.degFrdRepeat[fc];
+			glbANOVAResult.variance[fc][col] = glbANOVAResult.sumSqr[fc][col] / (double) glbANOVAResult.degFrd[fc];
+			glbANOVAResult.varianceRepeat[fc][col] = glbANOVAResult.sumSqrRepeat[fc][col] / (double) glbANOVAResult.degFrdRepeat[fc];
 		}
 	}
 }
@@ -433,7 +432,7 @@ void ComputeStdDev ()
 		{
 			glbANOVAResult.stdDev[fc][col] = sqrt (glbANOVAResult.variance[fc][col]);
 			glbANOVAResult.stdDevRepeat[fc][col] = sqrt (glbANOVAResult.varianceRepeat[fc][col]);
-			glbANOVAResult.stdDevOverall[fc][col] = sqrt (glbANOVAResult.variance[fc][col] + glbANOVAResult.varianceRepeat[fc][col]);
+			glbANOVAResult.stdDevTotal[fc][col] = sqrt (glbANOVAResult.variance[fc][col] + glbANOVAResult.varianceRepeat[fc][col]);
 		}
 	}
 }
@@ -455,7 +454,7 @@ void ComputePTRatio (double LimitList[][2])
 			
 			glbANOVAResult.ptRatio[fc][col] = 6 * glbANOVAResult.stdDev[fc][col] / limitDiff;
 			glbANOVAResult.ptRatioRepeat[fc][col] = 6 * glbANOVAResult.stdDevRepeat[fc][col] / limitDiff;
-			glbANOVAResult.ptRatioOverall[fc][col] = 6 * glbANOVAResult.stdDevOverall[fc][col] / limitDiff;
+			glbANOVAResult.ptRatioTotal[fc][col] = 6 * glbANOVAResult.stdDevTotal[fc][col] / limitDiff;
 		}
 	}
 }

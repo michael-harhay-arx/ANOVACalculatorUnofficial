@@ -74,7 +74,7 @@ char glbLimitRange[MAXDATACOLS][DATALENGTH] = {0};
 /// REGION START Code Body
 //! \endcond
 /***************************************************************************//*!
-* \brief Callback for closing main panel
+* \brief Main panel: Callback for closing main panel
 *******************************************************************************/
 int CVICALLBACK MainPanelCB (int panel, int event, void *callbackData, int eventData1, int eventData2)
 {
@@ -99,7 +99,7 @@ int CVICALLBACK MainPanelCB (int panel, int event, void *callbackData, int event
 }
 
 /***************************************************************************//*!
-* \brief Open button callback
+* \brief Main panel: Open button callback
 *******************************************************************************/
 int CVICALLBACK OpenButtonCB(int panel, int control, int event, void *callbackData, int eventData1, int eventData2)
 {
@@ -122,7 +122,7 @@ int CVICALLBACK OpenButtonCB(int panel, int control, int event, void *callbackDa
 }
 
 /***************************************************************************//*!
-* \brief Load button callback
+* \brief Main panel: Load button callback
 *******************************************************************************/
 int CVICALLBACK LoadButtonCB(int panel, int control, int event, void *callbackData, int eventData1, int eventData2)
 {
@@ -200,7 +200,7 @@ int CVICALLBACK LoadButtonCB(int panel, int control, int event, void *callbackDa
 }
 
 /***************************************************************************//*!
-* \brief Callback for closing CSV panel
+* \brief CSV panel: Callback for closing CSV panel
 *******************************************************************************/
 int CVICALLBACK CSVPanelCB (int panel, int event, void *callbackData, int eventData1, int eventData2)
 {
@@ -214,7 +214,7 @@ int CVICALLBACK CSVPanelCB (int panel, int event, void *callbackData, int eventD
 }
 
 /***************************************************************************//*!
-* \brief Callback for making table selections
+* \brief CSV panel: Callback for making table selections
 *******************************************************************************/
 int CVICALLBACK CSVTableCB (int panel, int control, int event, void *callbackData, int eventData1, int eventData2)
 {
@@ -254,7 +254,7 @@ int CVICALLBACK CSVTableCB (int panel, int control, int event, void *callbackDat
 }
 
 /***************************************************************************//*!
-* \brief Callback for factor/data/limit select button
+* \brief CSV panel: Callback for factor/data/limit select button
 *******************************************************************************/
 int CVICALLBACK CSVSelectButtonCB(int panel, int control, int event, void *callbackData, int eventData1, int eventData2)
 {
@@ -312,7 +312,7 @@ int CVICALLBACK CSVSelectButtonCB(int panel, int control, int event, void *callb
 }
 
 /***************************************************************************//*!
-* \brief Callback for factor/data/limit delete button
+* \brief CSV panel: Callback for factor/data/limit delete button
 *******************************************************************************/
 int CVICALLBACK CSVDeleteButtonCB(int panel, int control, int event, void *callbackData, int eventData1, int eventData2)
 {
@@ -349,7 +349,7 @@ int CVICALLBACK CSVDeleteButtonCB(int panel, int control, int event, void *callb
 }
 
 /***************************************************************************//*!
-* \brief Callback for factor/data/limit list boxes
+* \brief CSV panel: Callback for factor/data/limit list boxes
 *******************************************************************************/
 int CVICALLBACK CSVListCB(int panel, int control, int event, void *callbackData, int eventData1, int eventData2)
 {
@@ -377,7 +377,7 @@ int CVICALLBACK CSVListCB(int panel, int control, int event, void *callbackData,
 }
 
 /***************************************************************************//*!
-* \brief Callback for ANOVA calculation button
+* \brief CSV panel: Callback for ANOVA calculation button
 *******************************************************************************/
 int CVICALLBACK CSVCalcButtonCB(int panel, int control, int event, void *callbackData, int eventData1, int eventData2)
 {
@@ -406,6 +406,266 @@ int CVICALLBACK CSVCalcButtonCB(int panel, int control, int event, void *callbac
 		// Display ANOVA table
 		DisplayANOVATable ();
 		DisplayPanel (glbANOVAPanelHandle);
+	}
+
+Error:
+	return error;
+}
+
+/***************************************************************************//*!
+* \brief ANOVA panel: Callback for closing ANOVA panel
+*******************************************************************************/
+int CVICALLBACK ANOVAPanelCB (int panel, int event, void *callbackData, int eventData1, int eventData2)
+{
+	if (event == EVENT_CLOSE)
+	{
+		DiscardPanel (glbANOVAPanelHandle);
+	}
+	
+	return 0;
+}
+
+/***************************************************************************//*!
+* \brief ANOVA panel: for mode selection dropdown
+*******************************************************************************/
+int CVICALLBACK ANOVAModeSelectCB (int panel, int control, int event, void *callbackData, int eventData1, int eventData2)
+{
+	if (event == EVENT_VAL_CHANGED)
+	{
+		// Display ANOVA overview mode
+		
+		
+		// Display intermediate view mode
+		
+	}
+	
+	return 0;
+}
+
+/***************************************************************************//*!
+* \brief ANOVA panel: Callback for save button
+*******************************************************************************/
+int CVICALLBACK ANOVASaveButtonCB (int panel, int control, int event, void *callbackData, int eventData1, int eventData2)
+{
+	if (event == EVENT_LEFT_CLICK)
+	{
+		// Save current data to struct
+		SaveData data;
+		memset (&data, 0, sizeof (data)); 
+	
+		data.numRows = glbNumRows;
+		data.numCols = glbNumCols;
+		data.numFactorCols = glbNumFactorCols;
+		data.numDataCols = glbNumDataCols;
+		memcpy (data.csvFilepath, glbCSVFilepath, 512);
+		memcpy (data.factorRange, glbFactorRange, MAXFACTORCOLS * DATALENGTH);
+		memcpy (data.dataRange, glbDataRange, MAXDATACOLS * DATALENGTH);
+		memcpy (data.limitRange, glbLimitRange, MAXDATACOLS * DATALENGTH);
+		data.anovaResult = glbANOVAResult;
+		
+		// Create .anova file
+		char filename[256] = {0};
+		time_t now = time(NULL);
+		struct tm *t = localtime(&now);
+		strftime(filename, 256, "..\\saves\\%Y-%m-%d_%H-%M-%S.anova", t);
+		
+		FILE *fp = fopen(filename, "wb");
+	    if (!fp) 
+		{
+	        perror("Error opening file");
+	        return 1;
+	    }
+		
+		// Write SaveData struct and glbCSVData to file
+	    fwrite (&data, sizeof(SaveData), 1, fp);
+		for (int row = 0; row < glbNumRows; row++)
+		{
+			for (int col = 0; col < glbNumCols; col++)
+			{
+				fwrite (glbCSVData[row][col], sizeof (char), DATALENGTH, fp);
+			}
+		}
+		
+	    fclose (fp);	
+		
+		// Display message
+		SetCtrlAttribute (glbANOVAPanelHandle, ANOVAPANEL_SAVETEXT, ATTR_VISIBLE, 1);
+	}
+	
+	return 0;
+}
+
+/***************************************************************************//*!
+* \brief ANOVA panel: Callback for export button
+*******************************************************************************/
+int CVICALLBACK ANOVAExportButtonCB (int panel, int control, int event, void *callbackData, int eventData1, int eventData2)
+{
+	if (event == EVENT_LEFT_CLICK)
+	{
+		// Get new CSV file
+		char filePath[MAX_PATHNAME_LEN] = "";
+		FileSelectPopup ("..\\", "*.csv", "*.csv", "Save Table As CSV", VAL_SAVE_BUTTON, 0, 1, 1, 1, filePath);
+		if (strlen (filePath) == 0) return 0;
+		
+		FILE *fp = fopen(filePath, "w");
+		if (!fp) 
+		{
+		    perror ("Failed to open file for writing.");
+		    return 0;
+		}
+
+		// Iterate through table, export each cell value to CSV
+		for (int row = 0; row < glbANOVAResult.numRows; row++) 
+		{
+		    for (int col = 0; col < glbNumDataCols + 1; col++) 
+			{
+		        char cellText[256] = "";
+				double cellData = 0;
+				void *dataPtr = NULL;
+				
+				if (col == 0)
+				{
+					dataPtr = cellText;
+				}
+				else 
+				{
+					dataPtr = &cellData;
+				}
+				
+		        GetTableCellVal (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, MakePoint (col + 1, row + 1), dataPtr);
+				
+				if (col != 0)
+				{
+					sprintf (cellText, "%f", *(double *)dataPtr);
+				}
+		        
+		        // Add quotes if necessary
+		        if (strchr (cellText, ',') || strchr (cellText, '"')) 
+				{
+		            char temp[256];
+		            sprintf (temp, "\"%s\"", cellText);
+		            fprintf (fp, "%s", temp);
+		        } 
+				else 
+				{
+		            fprintf (fp, "%s", cellText);
+		        }
+
+		        if (col < glbNumDataCols)
+				{
+		            fprintf (fp, ",");
+				}
+		    }
+		    fprintf (fp, "\n");
+		}
+
+		fclose(fp);
+		
+		// Display message
+		SetCtrlAttribute (glbANOVAPanelHandle, ANOVAPANEL_EXPORTTEXT, ATTR_VISIBLE, 1);
+	}
+	
+	return 0;
+}
+
+/***************************************************************************//*!
+* \brief ANOVA panel: Callback for edit button
+*******************************************************************************/
+int CVICALLBACK ANOVAEditButtonCB (int panel, int control, int event, void *callbackData, int eventData1, int eventData2)
+{
+	if (event == EVENT_LEFT_CLICK)
+	{
+		DiscardPanel (glbANOVAPanelHandle);
+		
+		// Load CSV panel if not already loaded
+		if (glbCSVPanelHandle <= 0)
+		{
+			glbCSVPanelHandle = LoadPanel (0, "CSVPanel.uir", CSVPANEL);
+			DisplayCSVTable ();
+			
+			// Populate list boxes
+			for (int i = 0; i < 3; i++)
+			{
+				int listBox = 0;
+				int listDataLength = 0;
+				char (*listData)[DATALENGTH] = NULL;
+			
+				switch (i)
+				{
+					case 0:
+						listBox = CSVPANEL_FACTORLIST;
+						listDataLength = glbNumFactorCols;
+						listData = glbFactorRange;
+						break;
+						
+					case 1:
+						listBox = CSVPANEL_DATALIST;
+						listDataLength = glbNumDataCols;
+						listData = glbDataRange;
+						break;
+						
+					case 2:
+						listBox = CSVPANEL_LIMITLIST;
+						listDataLength = glbNumDataCols;
+						listData = glbLimitRange;
+						break;
+				}
+				
+				// Insert data into list
+				for (int j = 0; j < listDataLength; j++)
+				{
+					InsertListItem (glbCSVPanelHandle, listBox, -1, listData[j], "");
+					SetCtrlIndex (glbCSVPanelHandle, listBox, j);
+				}
+			}
+		}
+		
+		DisplayPanel (glbCSVPanelHandle);
+	}
+	
+	return 0;
+}
+
+/***************************************************************************//*!
+* \brief Helper function that displays CSV panel and table
+*******************************************************************************/
+int DisplayCSVTable ()
+{
+	char errmsg[ERRLEN] = {0};
+	fnInit;
+	
+	// Parse selected CSV, load into buffer
+	int buffSize = DATALENGTH;
+	char headerBuffer[64 * buffSize]; // Can account for 64 x 32-byte column headers
+	char dataBuffer[64 * 64 * buffSize]; // Can account for 64 x 64 x 32-byte pieces of data
+	
+	tsErrChk (Initialize_CSVParse_LIB (glbCSVFilepath, 1, NULL, 0, buffSize, &glbNumCols, &glbNumRows, headerBuffer, errmsg), errmsg);
+	tsErrChk (CSVParse_GetDataByIndex (0, 0, glbNumRows - 1, glbNumCols - 1, dataBuffer, errmsg), errmsg);
+
+	// Populate main table, as well as glbCSVData
+	glbNumRows++; // increment to account for header
+	glbCSVData = malloc (sizeof (char **) * glbNumRows);
+	for (int row = 1; row <= glbNumRows; row++)
+	{
+		glbCSVData[row - 1] = malloc (sizeof (char *) * glbNumCols);
+		InsertTableRows (glbCSVPanelHandle, CSVPANEL_CSVTABLE, -1, 1, VAL_CELL_STRING);
+
+		for (int col = 1; col <= glbNumCols; col++)
+		{
+			glbCSVData[row - 1][col - 1] = calloc (buffSize, sizeof (char));
+			
+			if (row == 1)
+			{
+				InsertTableColumns (glbCSVPanelHandle, CSVPANEL_CSVTABLE, -1, 1, VAL_CELL_STRING);
+				SetTableCellVal (glbCSVPanelHandle, CSVPANEL_CSVTABLE, MakePoint (col, row), headerBuffer + (col - 1) * buffSize);
+				memcpy (glbCSVData[row - 1][col - 1], headerBuffer + (col - 1) * buffSize, buffSize);
+			}
+			else
+			{	
+				SetTableCellVal (glbCSVPanelHandle, CSVPANEL_CSVTABLE, MakePoint (col, row), dataBuffer + (row - 2) * buffSize * glbNumCols + (col - 1) * buffSize);
+				memcpy (glbCSVData[row - 1][col - 1], dataBuffer + (row - 2) * buffSize * glbNumCols + (col - 1) * buffSize, buffSize);
+			}
+		}
 	}
 
 Error:
@@ -506,52 +766,6 @@ void GetANOVATableRowName (IN int RowNum, char *RowName)
 }
 
 /***************************************************************************//*!
-* \brief Helper function that displays CSV panel and table
-*******************************************************************************/
-int DisplayCSVTable ()
-{
-	char errmsg[ERRLEN] = {0};
-	fnInit;
-	
-	// Parse selected CSV, load into buffer
-	int buffSize = DATALENGTH;
-	char headerBuffer[64 * buffSize]; // Can account for 64 x 32-byte column headers
-	char dataBuffer[64 * 64 * buffSize]; // Can account for 64 x 64 x 32-byte pieces of data
-	
-	tsErrChk (Initialize_CSVParse_LIB (glbCSVFilepath, 1, NULL, 0, buffSize, &glbNumCols, &glbNumRows, headerBuffer, errmsg), errmsg);
-	tsErrChk (CSVParse_GetDataByIndex (0, 0, glbNumRows - 1, glbNumCols - 1, dataBuffer, errmsg), errmsg);
-
-	// Populate main table, as well as glbCSVData
-	glbNumRows++; // increment to account for header
-	glbCSVData = malloc (sizeof (char **) * glbNumRows);
-	for (int row = 1; row <= glbNumRows; row++)
-	{
-		glbCSVData[row - 1] = malloc (sizeof (char *) * glbNumCols);
-		InsertTableRows (glbCSVPanelHandle, CSVPANEL_CSVTABLE, -1, 1, VAL_CELL_STRING);
-
-		for (int col = 1; col <= glbNumCols; col++)
-		{
-			glbCSVData[row - 1][col - 1] = calloc (buffSize, sizeof (char));
-			
-			if (row == 1)
-			{
-				InsertTableColumns (glbCSVPanelHandle, CSVPANEL_CSVTABLE, -1, 1, VAL_CELL_STRING);
-				SetTableCellVal (glbCSVPanelHandle, CSVPANEL_CSVTABLE, MakePoint (col, row), headerBuffer + (col - 1) * buffSize);
-				memcpy (glbCSVData[row - 1][col - 1], headerBuffer + (col - 1) * buffSize, buffSize);
-			}
-			else
-			{	
-				SetTableCellVal (glbCSVPanelHandle, CSVPANEL_CSVTABLE, MakePoint (col, row), dataBuffer + (row - 2) * buffSize * glbNumCols + (col - 1) * buffSize);
-				memcpy (glbCSVData[row - 1][col - 1], dataBuffer + (row - 2) * buffSize * glbNumCols + (col - 1) * buffSize, buffSize);
-			}
-		}
-	}
-
-Error:
-	return error;
-}
-
-/***************************************************************************//*!
 * \brief Helper function that displays ANOVA data in table
 *******************************************************************************/
 void DisplayANOVATable ()
@@ -592,11 +806,11 @@ void DisplayANOVATable ()
 				switch (row % NUMDISPLAYROWS)
 				{
 					case 0:
-						cellData = glbANOVAResult.ssResults[row / NUMDISPLAYROWS][col - 1];
+						cellData = glbANOVAResult.sumSqr[row / NUMDISPLAYROWS][col - 1];
 						break;
 						
 					case 1:
-						cellData = glbANOVAResult.ssResultsRepeat[row / NUMDISPLAYROWS][col - 1];
+						cellData = glbANOVAResult.sumSqrRepeat[row / NUMDISPLAYROWS][col - 1];
 						break;
 						
 					case 2:
@@ -624,7 +838,7 @@ void DisplayANOVATable ()
 						break;
 						
 					case 8:
-						cellData = glbANOVAResult.stdDevOverall[row / NUMDISPLAYROWS][col - 1];
+						cellData = glbANOVAResult.stdDevTotal[row / NUMDISPLAYROWS][col - 1];
 						break;
 						
 					case 9:
@@ -636,7 +850,7 @@ void DisplayANOVATable ()
 						break;
 						
 					case 11:
-						cellData = glbANOVAResult.ptRatioOverall[row / NUMDISPLAYROWS][col - 1];
+						cellData = glbANOVAResult.ptRatioTotal[row / NUMDISPLAYROWS][col - 1];
 						break;
 						
 					default:
@@ -649,203 +863,6 @@ void DisplayANOVATable ()
 		
 		SetColumnWidthToWidestCellContents (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, col + 1);
 	}
-}
-
-/***************************************************************************//*!
-* \brief Callback for save button
-*******************************************************************************/
-int CVICALLBACK ANOVASaveButtonCB (int panel, int control, int event, void *callbackData, int eventData1, int eventData2)
-{
-	if (event == EVENT_LEFT_CLICK)
-	{
-		// Save current data to struct
-		SaveData data;
-		memset (&data, 0, sizeof (data)); 
-	
-		data.numRows = glbNumRows;
-		data.numCols = glbNumCols;
-		data.numFactorCols = glbNumFactorCols;
-		data.numDataCols = glbNumDataCols;
-		memcpy (data.csvFilepath, glbCSVFilepath, 512);
-		memcpy (data.factorRange, glbFactorRange, MAXFACTORCOLS * DATALENGTH);
-		memcpy (data.dataRange, glbDataRange, MAXDATACOLS * DATALENGTH);
-		memcpy (data.limitRange, glbLimitRange, MAXDATACOLS * DATALENGTH);
-		data.anovaResult = glbANOVAResult;
-		
-		// Create .anova file
-		char filename[256] = {0};
-		time_t now = time(NULL);
-		struct tm *t = localtime(&now);
-		strftime(filename, 256, "..\\saves\\%Y-%m-%d_%H-%M-%S.anova", t);
-		
-		FILE *fp = fopen(filename, "wb");
-	    if (!fp) 
-		{
-	        perror("Error opening file");
-	        return 1;
-	    }
-		
-		// Write SaveData struct and glbCSVData to file
-	    fwrite (&data, sizeof(SaveData), 1, fp);
-		for (int row = 0; row < glbNumRows; row++)
-		{
-			for (int col = 0; col < glbNumCols; col++)
-			{
-				fwrite (glbCSVData[row][col], sizeof (char), DATALENGTH, fp);
-			}
-		}
-		
-	    fclose (fp);	
-		
-		// Display message
-		SetCtrlAttribute (glbANOVAPanelHandle, ANOVAPANEL_SAVETEXT, ATTR_VISIBLE, 1);
-	}
-	
-	return 0;
-}
-
-/***************************************************************************//*!
-* \brief Callback for export button
-*******************************************************************************/
-int CVICALLBACK ANOVAExportButtonCB (int panel, int control, int event, void *callbackData, int eventData1, int eventData2)
-{
-	if (event == EVENT_LEFT_CLICK)
-	{
-		// Get new CSV file
-		char filePath[MAX_PATHNAME_LEN] = "";
-		FileSelectPopup ("..\\", "*.csv", "*.csv", "Save Table As CSV", VAL_SAVE_BUTTON, 0, 1, 1, 1, filePath);
-		if (strlen (filePath) == 0) return 0;
-		
-		FILE *fp = fopen(filePath, "w");
-		if (!fp) 
-		{
-		    perror ("Failed to open file for writing.");
-		    return 0;
-		}
-
-		// Iterate through table, export each cell value to CSV
-		for (int row = 0; row < glbANOVAResult.numRows; row++) 
-		{
-		    for (int col = 0; col < glbNumDataCols + 1; col++) 
-			{
-		        char cellText[256] = "";
-				double cellData = 0;
-				void *dataPtr = NULL;
-				
-				if (col == 0)
-				{
-					dataPtr = cellText;
-				}
-				else 
-				{
-					dataPtr = &cellData;
-				}
-				
-		        GetTableCellVal (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, MakePoint (col + 1, row + 1), dataPtr);
-				
-				if (col != 0)
-				{
-					sprintf (cellText, "%f", *(double *)dataPtr);
-				}
-		        
-		        // Add quotes if necessary
-		        if (strchr (cellText, ',') || strchr (cellText, '"')) 
-				{
-		            char temp[256];
-		            sprintf (temp, "\"%s\"", cellText);
-		            fprintf (fp, "%s", temp);
-		        } 
-				else 
-				{
-		            fprintf (fp, "%s", cellText);
-		        }
-
-		        if (col < glbNumDataCols)
-				{
-		            fprintf (fp, ",");
-				}
-		    }
-		    fprintf (fp, "\n");
-		}
-
-		fclose(fp);
-		
-		// Display message
-		SetCtrlAttribute (glbANOVAPanelHandle, ANOVAPANEL_EXPORTTEXT, ATTR_VISIBLE, 1);
-	}
-	
-	return 0;
-}
-
-/***************************************************************************//*!
-* \brief Callback for edit button
-*******************************************************************************/
-int CVICALLBACK ANOVAEditButtonCB (int panel, int control, int event, void *callbackData, int eventData1, int eventData2)
-{
-	if (event == EVENT_LEFT_CLICK)
-	{
-		DiscardPanel (glbANOVAPanelHandle);
-		
-		// Load CSV panel if not already loaded
-		if (glbCSVPanelHandle <= 0)
-		{
-			glbCSVPanelHandle = LoadPanel (0, "CSVPanel.uir", CSVPANEL);
-			DisplayCSVTable ();
-			
-			// Populate list boxes
-			for (int i = 0; i < 3; i++)
-			{
-				int listBox = 0;
-				int listDataLength = 0;
-				char (*listData)[DATALENGTH] = NULL;
-			
-				switch (i)
-				{
-					case 0:
-						listBox = CSVPANEL_FACTORLIST;
-						listDataLength = glbNumFactorCols;
-						listData = glbFactorRange;
-						break;
-						
-					case 1:
-						listBox = CSVPANEL_DATALIST;
-						listDataLength = glbNumDataCols;
-						listData = glbDataRange;
-						break;
-						
-					case 2:
-						listBox = CSVPANEL_LIMITLIST;
-						listDataLength = glbNumDataCols;
-						listData = glbLimitRange;
-						break;
-				}
-				
-				// Insert data into list
-				for (int j = 0; j < listDataLength; j++)
-				{
-					InsertListItem (glbCSVPanelHandle, listBox, -1, listData[j], "");
-					SetCtrlIndex (glbCSVPanelHandle, listBox, j);
-				}
-			}
-		}
-		
-		DisplayPanel (glbCSVPanelHandle);
-	}
-	
-	return 0;
-}
-
-/***************************************************************************//*!
-* \brief Callback for closing ANOVA panel
-*******************************************************************************/
-int CVICALLBACK ANOVAPanelCB (int panel, int event, void *callbackData, int eventData1, int eventData2)
-{
-	if (event == EVENT_CLOSE)
-	{
-		DiscardPanel (glbANOVAPanelHandle);
-	}
-	
-	return 0;
 }
 //! \cond
 /// REGION END

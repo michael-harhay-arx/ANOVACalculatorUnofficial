@@ -36,18 +36,24 @@ typedef struct ANOVAResult
 	char factorCombos[MAXFACTORCOMBOS][DATALENGTH];
 	char dataColumns[MAXDATACOLS][DATALENGTH];
 	
-	double ssResults[MAXFACTORCOMBOS][MAXDATACOLS];
-	double ssResultsRepeat[MAXFACTORCOMBOS][MAXDATACOLS];
+	// Main results
+	double sumSqr[MAXFACTORCOMBOS][MAXDATACOLS];
 	int degFrd[MAXFACTORCOMBOS];
-	int degFrdRepeat[MAXFACTORCOMBOS];
 	double variance[MAXFACTORCOMBOS][MAXDATACOLS];
-	double varianceRepeat[MAXFACTORCOMBOS][MAXDATACOLS];
 	double stdDev[MAXFACTORCOMBOS][MAXDATACOLS];
-	double stdDevRepeat[MAXFACTORCOMBOS][MAXDATACOLS];
-	double stdDevOverall[MAXFACTORCOMBOS][MAXDATACOLS];
 	double ptRatio[MAXFACTORCOMBOS][MAXDATACOLS];
+	
+	// Equipment
+	double sumSqrRepeat[MAXFACTORCOMBOS][MAXDATACOLS];
+	int degFrdRepeat[MAXFACTORCOMBOS];
+	double varianceRepeat[MAXFACTORCOMBOS][MAXDATACOLS];
+	double stdDevRepeat[MAXFACTORCOMBOS][MAXDATACOLS];
 	double ptRatioRepeat[MAXFACTORCOMBOS][MAXDATACOLS];
-	double ptRatioOverall[MAXFACTORCOMBOS][MAXDATACOLS];
+	
+	// Total
+	double varianceTotal[MAXFACTORCOMBOS][MAXDATACOLS];
+	double stdDevTotal[MAXFACTORCOMBOS][MAXDATACOLS];
+	double ptRatioTotal[MAXFACTORCOMBOS][MAXDATACOLS];
 } ANOVAResult;
 
 //==============================================================================
