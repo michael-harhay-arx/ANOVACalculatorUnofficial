@@ -37,6 +37,9 @@
 //==============================================================================
 // Constants
 
+const char overviewRowLabels[8][DATALENGTH] = {"Variance_operators", "Variance_equip/repeatability", "Variance_overall", 
+							 				   "StdDev_overall", "Variance_%perFactor", "PTRatio_factors", "PTRatio_equip", "PTRatio_overall"};
+
 //==============================================================================
 // Types
 
@@ -52,6 +55,7 @@
 // GUI variables
 int glbCSVPanelHandle = 0;
 int glbANOVAPanelHandle = 0;
+int glbDisplayMode = 0;
 
 // CSV file variables
 char glbCSVFilepath[512] = {0};
@@ -432,11 +436,11 @@ int CVICALLBACK ANOVAModeSelectCB (int panel, int control, int event, void *call
 {
 	if (event == EVENT_VAL_CHANGED)
 	{
-		// Display ANOVA overview mode
+		// Get ANOVA table display mode
+		GetCtrlVal (glbANOVAPanelHandle, ANOVAPANEL_MODESELECT, &glbDisplayMode);
 		
-		
-		// Display intermediate view mode
-		
+		// Call display function
+		DisplayANOVATable ();
 	}
 	
 	return 0;
@@ -770,99 +774,158 @@ void GetANOVATableRowName (IN int RowNum, char *RowName)
 *******************************************************************************/
 void DisplayANOVATable ()
 {	
-	// Load calculation results into ANOVA table
-	for (int col = 0; col < glbNumDataCols + 1; col++)
+	// Hide table and clear it if necessary
+	SetCtrlAttribute (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, ATTR_VISIBLE, 0);
+	
+	int currentNumCols = 0;
+	int currentNumRows = 0;
+	GetNumTableColumns (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, &currentNumCols);
+	GetNumTableRows (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, &currentNumRows);
+	if (currentNumCols > 0)
 	{
-		for (int row = 0; row < glbANOVAResult.numRows; row++)
+		DeleteTableColumns (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, 1, currentNumCols);
+		DeleteTableRows (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, 1, currentNumRows);
+	}
+
+	// ANOVA overview mode
+	if (glbDisplayMode == 0)
+	{
+		for (int col = 0; col < glbNumDataCols + 1; col++)
 		{
-			// If first column, insert rows and populate with stat names for each factor combo
+			// Insert column
+			int cellType = VAL_CELL_NUMERIC;
 			if (col == 0)
 			{
-				InsertTableRows (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, -1, 1, VAL_CELL_STRING);
-				
-				char rowLabel[256] = {0};
-				GetANOVATableRowName (row % NUMDISPLAYROWS, rowLabel);
-				strcat (rowLabel, glbANOVAResult.factorCombos[row / NUMDISPLAYROWS]);
-
-				SetTableCellVal (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, MakePoint (col + 1, row + 1), rowLabel);
+				cellType = VAL_CELL_STRING;
 			}
 			
-			// If not first column, insert data
-			else
-			{
-				// Insert new data column
-				if (row == 0)
+			InsertTableColumns (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, -1, 1, cellType); 
+			SetTableColumnAttribute (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, -1, ATTR_USE_LABEL_TEXT, 1);
+			SetTableColumnAttribute (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, -1, ATTR_LABEL_TEXT, glbANOVAResult.colLabels[col]);
+				
+			for (int row = 0; row < 8; row++) // hard-coded since overview will always contain same 7 rows
+			{				
+				// If first column, insert rows and populate with stat names for each factor combo
+				if (col == 0)
 				{
-					InsertTableColumns (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, -1, 1, VAL_CELL_NUMERIC); 
-					
-					SetTableColumnAttribute (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, -1, ATTR_USE_LABEL_TEXT, 1);
-					SetTableColumnAttribute (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, -1, ATTR_LABEL_TEXT, glbANOVAResult.dataColumns[col - 1]);
+					InsertTableRows (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, -1, 1, VAL_CELL_STRING);
+					SetTableCellVal (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, MakePoint (col + 1, row + 1), overviewRowLabels[row]);
 				}
-					
-				// Insert data
-				SetTableCellAttribute (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, MakePoint (col + 1, row + 1), ATTR_FORMAT, VAL_SCIENTIFIC_FORMAT);
-				SetTableCellAttribute (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, MakePoint (col + 1, row + 1), ATTR_PRECISION, 3);
-				double cellData = 0;
-				switch (row % NUMDISPLAYROWS)
-				{
-					case 0:
-						cellData = glbANOVAResult.sumSqr[row / NUMDISPLAYROWS][col - 1];
-						break;
-						
-					case 1:
-						cellData = glbANOVAResult.sumSqrRepeat[row / NUMDISPLAYROWS][col - 1];
-						break;
-						
-					case 2:
-						cellData = glbANOVAResult.degFrd[row / NUMDISPLAYROWS];
-						break;
-						
-					case 3:
-						cellData = glbANOVAResult.degFrdRepeat[row / NUMDISPLAYROWS];
-						break;
-						
-					case 4:
-						cellData = glbANOVAResult.variance[row / NUMDISPLAYROWS][col - 1];
-						break;
-						
-					case 5:
-						cellData = glbANOVAResult.varianceRepeat[row / NUMDISPLAYROWS][col - 1];
-						break;
-						
-					case 6:
-						cellData = glbANOVAResult.stdDev[row / NUMDISPLAYROWS][col - 1];
-						break;
-						
-					case 7:
-						cellData = glbANOVAResult.stdDevRepeat[row / NUMDISPLAYROWS][col - 1];
-						break;
-						
-					case 8:
-						cellData = glbANOVAResult.stdDevTotal[row / NUMDISPLAYROWS][col - 1];
-						break;
-						
-					case 9:
-						cellData = glbANOVAResult.ptRatio[row / NUMDISPLAYROWS][col - 1];
-						break;
-						
-					case 10:
-						cellData = glbANOVAResult.ptRatioRepeat[row / NUMDISPLAYROWS][col - 1];
-						break;
-						
-					case 11:
-						cellData = glbANOVAResult.ptRatioTotal[row / NUMDISPLAYROWS][col - 1];
-						break;
-						
-					default:
-						cellData = 0;
+				
+				// If not first column, insert data
+				else
+				{						
+					SetTableCellAttribute (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, MakePoint (col + 1, row + 1), ATTR_FORMAT, VAL_SCIENTIFIC_FORMAT);
+					SetTableCellAttribute (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, MakePoint (col + 1, row + 1), ATTR_PRECISION, 3);
+					double cellData = 1.11;
+					SetTableCellVal (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, MakePoint (col + 1, row + 1), cellData);	
 				}
-				SetTableCellVal (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, MakePoint (col + 1, row + 1), cellData);
-					
 			}
+			
+			SetColumnWidthToWidestCellContents (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, col + 1);
 		}
-		
-		SetColumnWidthToWidestCellContents (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, col + 1);
 	}
+	
+	// Intermediate value view mode
+	else 
+	{
+		for (int col = 0; col < glbNumDataCols + 1; col++)
+		{
+			// Insert column
+			int cellType = VAL_CELL_NUMERIC;
+			if (col == 0)
+			{
+				cellType = VAL_CELL_STRING;
+			}
+			
+			InsertTableColumns (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, -1, 1, cellType); 
+			SetTableColumnAttribute (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, -1, ATTR_USE_LABEL_TEXT, 1);
+			SetTableColumnAttribute (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, -1, ATTR_LABEL_TEXT, glbANOVAResult.colLabels[col]);
+				
+			for (int row = 0; row < glbANOVAResult.numRows; row++)
+			{				
+				// If first column, insert rows and populate with stat names for each factor combo
+				if (col == 0)
+				{
+					InsertTableRows (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, -1, 1, VAL_CELL_STRING);
+					
+					char rowLabel[256] = {0};
+					GetANOVATableRowName (row % NUMDISPLAYROWS, rowLabel);
+					strcat (rowLabel, glbANOVAResult.rowLabels[row / NUMDISPLAYROWS]);
+
+					SetTableCellVal (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, MakePoint (col + 1, row + 1), rowLabel);
+				}
+				
+				// If not first column, insert data
+				else
+				{						
+					SetTableCellAttribute (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, MakePoint (col + 1, row + 1), ATTR_FORMAT, VAL_SCIENTIFIC_FORMAT);
+					SetTableCellAttribute (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, MakePoint (col + 1, row + 1), ATTR_PRECISION, 3);
+					double cellData = 0;
+					switch (row % NUMDISPLAYROWS)
+					{
+						case 0:
+							cellData = glbANOVAResult.sumSqr[row / NUMDISPLAYROWS][col - 1];
+							break;
+							
+						case 1:
+							cellData = glbANOVAResult.sumSqrRepeat[row / NUMDISPLAYROWS][col - 1];
+							break;
+							
+						case 2:
+							cellData = glbANOVAResult.degFrd[row / NUMDISPLAYROWS];
+							break;
+							
+						case 3:
+							cellData = glbANOVAResult.degFrdRepeat[row / NUMDISPLAYROWS];
+							break;
+							
+						case 4:
+							cellData = glbANOVAResult.variance[row / NUMDISPLAYROWS][col - 1];
+							break;
+							
+						case 5:
+							cellData = glbANOVAResult.varianceRepeat[row / NUMDISPLAYROWS][col - 1];
+							break;
+							
+						case 6:
+							cellData = glbANOVAResult.stdDev[row / NUMDISPLAYROWS][col - 1];
+							break;
+							
+						case 7:
+							cellData = glbANOVAResult.stdDevRepeat[row / NUMDISPLAYROWS][col - 1];
+							break;
+							
+						case 8:
+							cellData = glbANOVAResult.stdDevTotal[row / NUMDISPLAYROWS][col - 1];
+							break;
+							
+						case 9:
+							cellData = glbANOVAResult.ptRatio[row / NUMDISPLAYROWS][col - 1];
+							break;
+							
+						case 10:
+							cellData = glbANOVAResult.ptRatioRepeat[row / NUMDISPLAYROWS][col - 1];
+							break;
+							
+						case 11:
+							cellData = glbANOVAResult.ptRatioTotal[row / NUMDISPLAYROWS][col - 1];
+							break;
+							
+						default:
+							cellData = 0;
+					}
+					SetTableCellVal (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, MakePoint (col + 1, row + 1), cellData);
+						
+				}
+			}
+			
+			SetColumnWidthToWidestCellContents (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, col + 1);
+		}
+	}
+	
+	// Show table
+	SetCtrlAttribute (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, ATTR_VISIBLE, 1);
 }
 //! \cond
 /// REGION END

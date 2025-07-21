@@ -33,8 +33,8 @@
 typedef struct ANOVAResult
 {
 	int numRows;
-	char factorCombos[MAXFACTORCOMBOS][DATALENGTH];
-	char dataColumns[MAXDATACOLS][DATALENGTH];
+	char rowLabels[MAXFACTORCOMBOS][DATALENGTH];
+	char colLabels[MAXDATACOLS][DATALENGTH];
 	
 	// Main results
 	double sumSqr[MAXFACTORCOMBOS][MAXDATACOLS];

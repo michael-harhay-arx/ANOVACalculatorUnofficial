@@ -117,7 +117,7 @@ void ComputeANOVA (IN int Panel, char FactorRange[][DATALENGTH], char DataRange[
 			strcpy (currentRow.data[col], glbCSVData[startRow + row - 1][dataColNumbers[col] - 1]);
 			if (row == 0)
 			{
-				strcpy (glbANOVAResult.dataColumns[col], currentRow.data[col]);
+				strcpy (glbANOVAResult.colLabels[col], currentRow.data[col]);
 			}
 		}
 		dataset[row] = currentRow;
@@ -160,15 +160,15 @@ void ComputeANOVA (IN int Panel, char FactorRange[][DATALENGTH], char DataRange[
 		// Get factor combo name
 		char factorComboName[256] = {0};
 		GetFactorComboName (dataset, mask, factorComboName);
-		strcpy (glbANOVAResult.factorCombos[mask - 1], factorComboName);
+		strcpy (glbANOVAResult.rowLabels[mask - 1], factorComboName);
 		
 		// Get SS results for specific factor combo
         ComputeSSFactorCombo (dataset, mask, grandMeans, glbANOVAResult.sumSqr[mask - 1], glbANOVAResult.sumSqrRepeat[mask - 1]);
     }
 	
 	// Add equipment/total to factor combos list
-	strcpy (glbANOVAResult.factorCombos[glbNumMasks], "Equipment");
-	strcpy (glbANOVAResult.factorCombos[glbNumMasks + 1], "Total");
+	strcpy (glbANOVAResult.rowLabels[glbNumMasks], "Equipment");
+	strcpy (glbANOVAResult.rowLabels[glbNumMasks + 1], "Total");
 	
 	// Compute various stats
 	ComputeNumUniqueFactorElements (dataset);
