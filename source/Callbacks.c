@@ -532,7 +532,17 @@ int CVICALLBACK ANOVAExportButtonCB (int panel, int control, int event, void *ca
 		}
 
 		// Iterate through table, export each cell value to CSV
-		for (int row = 0; row < glbANOVAResult.numRows; row++) 
+		int numRows = 0;
+		if (glbDisplayMode == 0)
+		{
+			numRows = NUMOVERVIEWROWS;
+		}
+		else
+		{
+			numRows = glbANOVAResult.numRows;
+		}
+		
+		for (int row = 0; row < numRows; row++) 
 		{
 		    for (int col = 0; col < glbNumDataCols + 1; col++) 
 			{
@@ -897,24 +907,45 @@ void DisplayANOVATable ()
 					SetTableCellAttribute (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, MakePoint (col + 1, row + 1), ATTR_FORMAT, VAL_SCIENTIFIC_FORMAT);
 					SetTableCellAttribute (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, MakePoint (col + 1, row + 1), ATTR_PRECISION, 3);
 					double cellData = 0;
-					switch (row % NUMINTERMEDROWS)
+					if (row < glbANOVAResult.numRows - 3)
 					{
-						case 0:
-							cellData = glbANOVAResult.sumSqr[row / NUMINTERMEDROWS][col - 1];
-							break;
-							
-						case 1:
-							cellData = glbANOVAResult.degFrd[row / NUMINTERMEDROWS];
-							break;
-							
-						case 2:
-							cellData = glbANOVAResult.meanSqr[row / NUMINTERMEDROWS][col - 1];
-							break;
-							
-						// TODO: add more cases for equipment
-							
-						default:
-							cellData = 0;
+						switch (row % NUMINTERMEDROWS)
+						{
+							case 0:
+								cellData = glbANOVAResult.sumSqr[row / NUMINTERMEDROWS][col - 1];
+								break;
+								
+							case 1:
+								cellData = glbANOVAResult.degFrd[row / NUMINTERMEDROWS];
+								break;
+								
+							case 2:
+								cellData = glbANOVAResult.meanSqr[row / NUMINTERMEDROWS][col - 1];
+								break;
+								
+							default:
+								cellData = 0;
+						}
+					}
+					else
+					{
+						switch (row % NUMINTERMEDROWS)
+						{
+							case 0:
+								cellData = glbANOVAResult.sumSqrRepeat[col - 1];
+								break;
+								
+							case 1:
+								cellData = glbANOVAResult.degFrdRepeat;
+								break;
+								
+							case 2:
+								cellData = glbANOVAResult.meanSqrRepeat[col - 1];
+								break;
+								
+							default:
+								cellData = 0;
+						}
 					}
 					SetTableCellVal (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, MakePoint (col + 1, row + 1), cellData);
 						
