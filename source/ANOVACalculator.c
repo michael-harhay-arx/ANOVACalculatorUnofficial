@@ -354,27 +354,19 @@ void ComputeNumUniqueFactorElements(RowStruct Dataset[])
 void ComputeDegreesFreedom (RowStruct Dataset[])
 {
 	for (int fc = 1; fc <= glbANOVAResult.numRows / NUMINTERMEDROWS; fc++)
-	{
-		// Check if total
-		if (fc == pow (2, glbNumFactorCols))
-		{
-			glbANOVAResult.degFrd[fc] = (glbDataColHeight - 1) - 1; // glbDataColHeight includes header, so subtract 1 to get num of measurements for a data col
-		}
-		
+	{		
 		// Otherwise perform standard calculation
 	    int df = 1;
-		int numUniqueGroups = 1;
 		
 		for (int f = 0; f < glbNumFactorCols; f++) 
 		{
 			if (fc & (1 << f)) 
 			{
-				df *= glbNumUniqueFactorElements[f];
-				numUniqueGroups *= glbNumUniqueFactorElements[f];
+				df *= glbNumUniqueFactorElements[f] - 1;
 			}
 		}
 	
-		glbANOVAResult.degFrd[fc - 1] = df - 1;
+		glbANOVAResult.degFrd[fc - 1] = df;
 	}
 	
 	// Calculate equipment degrees of freedom

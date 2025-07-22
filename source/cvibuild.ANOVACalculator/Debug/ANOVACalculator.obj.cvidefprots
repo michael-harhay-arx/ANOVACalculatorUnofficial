@@ -41,30 +41,30 @@ SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c
 [ComputeMeanSquare]
 Class="Function"
 Prototype="void ComputeMeanSquare();"
-SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:412:1"
+SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:404:1"
 
 [ComputeVarianceDenom]
 Class="Function"
 Prototype="int ComputeVarianceDenom(struct RowStruct Dataset[], int Mask);"
-SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:431:1"
+SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:423:1"
 
 [GetOperatorVariances]
 Class="Function"
 Prototype="void GetOperatorVariances(int OperatorIndices[9]);"
-SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:467:1"
+SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:459:1"
 
 [ComputeVariance]
 Class="Function"
 Prototype="void ComputeVariance(struct RowStruct Dataset[]);"
-SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:493:1"
+SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:485:1"
 
 [ComputeStdDev]
 Class="Function"
 Prototype="void ComputeStdDev();"
-SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:537:1"
+SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:529:1"
 
 [ComputePTRatio]
 Class="Function"
 Prototype="void ComputePTRatio(double LimitList[][2]);"
-SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:552:1"
+SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:544:1"
 

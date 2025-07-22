@@ -37,7 +37,7 @@
 //==============================================================================
 // Constants
 
-const char overviewRowLabels[11][DATALENGTH] = {"Variance_reproducibility", "Variance_reproducibility_%", "Variance_repeatability", "Variance_repeatability_%", "Variance_total",
+const char overviewRowLabels[11][DATALENGTH] = {"Variance_reproducibility", "Variance_reproducibility (%)", "Variance_repeatability", "Variance_repeatability (%)", "Variance_total",
 							 				   "StdDev_reproducibility", "StdDev_repeatability", "StdDev_overall",
 											   "PTRatio_reproducibility", "PTRatio_repeatability", "PTRatio_overall"};
 
@@ -85,17 +85,20 @@ int CVICALLBACK MainPanelCB (int panel, int event, void *callbackData, int event
 {
 	if (event == EVENT_CLOSE)
 	{
-		// Free glbCSVData
-		for (int row = 0; row < glbNumRows; row++)
+		// Free glbCSVData if CSV data was loaded
+		if (glbCSVData != NULL)
 		{
-			for (int col = 0; col < glbNumCols; col++)
+			for (int row = 0; row < glbNumRows; row++)
 			{
-				free (glbCSVData[row][col]);
+				for (int col = 0; col < glbNumCols; col++)
+				{
+					free (glbCSVData[row][col]);
+				}
+				free (glbCSVData[row]);
 			}
-			free (glbCSVData[row]);
+			free (glbCSVData);
 		}
-		free (glbCSVData);
-		
+			
 		// Quit GUI
 		QuitUserInterface (0);
 	}
@@ -360,6 +363,14 @@ int CVICALLBACK CSVListCB(int panel, int control, int event, void *callbackData,
 {
 	if (event == EVENT_VAL_CHANGED || event == EVENT_GOT_FOCUS)
 	{
+		// Return if no items in list
+		int count = 0;
+		GetNumListItems (glbCSVPanelHandle, control, &count);
+		if (count == 0)
+		{
+			return 0;
+		}
+		
 		// Get active list index
 		int activeListIndex = 0;
 		char activeListLabel[DATALENGTH] = {0};
