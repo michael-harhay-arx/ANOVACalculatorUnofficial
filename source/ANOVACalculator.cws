@@ -50,17 +50,17 @@ Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/Callbacks.c"
 File Type = "CSource"
 Disk Date = 3836056040
 In Projects = "1,"
-Source Window State = "1,544,544,544,33,33,33,0,0,0,0,0,0,0,0,0,523,0,544,33,401,686,1,0,"
+Source Window State = "1,770,770,770,0,0,0,0,0,0,0,0,0,0,0,0,749,0,770,0,401,686,1,0,"
 Window Top = 126
 Window Left = 58
-Window Z-Order = 3
+Window Z-Order = 2
 
 [File 0002]
 Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/ANOVACalculator.c"
 File Type = "CSource"
-Disk Date = 3836057778
+Disk Date = 3836132608
 In Projects = "1,"
-Source Window State = "1,514,514,514,0,0,0,0,0,0,0,0,0,0,0,0,418,0,514,0,401,686,1,0,"
+Source Window State = "1,505,505,505,54,54,54,0,0,0,0,0,0,0,0,0,482,0,505,54,401,686,1,0,"
 Window Top = 95
 Window Left = 42
 Window Z-Order = 1
@@ -70,10 +70,10 @@ Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/ANOVACalculator.h"
 File Type = "Include"
 Disk Date = 3836057790
 In Projects = "1,"
-Source Window State = "1,58,58,58,26,26,26,0,0,0,0,0,0,0,0,0,16,0,58,26,401,686,1,0,"
+Source Window State = "1,58,58,58,26,26,26,0,0,0,0,0,0,0,0,0,12,0,58,26,401,686,1,0,"
 Window Top = 157
 Window Left = 74
-Window Z-Order = 2
+Window Z-Order = 3
 
 [File 0004]
 Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/Callbacks.h"

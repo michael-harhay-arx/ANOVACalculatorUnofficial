@@ -158,6 +158,12 @@ void ComputeANOVA (IN int Panel, char FactorRange[][DATALENGTH], char DataRange[
         ComputeSS (dataset, mask, groupMeans, grandMeans, glbANOVAResult.sumSqr[mask - 1], glbANOVAResult.sumSqrRepeat);
     }
 	
+	// Adjust sumSqrRepeat (subtract other factors)
+	/*for (int mask = 1; mask <= numMasks; mask++) 
+	{
+		
+	}*/
+	
 	// Add equipment to row labels list
 	strcpy (glbANOVAResult.rowLabels[numMasks], "Equipment");
 	
@@ -276,6 +282,21 @@ void ComputeSS (RowStruct Dataset[], IN int Mask, double GroupMeans[MAXFACTORCOM
 		            double diff = val - GroupMeans[Mask][col];
 		            SSOutRepeat[col] += diff * diff;
 		        }
+			}
+		}
+	}
+	
+	// Subtract sub-SS values (e.g. SS_A and SS_B for SS_AB)
+	for (int col = 0; col < glbNumDataCols; col++) 
+	{
+		if (__builtin_popcount (Mask) > 1)
+		{
+			for (int mask = 1; mask < Mask; mask++)
+			{
+				if (__builtin_popcount (mask) < __builtin_popcount (Mask) && (Mask & mask))
+				{
+					SSOut[col] -= glbANOVAResult.sumSqr[mask - 1][col];
+				}
 			}
 		}
 	}
@@ -461,6 +482,7 @@ void GetOperatorVariances (int OperatorIndices[MAXFACTORCOMBOS])
 		OperatorIndices[1] = 1;
 		OperatorIndices[2] = 1;
 		OperatorIndices[5] = 1;
+		OperatorIndices[6] = 1;
 	}
 }
 
@@ -477,6 +499,13 @@ void ComputeVariance (RowStruct Dataset[])
 			// Get denom
 			int denom = ComputeVarianceDenom (fc);
 			glbANOVAResult.variance[fc - 1][col] = (glbANOVAResult.meanSqr[fc - 1][col] - glbANOVAResult.meanSqrRepeat[col]) / denom;
+			
+			// Set to 0 if negative
+			if (glbANOVAResult.variance[fc - 1][col] < 0)
+			{
+				glbANOVAResult.variance[fc - 1][col] = 0;
+			}
+			
 			glbANOVAResult.varianceTotal[col] += glbANOVAResult.variance[fc - 1][col];
 		}
 		glbANOVAResult.varianceRepeat[col] = glbANOVAResult.meanSqrRepeat[col];	
@@ -515,9 +544,11 @@ void ComputeStdDev ()
 {		
     for (int col = 0; col < glbNumDataCols; col++)
 	{
-		glbANOVAResult.stdDevReprod[col] = sqrt (glbANOVAResult.varianceReprod[col]);
-		glbANOVAResult.stdDevRepeat[col] = sqrt (glbANOVAResult.varianceRepeat[col]);
-		glbANOVAResult.stdDevTotal[col] = sqrt (glbANOVAResult.varianceReprod[col] + glbANOVAResult.varianceRepeat[col]);
+		glbANOVAResult.stdDevReprod[col] = (IsNotANumber (glbANOVAResult.varianceReprod[col])) ? glbANOVAResult.varianceReprod[col] : sqrt (glbANOVAResult.varianceReprod[col]);
+		glbANOVAResult.stdDevRepeat[col] = (IsNotANumber (glbANOVAResult.varianceRepeat[col])) ? glbANOVAResult.varianceRepeat[col] : sqrt (glbANOVAResult.varianceRepeat[col]);
+		glbANOVAResult.stdDevTotal[col] = (IsNotANumber (glbANOVAResult.varianceReprod[col]) || IsNotANumber (glbANOVAResult.varianceRepeat[col])) ? 
+										   glbANOVAResult.varianceReprod[col] + glbANOVAResult.varianceRepeat[col] : 
+										   sqrt (glbANOVAResult.varianceReprod[col] + glbANOVAResult.varianceRepeat[col]);
 	}
 }
 
@@ -532,8 +563,8 @@ void ComputePTRatio (double LimitList[][2])
 	{
 		double limitDiff = abs (LimitList[col][1] - LimitList[col][0]);
 		
-		glbANOVAResult.ptRatioReprod[col] = 6 * glbANOVAResult.stdDevReprod[col] / limitDiff;
-		glbANOVAResult.ptRatioRepeat[col] = 6 * glbANOVAResult.stdDevRepeat[col] / limitDiff;
-		glbANOVAResult.ptRatioTotal[col] = 6 * glbANOVAResult.stdDevTotal[col] / limitDiff;
+		glbANOVAResult.ptRatioReprod[col] = (IsNotANumber (glbANOVAResult.stdDevReprod[col])) ? glbANOVAResult.stdDevReprod[col] : 6 * glbANOVAResult.stdDevReprod[col] / limitDiff;
+		glbANOVAResult.ptRatioRepeat[col] = (IsNotANumber (glbANOVAResult.stdDevRepeat[col])) ? glbANOVAResult.stdDevRepeat[col] : 6 * glbANOVAResult.stdDevRepeat[col] / limitDiff;
+		glbANOVAResult.ptRatioTotal[col] = (IsNotANumber (glbANOVAResult.stdDevTotal[col])) ? glbANOVAResult.stdDevTotal[col] : 6 * glbANOVAResult.stdDevTotal[col] / limitDiff;
 	}
 }

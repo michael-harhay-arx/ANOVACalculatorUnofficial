@@ -3,6 +3,10 @@ Callbacks.obj
 cvi.lib
 cvistart.lib
 CSVParse_LIB.lib
+toolbox.obj
+advapi32.lib
+cviauto.lib
+gdi32.lib
 kernel32.lib
 user32.lib
 EXE Symbol Module
