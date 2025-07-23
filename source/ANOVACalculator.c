@@ -76,29 +76,57 @@ Error:
 void ComputeANOVA (IN int Panel, char FactorRange[][DATALENGTH], char DataRange[][DATALENGTH], char LimitRange[][DATALENGTH])
 {
 	// Parse ranges
-	int factorColNumbers[glbNumFactorCols];
-	memset (factorColNumbers, 0, sizeof (factorColNumbers));
-	int dataColNumbers[glbNumDataCols];
-	memset (dataColNumbers, 0, sizeof (dataColNumbers));
-	int limitColNumbers[glbNumDataCols];
-	memset (limitColNumbers, 0, sizeof (limitColNumbers));
+	int factorColNumbers[MAXFACTORCOLS] = {0};
+	int dataColNumbers[MAXDATACOLS] = {0};
+	int limitColNumbers[MAXDATACOLS] = {0};
 	
+	int startCol = 0;
 	int startRow = 0;
 	int endCol = 0;	
 	int endRow = 0;
+	int limitStartCol = 0;
 	int limitStartRow = 0;
 	
-	for (int i = 0; i < glbNumFactorCols; ++i)
-	{
-		sscanf (FactorRange[i], "C%dR%d:C%dR%d", factorColNumbers + i, &startRow, &endCol, &endRow);
-	}
+	int numFactorSelections = glbNumFactorCols;
+	int numDataSelections = glbNumDataCols;
+	int numStoredFactorCols = 0;
+	int numStoredDataCols = 0;
 	
+	for (int i = 0; i < numFactorSelections; ++i)
+	{
+		sscanf (FactorRange[i], "C%dR%d:C%dR%d", &startCol, &startRow, &endCol, &endRow); // for now assume that factor selection only accepts single columns
+		
+		// Support for multi-column factor selections
+		int numCols = endCol - startCol + 1;
+
+		// Increment glbNumDataCols accordingly, populate dataColNumbers
+		glbNumFactorCols += numCols - 1;
+		for (int j = 0; j < numCols; j++)
+		{
+			int currentCol = startCol + j;
+			factorColNumbers[numStoredFactorCols] = currentCol;
+			numStoredFactorCols++;
+		}
+	}	
 	glbDataColHeight = endRow - startRow + 1;	
 	
-	for (int i = 0; i < glbNumDataCols; i++)
+	for (int i = 0; i < numDataSelections; i++)
 	{
-		sscanf (DataRange[i], "C%d", dataColNumbers + i);
-		sscanf (LimitRange[i], "C%dR%d", limitColNumbers + i, &limitStartRow);
+		sscanf (DataRange[i], "C%dR%d:C%dR%d", &startCol, &startRow, &endCol, &endRow);
+		sscanf (LimitRange[i], "C%dR%d", &limitStartCol, &limitStartRow);
+		
+		// Support for multi-column data/limit selections
+		int numCols = endCol - startCol + 1;
+
+		// Increment glbNumDataCols accordingly, populate dataColNumbers
+		glbNumDataCols += numCols - 1;
+		for (int j = 0; j < numCols; j++)
+		{
+			int currentCol = startCol + j;
+			dataColNumbers[numStoredDataCols] = currentCol;
+			limitColNumbers[numStoredDataCols] = currentCol;
+			numStoredDataCols++;
+		}
 	}
 	
 	// Build list of RowStructs
@@ -157,12 +185,6 @@ void ComputeANOVA (IN int Panel, char FactorRange[][DATALENGTH], char DataRange[
 		// Get SS results for specific factor combo
         ComputeSS (dataset, mask, groupMeans, grandMeans, glbANOVAResult.sumSqr[mask - 1], glbANOVAResult.sumSqrRepeat);
     }
-	
-	// Adjust sumSqrRepeat (subtract other factors)
-	/*for (int mask = 1; mask <= numMasks; mask++) 
-	{
-		
-	}*/
 	
 	// Add equipment to row labels list
 	strcpy (glbANOVAResult.rowLabels[numMasks], "Equipment");
@@ -505,8 +527,6 @@ void ComputeVariance (RowStruct Dataset[])
 			{
 				glbANOVAResult.variance[fc - 1][col] = 0;
 			}
-			
-			glbANOVAResult.varianceTotal[col] += glbANOVAResult.variance[fc - 1][col];
 		}
 		glbANOVAResult.varianceRepeat[col] = glbANOVAResult.meanSqrRepeat[col];	
 	}
@@ -529,6 +549,12 @@ void ComputeVariance (RowStruct Dataset[])
 		}
 	}
 	
+	// Get total variance
+	for (int col = 0; col < glbNumDataCols; col++)
+	{
+		glbANOVAResult.varianceTotal[col] += glbANOVAResult.varianceReprod[col] + glbANOVAResult.varianceRepeat[col];
+	}
+	
 	// Get variance as %
 	for (int col = 0; col < glbNumDataCols; col++)
 	{
@@ -546,9 +572,7 @@ void ComputeStdDev ()
 	{
 		glbANOVAResult.stdDevReprod[col] = (IsNotANumber (glbANOVAResult.varianceReprod[col])) ? glbANOVAResult.varianceReprod[col] : sqrt (glbANOVAResult.varianceReprod[col]);
 		glbANOVAResult.stdDevRepeat[col] = (IsNotANumber (glbANOVAResult.varianceRepeat[col])) ? glbANOVAResult.varianceRepeat[col] : sqrt (glbANOVAResult.varianceRepeat[col]);
-		glbANOVAResult.stdDevTotal[col] = (IsNotANumber (glbANOVAResult.varianceReprod[col]) || IsNotANumber (glbANOVAResult.varianceRepeat[col])) ? 
-										   glbANOVAResult.varianceReprod[col] + glbANOVAResult.varianceRepeat[col] : 
-										   sqrt (glbANOVAResult.varianceReprod[col] + glbANOVAResult.varianceRepeat[col]);
+		glbANOVAResult.stdDevTotal[col] = (IsNotANumber (glbANOVAResult.varianceTotal[col])) ? glbANOVAResult.varianceTotal[col] : sqrt (glbANOVAResult.varianceTotal[col]);
 	}
 }
 
