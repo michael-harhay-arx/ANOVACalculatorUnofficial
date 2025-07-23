@@ -31,6 +31,9 @@
 #define  CSVPANEL_FACTORTEXT              16      /* control type: textMsg, callback function: (none) */
 #define  CSVPANEL_DATATEXT                17      /* control type: textMsg, callback function: (none) */
 #define  CSVPANEL_LIMITTEXT               18      /* control type: textMsg, callback function: (none) */
+#define  CSVPANEL_DATAWARNING             19      /* control type: textMsg, callback function: (none) */
+#define  CSVPANEL_FACTORWARNING           20      /* control type: textMsg, callback function: (none) */
+#define  CSVPANEL_LIMITWARNING            21      /* control type: textMsg, callback function: (none) */
 
 
      /* Control Arrays: */

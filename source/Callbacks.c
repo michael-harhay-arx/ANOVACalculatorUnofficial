@@ -396,25 +396,52 @@ int CVICALLBACK CSVListCB(int panel, int control, int event, void *callbackData,
 * \brief CSV panel: Callback for ANOVA calculation button
 *******************************************************************************/
 int CVICALLBACK CSVCalcButtonCB(int panel, int control, int event, void *callbackData, int eventData1, int eventData2)
-{
-	char errmsg[ERRLEN] = {0};
-	fnInit;
-	error = 0;
-	
+{	
 	if (event == EVENT_LEFT_CLICK)
-	{
-		// Load ANOVA panel
-		HidePanel (glbCSVPanelHandle);
-		glbANOVAPanelHandle = LoadPanel (0, "ANOVAPanel.uir", ANOVAPANEL);
-		SetCtrlAttribute (glbANOVAPanelHandle, ANOVAPANEL_SAVETEXT, ATTR_VISIBLE, 0);
-		
+	{		
 		// Get number of cols for each (assume all selections are columns)
 		// TODO: allow for non-column selections
 		GetNumListItems (panel, CSVPANEL_FACTORLIST, &glbNumFactorCols);
 		GetNumListItems (panel, CSVPANEL_DATALIST, &glbNumDataCols);
+		int numLimits = 0;
+		GetNumListItems (panel, CSVPANEL_LIMITLIST, &numLimits);
+		
+		// Empty list warning messages
+		if (glbNumFactorCols == 0)
+		{
+			SetCtrlAttribute (panel, CSVPANEL_FACTORWARNING, ATTR_VISIBLE, 1);
+			return 0;
+		}
+		else
+		{
+			SetCtrlAttribute (panel, CSVPANEL_FACTORWARNING, ATTR_VISIBLE, 0);
+		}
+		if (glbNumDataCols == 0)
+		{
+			SetCtrlAttribute (panel, CSVPANEL_DATAWARNING, ATTR_VISIBLE, 1);
+			return 0;
+		}
+		else
+		{
+			SetCtrlAttribute (panel, CSVPANEL_DATAWARNING, ATTR_VISIBLE, 0);
+		}
+		if (numLimits != glbNumDataCols)
+		{
+			SetCtrlAttribute (panel, CSVPANEL_LIMITWARNING, ATTR_VISIBLE, 1);
+			return 0;
+		}
+		else
+		{
+			SetCtrlAttribute (panel, CSVPANEL_LIMITWARNING, ATTR_VISIBLE, 0);
+		}
 		
 		// Get factors/data/limits from UI list boxes
 		GetDataFromListBoxes (panel, glbFactorRange, glbDataRange, glbLimitRange);
+		
+		// Load ANOVA panel
+		HidePanel (glbCSVPanelHandle);
+		glbANOVAPanelHandle = LoadPanel (0, "ANOVAPanel.uir", ANOVAPANEL);
+		SetCtrlAttribute (glbANOVAPanelHandle, ANOVAPANEL_SAVETEXT, ATTR_VISIBLE, 0);
 
 		// Parse selected factors/data/limits
 		ComputeANOVA (panel, glbFactorRange, glbDataRange, glbLimitRange); // TODO add support for multi-col data selections... but can assume factors are one col
@@ -424,9 +451,8 @@ int CVICALLBACK CSVCalcButtonCB(int panel, int control, int event, void *callbac
 		DisplayANOVATable ();
 		DisplayPanel (glbANOVAPanelHandle);
 	}
-
-Error:
-	return error;
+	
+	return 0;
 }
 
 /***************************************************************************//*!
