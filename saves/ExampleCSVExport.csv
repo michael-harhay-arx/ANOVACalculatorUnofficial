@@ -1,12 +1,12 @@
-SumSqr_Well,0.000000,0.000000
-DegFrd_Well,1.000000,1.000000
-MeanSqr_Well,0.000000,0.000000
-SumSqr_MIS#,1.865502,0.000445
-DegFrd_MIS#,4.000000,4.000000
-MeanSqr_MIS#,0.466376,0.000111
-SumSqr_Well & MIS#,1.865502,0.000445
-DegFrd_Well & MIS#,4.000000,4.000000
-MeanSqr_Well & MIS#,0.466376,0.000111
-SumSqr_Equipment,0.000065,0.000209
-DegFrd_Equipment,20.000000,20.000000
-MeanSqr_Equipment,0.000003,0.000010
+Data TypeDiff_PressureLeak_Rate
+Variance_reproducibility,0.093274,0.000020
+Variance_reproducibility (%),100.000349,105.482470
+Variance_repeatability,0.000003,0.000010
+Variance_repeatability (%),0.003485,54.824698
+Variance_total,0.093274,0.000019
+StdDev_reproducibility,0.305409,0.004488
+StdDev_repeatability,0.001803,0.003236
+StdDev_overall,0.305414,0.005533
+PTRatio_reproducibility,0.610817,0.013465
+PTRatio_repeatability,0.003606,0.009708
+PTRatio_overall,0.610828,0.016600

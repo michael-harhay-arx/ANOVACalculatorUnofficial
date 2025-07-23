@@ -94,7 +94,7 @@ void ComputeANOVA (IN int Panel, char FactorRange[][DATALENGTH], char DataRange[
 	
 	for (int i = 0; i < numFactorSelections; ++i)
 	{
-		sscanf (FactorRange[i], "C%dR%d:C%dR%d", &startCol, &startRow, &endCol, &endRow); // for now assume that factor selection only accepts single columns
+		sscanf (FactorRange[i], "C%dR%d:C%dR%d", &startCol, &startRow, &endCol, &endRow);
 		
 		// Support for multi-column factor selections
 		int numCols = endCol - startCol + 1;

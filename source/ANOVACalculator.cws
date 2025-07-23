@@ -48,22 +48,22 @@ Batch Build Debug = False
 [File 0001]
 Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/Callbacks.c"
 File Type = "CSource"
-Disk Date = 3836133803
+Disk Date = 3836149450
 In Projects = "1,"
-Source Window State = "1,796,796,796,0,0,0,0,0,0,0,0,0,0,0,0,730,0,796,0,401,686,1,0,"
+Source Window State = "1,614,614,614,17,17,17,0,0,0,0,0,0,0,0,0,572,0,614,17,401,686,1,0,"
 Window Top = 126
 Window Left = 58
-Window Z-Order = 2
+Window Z-Order = 1
 
 [File 0002]
 Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/ANOVACalculator.c"
 File Type = "CSource"
-Disk Date = 3836145115
+Disk Date = 3836147726
 In Projects = "1,"
-Source Window State = "1,161,161,161,9,9,9,0,0,0,0,0,0,0,0,0,171,0,161,9,401,686,1,0,"
+Source Window State = "1,96,96,96,89,89,89,0,0,0,0,0,0,0,0,0,81,0,96,89,401,686,1,0,"
 Window Top = 95
 Window Left = 42
-Window Z-Order = 1
+Window Z-Order = 2
 
 [File 0003]
 Path = "/c/Users/Michael_Harhay/Documents/ANOVA/source/ANOVACalculator.h"

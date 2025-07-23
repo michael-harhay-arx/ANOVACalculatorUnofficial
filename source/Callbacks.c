@@ -444,7 +444,7 @@ int CVICALLBACK CSVCalcButtonCB(int panel, int control, int event, void *callbac
 		SetCtrlAttribute (glbANOVAPanelHandle, ANOVAPANEL_SAVETEXT, ATTR_VISIBLE, 0);
 
 		// Parse selected factors/data/limits
-		ComputeANOVA (panel, glbFactorRange, glbDataRange, glbLimitRange); // TODO add support for multi-col data selections... but can assume factors are one col
+		ComputeANOVA (panel, glbFactorRange, glbDataRange, glbLimitRange);
 		
 		// Display ANOVA table
 		glbDisplayMode = 0;
@@ -561,17 +561,27 @@ int CVICALLBACK ANOVAExportButtonCB (int panel, int control, int event, void *ca
 		int numRows = 0;
 		if (glbDisplayMode == 0)
 		{
-			numRows = NUMOVERVIEWROWS;
+			numRows = NUMOVERVIEWROWS + 1;
 		}
 		else
 		{
-			numRows = glbANOVAResult.numRows;
+			numRows = glbANOVAResult.numRows + 1;
 		}
 		
 		for (int row = 0; row < numRows; row++) 
 		{
 		    for (int col = 0; col < glbNumDataCols + 1; col++) 
 			{
+				// Add headers if first row
+				if (row == 0)
+				{
+					char colLabel[256] = {0};
+					GetTableColumnAttribute (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, col + 1, ATTR_LABEL_TEXT, colLabel); 
+					fprintf (fp, "%s", colLabel);
+					continue;
+				}
+				
+				// Otherwise insert data
 		        char cellText[256] = "";
 				double cellData = 0;
 				void *dataPtr = NULL;
@@ -585,7 +595,7 @@ int CVICALLBACK ANOVAExportButtonCB (int panel, int control, int event, void *ca
 					dataPtr = &cellData;
 				}
 				
-		        GetTableCellVal (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, MakePoint (col + 1, row + 1), dataPtr);
+		        GetTableCellVal (glbANOVAPanelHandle, ANOVAPANEL_ANOVATABLE, MakePoint (col + 1, row), dataPtr);
 				
 				if (col != 0)
 				{
