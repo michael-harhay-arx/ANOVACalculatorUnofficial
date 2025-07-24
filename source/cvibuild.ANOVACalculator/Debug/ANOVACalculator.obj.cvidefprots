@@ -1,70 +1,70 @@
 [main]
 Class="Function"
 Prototype="int main(int argc, char *argv[]);"
-SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:49:1"
+SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:52:1"
 
 [ComputeANOVA]
 Class="Function"
 Prototype="void ComputeANOVA(const int Panel, char FactorRange[][32], char DataRange[][32], char LimitRange[][32]);"
-SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:76:1"
+SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:79:1"
 
 [ComputeGrandMeans]
 Class="Function"
 Prototype="void ComputeGrandMeans(struct RowStruct Dataset[], double GrandMeans[]);"
-SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:207:1"
+SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:209:1"
 
 [MatchOnMask]
 Class="Function"
 Prototype="int MatchOnMask(struct RowStruct RowA, struct RowStruct RowB, int Mask);"
-SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:232:1"
+SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:234:1"
 
 [ComputeSS]
 Class="Function"
 Prototype="void ComputeSS(struct RowStruct Dataset[], const int Mask, double GroupMeans[9][16], double *GrandMeans, double *SSOut, double *SSOutRepeat);"
-SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:253:1"
+SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:255:1"
 
 [GetFactorComboName]
 Class="Function"
 Prototype="void GetFactorComboName(const struct RowStruct Dataset[], const int Mask, char *FactorComboName);"
-SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:334:1"
+SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:336:1"
 
 [ComputeNumUniqueFactorElements]
 Class="Function"
 Prototype="void ComputeNumUniqueFactorElements(struct RowStruct Dataset[]);"
-SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:362:1"
+SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:364:1"
 
 [ComputeDegreesFreedom]
 Class="Function"
 Prototype="void ComputeDegreesFreedom(struct RowStruct Dataset[]);"
-SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:397:1"
+SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:402:1"
 
 [ComputeMeanSquare]
 Class="Function"
 Prototype="void ComputeMeanSquare();"
-SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:447:1"
+SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:452:1"
 
 [ComputeVarianceDenom]
 Class="Function"
 Prototype="int ComputeVarianceDenom(int Mask);"
-SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:465:1"
+SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:470:1"
 
 [GetOperatorVariances]
 Class="Function"
 Prototype="void GetOperatorVariances(int OperatorIndices[9]);"
-SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:487:1"
+SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:492:1"
 
 [ComputeVariance]
 Class="Function"
 Prototype="void ComputeVariance(struct RowStruct Dataset[]);"
-SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:514:1"
+SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:519:1"
 
 [ComputeStdDev]
 Class="Function"
 Prototype="void ComputeStdDev();"
-SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:569:1"
+SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:574:1"
 
 [ComputePTRatio]
 Class="Function"
 Prototype="void ComputePTRatio(double LimitList[][2]);"
-SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:584:1"
+SourceLocation="c:\Users\Michael_Harhay\Documents\ANOVA\source\ANOVACalculator.c:589:1"
 

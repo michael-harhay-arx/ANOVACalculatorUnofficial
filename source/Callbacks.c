@@ -63,8 +63,8 @@ char glbCSVFilepath[512] = {0};
 char ***glbCSVData= NULL;
 int glbNumRows = 0;
 int glbNumCols = 0;
-int glbNumFactorCols = 0;
-int glbNumDataCols = 0;
+int glbNumFactorSelections = 0;
+int glbNumDataSelections = 0;
 
 char glbFactorRange[MAXFACTORCOLS][DATALENGTH] = {0};
 char glbDataRange[MAXDATACOLS][DATALENGTH] = {0};
@@ -191,6 +191,8 @@ int CVICALLBACK LoadButtonCB(int panel, int control, int event, void *callbackDa
 		// Restore data
 		glbNumRows = data.numRows;
 		glbNumCols = data.numCols;
+		glbNumFactorSelections = data.numFactorSelections;
+		glbNumDataSelections = data.numDataSelections;
 		glbNumFactorCols = data.numFactorCols;
 		glbNumDataCols = data.numDataCols;
 		memcpy (glbCSVFilepath, data.csvFilepath, 512);
@@ -401,13 +403,13 @@ int CVICALLBACK CSVCalcButtonCB(int panel, int control, int event, void *callbac
 	{		
 		// Get number of cols for each (assume all selections are columns)
 		// TODO: allow for non-column selections
-		GetNumListItems (panel, CSVPANEL_FACTORLIST, &glbNumFactorCols);
-		GetNumListItems (panel, CSVPANEL_DATALIST, &glbNumDataCols);
+		GetNumListItems (panel, CSVPANEL_FACTORLIST, &glbNumFactorSelections);
+		GetNumListItems (panel, CSVPANEL_DATALIST, &glbNumDataSelections);
 		int numLimits = 0;
 		GetNumListItems (panel, CSVPANEL_LIMITLIST, &numLimits);
 		
 		// Empty list warning messages
-		if (glbNumFactorCols == 0)
+		if (glbNumFactorSelections == 0)
 		{
 			SetCtrlAttribute (panel, CSVPANEL_FACTORWARNING, ATTR_VISIBLE, 1);
 			return 0;
@@ -416,7 +418,7 @@ int CVICALLBACK CSVCalcButtonCB(int panel, int control, int event, void *callbac
 		{
 			SetCtrlAttribute (panel, CSVPANEL_FACTORWARNING, ATTR_VISIBLE, 0);
 		}
-		if (glbNumDataCols == 0)
+		if (glbNumDataSelections == 0)
 		{
 			SetCtrlAttribute (panel, CSVPANEL_DATAWARNING, ATTR_VISIBLE, 1);
 			return 0;
@@ -425,7 +427,7 @@ int CVICALLBACK CSVCalcButtonCB(int panel, int control, int event, void *callbac
 		{
 			SetCtrlAttribute (panel, CSVPANEL_DATAWARNING, ATTR_VISIBLE, 0);
 		}
-		if (numLimits != glbNumDataCols)
+		if (numLimits != glbNumDataSelections)
 		{
 			SetCtrlAttribute (panel, CSVPANEL_LIMITWARNING, ATTR_VISIBLE, 1);
 			return 0;
@@ -498,6 +500,8 @@ int CVICALLBACK ANOVASaveButtonCB (int panel, int control, int event, void *call
 	
 		data.numRows = glbNumRows;
 		data.numCols = glbNumCols;
+		data.numFactorSelections = glbNumFactorSelections;
+		data.numDataSelections = glbNumDataSelections;
 		data.numFactorCols = glbNumFactorCols;
 		data.numDataCols = glbNumDataCols;
 		memcpy (data.csvFilepath, glbCSVFilepath, 512);
@@ -657,19 +661,19 @@ int CVICALLBACK ANOVAEditButtonCB (int panel, int control, int event, void *call
 				{
 					case 0:
 						listBox = CSVPANEL_FACTORLIST;
-						listDataLength = glbNumFactorCols;
+						listDataLength = glbNumFactorSelections;
 						listData = glbFactorRange;
 						break;
 						
 					case 1:
 						listBox = CSVPANEL_DATALIST;
-						listDataLength = glbNumDataCols;
+						listDataLength = glbNumDataSelections;
 						listData = glbDataRange;
 						break;
 						
 					case 2:
 						listBox = CSVPANEL_LIMITLIST;
-						listDataLength = glbNumDataCols;
+						listDataLength = glbNumDataSelections;
 						listData = glbLimitRange;
 						break;
 				}
@@ -751,17 +755,17 @@ void GetDataFromListBoxes (IN int panel, char FactorSelection[][DATALENGTH], cha
 		{
 			case 0:
 				listBox = CSVPANEL_FACTORLIST;
-				listLen = glbNumFactorCols;
+				listLen = glbNumFactorSelections;
 				outputArr = FactorSelection;
 				break;
 			case 1:
 				listBox = CSVPANEL_DATALIST;
-				listLen = glbNumDataCols;
+				listLen = glbNumDataSelections;
 				outputArr = DataSelection;
 				break;
 			case 2:
 				listBox = CSVPANEL_LIMITLIST;
-				listLen = glbNumDataCols;
+				listLen = glbNumDataSelections;
 				outputArr = LimitSelection;
 				break;
 		}

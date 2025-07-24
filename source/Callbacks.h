@@ -35,6 +35,8 @@ typedef struct SaveData
 {	
 	int numRows;
 	int numCols;
+	int numFactorSelections;
+	int numDataSelections;
 	int numFactorCols;
 	int numDataCols;
 	char csvFilepath[512];
@@ -49,8 +51,8 @@ typedef struct SaveData
 		
 extern char ***glbCSVData;
 extern int glbNumRows;
-extern int glbNumFactorCols;
-extern int glbNumDataCols;
+extern int glbNumFactorSelections;
+extern int glbNumDataSelections;
 
 //==============================================================================
 // Global functions

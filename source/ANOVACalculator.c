@@ -35,6 +35,9 @@ static int panelHandle = 0;
 //==============================================================================
 // Global variables
 
+int glbNumFactorCols = 0;
+int glbNumDataCols = 0;
+
 int glbDataColHeight = 0;
 int numMasks = 0;
 int glbNumUniqueFactorElements[MAXFACTORCOLS] = {0};
@@ -75,6 +78,9 @@ Error:
 *******************************************************************************/
 void ComputeANOVA (IN int Panel, char FactorRange[][DATALENGTH], char DataRange[][DATALENGTH], char LimitRange[][DATALENGTH])
 {
+	// Reset result
+	memset (&glbANOVAResult, 0, sizeof (glbANOVAResult));
+	
 	// Parse ranges
 	int factorColNumbers[MAXFACTORCOLS] = {0};
 	int dataColNumbers[MAXDATACOLS] = {0};
@@ -87,12 +93,10 @@ void ComputeANOVA (IN int Panel, char FactorRange[][DATALENGTH], char DataRange[
 	int limitStartCol = 0;
 	int limitStartRow = 0;
 	
-	int numFactorSelections = glbNumFactorCols;
-	int numDataSelections = glbNumDataCols;
-	int numStoredFactorCols = 0;
-	int numStoredDataCols = 0;
-	
-	for (int i = 0; i < numFactorSelections; ++i)
+	glbNumFactorCols = 0;
+	glbNumDataCols = 0;
+
+	for (int i = 0; i < glbNumFactorSelections; ++i)
 	{
 		sscanf (FactorRange[i], "C%dR%d:C%dR%d", &startCol, &startRow, &endCol, &endRow);
 		
@@ -100,17 +104,16 @@ void ComputeANOVA (IN int Panel, char FactorRange[][DATALENGTH], char DataRange[
 		int numCols = endCol - startCol + 1;
 
 		// Increment glbNumDataCols accordingly, populate dataColNumbers
-		glbNumFactorCols += numCols - 1;
 		for (int j = 0; j < numCols; j++)
 		{
 			int currentCol = startCol + j;
-			factorColNumbers[numStoredFactorCols] = currentCol;
-			numStoredFactorCols++;
+			factorColNumbers[glbNumFactorCols] = currentCol;
+			glbNumFactorCols++;
 		}
 	}	
 	glbDataColHeight = endRow - startRow + 1;	
 	
-	for (int i = 0; i < numDataSelections; i++)
+	for (int i = 0; i < glbNumDataSelections; i++)
 	{
 		sscanf (DataRange[i], "C%dR%d:C%dR%d", &startCol, &startRow, &endCol, &endRow);
 		sscanf (LimitRange[i], "C%dR%d", &limitStartCol, &limitStartRow);
@@ -119,13 +122,12 @@ void ComputeANOVA (IN int Panel, char FactorRange[][DATALENGTH], char DataRange[
 		int numCols = endCol - startCol + 1;
 
 		// Increment glbNumDataCols accordingly, populate dataColNumbers
-		glbNumDataCols += numCols - 1;
 		for (int j = 0; j < numCols; j++)
 		{
 			int currentCol = startCol + j;
-			dataColNumbers[numStoredDataCols] = currentCol;
-			limitColNumbers[numStoredDataCols] = currentCol;
-			numStoredDataCols++;
+			dataColNumbers[glbNumDataCols] = currentCol;
+			limitColNumbers[glbNumDataCols] = currentCol;
+			glbNumDataCols++;
 		}
 	}
 	
@@ -361,6 +363,9 @@ void GetFactorComboName (IN RowStruct Dataset[], IN int Mask, char *FactorComboN
 *******************************************************************************/
 void ComputeNumUniqueFactorElements(RowStruct Dataset[]) 
 {
+	// Reset glbNumUniqueFactorElements
+	memset (glbNumUniqueFactorElements, 0, sizeof (glbNumUniqueFactorElements));
+	
 	char seen[glbNumFactorCols][glbDataColHeight][DATALENGTH];
 	memset (seen, 0, sizeof (seen));
 	

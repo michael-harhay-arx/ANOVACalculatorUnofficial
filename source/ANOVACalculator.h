@@ -38,6 +38,8 @@ typedef struct RowStruct
 //==============================================================================
 // External variables
 
+extern glbNumFactorCols;
+extern glbNumDataCols;
 extern ANOVAResult glbANOVAResult;
 
 //==============================================================================
